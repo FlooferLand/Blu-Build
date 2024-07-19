@@ -10,6 +10,14 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+# CUSTOM USER STUFF
+.idea/
+.vscode/
+
+# Copyright problems
+# TODO: Should write my own plugin replacements for these under MIT or GPL3 to allow them to be shared here
+Assets/DynamicBone/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/

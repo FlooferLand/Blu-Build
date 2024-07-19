@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -167,8 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c24c99fb6cf1c44cadea3e5d823f7be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fazAnimVersion: 1.50
-  rockafireReplayVersion: 1.48
+  fazAnimVersion: 1.60
+  rockafireReplayVersion: 1.60
   fazTexture: {fileID: 2800000, guid: b809725fe61ad73439cb70d0123ee5ff, type: 3}
   rockTexture: {fileID: 2800000, guid: 59efaaf1efb87d340ae38ae2dd1c947a, type: 3}
   fazAnimScenes:
