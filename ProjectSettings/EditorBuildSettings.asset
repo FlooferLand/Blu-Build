@@ -17,13 +17,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Bit Crusher/Bit Crusher.unity
     guid: ebc9cfca19d01164283d8f6d6fac00d7
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Arcade Mr Hugs/Arcade Mr Hugs.unity
     guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Front Entrance/Front Entrance.unity
     guid: 97d3f17e1fcd7fd4c8fc88c3b69f67c7
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Tutorial/Tutorial.unity
     guid: 00000000000000000000000000000000
   - enabled: 1

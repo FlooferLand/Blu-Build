@@ -103,7 +103,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -116,7 +116,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -146,13 +146,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972015027}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 41.96788, y: 2.8984857, z: 24.265099}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &972015030
 MonoBehaviour:
@@ -166,8 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c24c99fb6cf1c44cadea3e5d823f7be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fazAnimVersion: 1.60
-  rockafireReplayVersion: 1.60
+  fazAnimVersion: 1.60-ALPHA
+  rockafireReplayVersion: 1.60-ALPHA
   fazTexture: {fileID: 2800000, guid: b809725fe61ad73439cb70d0123ee5ff, type: 3}
   rockTexture: {fileID: 2800000, guid: 59efaaf1efb87d340ae38ae2dd1c947a, type: 3}
   fazAnimScenes:
@@ -192,3 +192,8 @@ MonoBehaviour:
   - Assets/Scenes/Bit Crusher/Bit Crusher.unity
   - Assets/Scenes/Tutorial/Tutorial.unity
   - Assets/Scenes/Sandbox/Sandbox.unity
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 972015029}
