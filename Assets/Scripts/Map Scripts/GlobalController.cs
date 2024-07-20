@@ -344,9 +344,9 @@ public class GlobalController : MonoBehaviour
                     break;
             }
         }
-        AmbientOcclusion ssao = null;
+        ScreenSpaceAmbientOcclusion ssao = null;
         GlobalIllumination ssgi = null;
-        player.GetComponentInChildren<Volume>().profile.TryGet<AmbientOcclusion>(out ssao);
+        player.GetComponentInChildren<Volume>().profile.TryGet<ScreenSpaceAmbientOcclusion>(out ssao);
         player.GetComponentInChildren<Volume>().profile.TryGet<GlobalIllumination>(out ssgi);
         if (ssao != null && ssgi != null)
         {
