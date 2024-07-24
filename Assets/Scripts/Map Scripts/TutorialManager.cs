@@ -1,10 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialStart : MonoBehaviour
-{
-    // Start is called before the first frame update
+public class TutorialManager : MonoBehaviour {
     public float timeScale = 1;
     public GameObject waypoint1;
     public GameObject waypoint2;
@@ -24,12 +23,13 @@ public class TutorialStart : MonoBehaviour
     Player playerCPT;
     AudioSource sc;
     Vector3 oldRobotTransform;
-    bool unlock = false;
+    bool unlockShowControls = false;
     bool finalWords;
     public GameObject finalBot;
-
+    public static bool skippedTutorial = false;
+    
     //Lines
-    string[] lines = new string[]{
+    readonly string[] lines = {
         "Ah, you are online.",
         "Seems you have turned on before we arrived.",
         "...",
@@ -37,8 +37,8 @@ public class TutorialStart : MonoBehaviour
         "Indeed they are. You are brand new, just being shipped to the location.",
         "Where are we going?",
         "Fazbear Entertainment is opening a new restaurant soon. It is tying their previous animatronics into a single location, hoping to capture the nostalgia of long-time fans.",
-        "…And why have they sent me?",
-        "You are the Faz-Animation Bot #001,\ndesigned to bring the animatronics’ performances to life.",
+        "ï¿½And why have they sent me?",
+        "You are the Faz-Animation Bot #001,\ndesigned to bring the animatronicsï¿½ performances to life.",
         "Then why do I not have the knowledge to manage these tasks?",
         "The company has given you a complex AI to learn the task of making showtapes. They feel that letting you experiment will allow just as natural of decision making as any human, and hopefully even better.",
         "I am your Animation Director, Guide, & Info Trainer. You may call me: ADGIT.\n...Considering your product name, I shall call you: FAB.",
@@ -94,11 +94,10 @@ public class TutorialStart : MonoBehaviour
         "I live in your head. I can literally see everything you do. Let's just hope your stumblings won't be as bad as R-12's.",
     };
 
-
     void Start()
     {
         sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        if ((PlayerPrefs.GetInt("Tutorial Save 0") == 0 || !PlayerPrefs.HasKey("Tutorial Save 0")) && GameVersion.isVR != "true")
+        if (ShouldDoTutorial())
         {
             player = GameObject.Find("Player");
             fakeFnaF2.SetActive(false);
@@ -113,8 +112,10 @@ public class TutorialStart : MonoBehaviour
         }
         else
         {
+            if (Application.isEditor)
+                Debug.Log("Skipped the tutorial for convenience, as we're in the editor!");
             finalBot.SetActive(true);
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -509,7 +510,7 @@ public class TutorialStart : MonoBehaviour
         if (time > 13 && state == 76)
         {
             state++;
-            unlock = true;
+            unlockShowControls = true;
             fakeFnaF2.SetActive(true);
             fakeMangle.SetActive(true);
             textToSpeechRobot.inputText = lines[49];
@@ -651,7 +652,7 @@ public class TutorialStart : MonoBehaviour
             textToSpeechRobot.inputText = "";
             return true;
         }
-        if (!unlock)
+        if (!unlockShowControls)
         {
             Debug.Log("Attempt: " + attempt);
             if (state == 29 && attempt == "Reach Showroom")
@@ -784,5 +785,11 @@ public class TutorialStart : MonoBehaviour
         {
             return true;
         }    
+    }
+
+    /** True if the tutorial has already been done */
+    public static bool ShouldDoTutorial() {
+        return !Application.isEditor && !skippedTutorial && (PlayerPrefs.GetInt("Tutorial Save 0") == 0 ||
+               !PlayerPrefs.HasKey("Tutorial Save 0") && InternalGameVersion.isVR != "true");
     }
 }

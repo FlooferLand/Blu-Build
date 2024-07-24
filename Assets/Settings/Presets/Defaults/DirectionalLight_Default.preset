@@ -42,7 +42,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_Intensity
-    value: 3.1415927
+    value: 100000
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_Range
@@ -206,7 +206,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_UseColorTemperature
-    value: 0
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_BoundingSphereOverride.x

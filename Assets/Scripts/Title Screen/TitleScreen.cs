@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class TitleScreen : MonoBehaviour
-{
+public class TitleScreen : MonoBehaviour {
+    public AudioSource globalAudio;
+    
     public GameObject starlow;
     public GameObject starmed;
     public GameObject starhigh;
@@ -30,6 +32,8 @@ public class TitleScreen : MonoBehaviour
     public GameObject characterW;
     public GameObject downButton;
 
+    public GameObject bottomBar;
+    public GameObject tutorialAskPopup;
     public GameObject showtimeButton;
     public GameObject logo;
     public GameObject logoTwo;
@@ -44,9 +48,11 @@ public class TitleScreen : MonoBehaviour
     CanvasGroup characterG;
 
     public RawImage fade;
+    public RawImage animatronicImg;
 
     bool barUp;
     public BarMove[] bars;
+    public Image barGrid;  // reminds me of a large bearded wizard - Floof
 
     public VolumeProfile regularVolume;
 
@@ -63,7 +69,7 @@ public class TitleScreen : MonoBehaviour
         TextureXR.maxViews = 2;
         if (!stopUpdate)
         {
-            if (PlayerPrefs.GetInt("Tutorial Save 0") != 0 || GameVersion.gameName != "Faz-Anim")
+            if (PlayerPrefs.GetInt("Tutorial Save 0") != 0 || InternalGameVersion.gameName != "Faz-Anim")
             {
                 charcustomBtn.interactable = true;
                 editorBtn.interactable = true;
@@ -73,7 +79,9 @@ public class TitleScreen : MonoBehaviour
             faqG = faqW.GetComponent<CanvasGroup>();
             creditsG = creditsW.GetComponent<CanvasGroup>();
             characterG = characterW.GetComponent<CanvasGroup>();
-            versionText.GetComponent<Text>().text = "Ver. " + GameVersion.gameVersion;
+            versionText.GetComponent<Text>().text = "Ver. " + InternalGameVersion.gameVersion;
+            
+            barGrid.color = barGrid.color.WithAlpha(0f);
         }
         if (disableRaytracing)
         {
@@ -88,7 +96,7 @@ public class TitleScreen : MonoBehaviour
         }
         QualitySave.FirstTimeSave();
         UpdateSettings();
-        if (GameVersion.isVR == "true")
+        if (InternalGameVersion.isVR == "true")
         {
             Debug.Log("IsVR is True.");
             StartShow(false);
@@ -111,6 +119,15 @@ public class TitleScreen : MonoBehaviour
         {
             fade.color = new Color(1, 1, 1, Mathf.Max(0,fade.color.a - (.4f * Time.deltaTime)));
         }
+
+        if (tutorialAskPopup && tutorialAskPopup.activeSelf) {
+            animatronicImg.color = Color.Lerp(animatronicImg.color, Color.clear, Time.deltaTime * 2.5f);
+            animatronicImg.uvRect = new Rect(
+                Mathf.InverseLerp(animatronicImg.uvRect.x, 1.1f, Time.deltaTime * 3f),
+                animatronicImg.uvRect.y,
+                1, 1
+            );
+        }
     }
 
     void FixedUpdate()
@@ -126,7 +143,7 @@ public class TitleScreen : MonoBehaviour
         }
         if (!stopUpdate)
         {
-            if (GameVersion.gameName == "Faz-Anim")
+            if (InternalGameVersion.gameName == "Faz-Anim")
             {
                 Destroy(logoTwo);
             }
@@ -140,6 +157,7 @@ public class TitleScreen : MonoBehaviour
                 faqG.alpha += .1f;
                 creditsG.alpha += .1f;
                 characterG.alpha += .1f;
+                barGrid.color = Color.Lerp(barGrid.color, barGrid.color.WithAlpha(1f), 0.08f);
             }
             else
             {
@@ -147,6 +165,7 @@ public class TitleScreen : MonoBehaviour
                 faqG.alpha -= .15f;
                 creditsG.alpha -= .15f;
                 characterG.alpha -= .15f;
+                barGrid.color = Color.Lerp(barGrid.color, barGrid.color.WithAlpha(0f), 0.08f);
             }
             if (settingG.alpha <= 0)
             {
@@ -171,35 +190,27 @@ public class TitleScreen : MonoBehaviour
     {
         if (sceneLoadCache == "")
         {
-            AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-            sc.clip = (AudioClip)Resources.Load("big tap");
-            sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-            sc.Play();
+            globalAudio.clip = (AudioClip)Resources.Load("big tap");
+            globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+            globalAudio.Play();
             sceneLoadCache = "Bit Crusher";
             fadeWhichWay = true;
         }
     }
-    public void StartShow(bool sandbox)
-    {
-        if (sceneLoadCache == "")
-        {
-            AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-            sc.clip = (AudioClip)Resources.Load("big tap");
-            sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-            sc.Play();
-            if (!sandbox)
-            {
-                if (GameVersion.gameName != "Faz-Anim")
+    public void StartShow(bool sandbox) {
+        if (sceneLoadCache == "") {
+            globalAudio.clip = (AudioClip)Resources.Load("big tap");
+            globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+            globalAudio.Play();
+            if (!sandbox) {
+                barUp = true;
+                bottomBar.SetActive(false);
+                for (int i = 0; i < bars.Length; i++)
                 {
-                    sceneLoadCache = "Rival Restaurant";
+                    bars[i].transition = true;
                 }
-                else
-                {
-                    sceneLoadCache = "Front Entrance";
-                }
-            }
-            else
-            {
+                tutorialAskPopup?.SetActive(true);
+            } else {
                 sceneLoadCache = "Sandbox";
             }
             fadeWhichWay = true;
@@ -253,10 +264,9 @@ public class TitleScreen : MonoBehaviour
 
     public void MenuFunc()
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("big tap");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("big tap");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         barUp = true;
         downButton.SetActive(true);
         for (int i = 0; i < bars.Length; i++)
@@ -267,10 +277,9 @@ public class TitleScreen : MonoBehaviour
 
     public void Down()
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("tap");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("tap");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         downButton.SetActive(false);
         barUp = false;
         for (int i = 0; i < bars.Length; i++)
@@ -284,10 +293,9 @@ public class TitleScreen : MonoBehaviour
     {
         if (sceneLoadCache == "")
         {
-            AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-            sc.clip = (AudioClip)Resources.Load("tap");
-            sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-            sc.Play();
+            globalAudio.clip = (AudioClip)Resources.Load("tap");
+            globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+            globalAudio.Play();
             if (PlayerPrefs.GetInt("Intro: TutorialA") == 0)
             {
                 ////////////////////////////////////////////////SceneManager.LoadScene("Tutorial", LoadSceneMode.Single);
@@ -304,28 +312,25 @@ public class TitleScreen : MonoBehaviour
 
     public void Exit()
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("big tap");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("big tap");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         Application.Quit();
     }
 
     public void SetQuality(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         PlayerPrefs.SetInt("Settings: Quality", quality);
         UpdateSettings();
     }
     public void SetSSR(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: SSR") + quality;
         if (check < 0)
         {
@@ -344,10 +349,9 @@ public class TitleScreen : MonoBehaviour
     }
     public void SetSSAO(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: SSAO") + quality;
         if (check < 0)
         {
@@ -368,10 +372,9 @@ public class TitleScreen : MonoBehaviour
     
     public void SetTextureQ(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: Texture") + quality;
         if (check < 0)
         {
@@ -387,40 +390,36 @@ public class TitleScreen : MonoBehaviour
 
     public void SetWindowed(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         PlayerPrefs.SetInt("Settings: Windowed", quality);
         UpdateSettings();
     }
 
     public void SetMotionBlur(int onoff)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         PlayerPrefs.SetInt("Settings: Motion Blur", onoff);
         UpdateSettings();
     }
 
     public void SetAutoExposure(int onoff)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         PlayerPrefs.SetInt("Settings: Auto Exposure", onoff);
         UpdateSettings();
     }
 
     public void SetPlaybackRate(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: Playback") + quality;
         if (check < 0)
         {
@@ -435,10 +434,9 @@ public class TitleScreen : MonoBehaviour
     }
     public void SetTimeOfDay(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: Time of Day") + quality;
         if (check < 0)
         {
@@ -454,19 +452,17 @@ public class TitleScreen : MonoBehaviour
     public void SetVsync(int onOff)
     {
 
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         PlayerPrefs.SetInt("Settings: VSync", onOff);
         UpdateSettings();
     }
     public void SetResPercent(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: Res Percent") + quality;
         if (check < 0)
         {
@@ -481,10 +477,9 @@ public class TitleScreen : MonoBehaviour
     }
     public void SetDLSS(int quality)
     {
-        AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        sc.clip = (AudioClip)Resources.Load("ting");
-        sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        sc.Play();
+        globalAudio.clip = (AudioClip)Resources.Load("ting");
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: DLSS") + quality;
         if (check < 0)
         {

@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -25,19 +28,20 @@ public class TimelineEditor : MonoBehaviour
 
     public RawImage[] views;
 
-    public GameObject playbackMarker;
+    public UI_PlaybackMarker playbackMarker;
 
     public TLRecordGroup[] tlRecordGroup = new TLRecordGroup[300];
 
-    public Text viewMinText;
-    public Text viewMaxText;
-    public Text currentTimeText;
-    public Text timeScaleText;
-    public Text fileName;
+    public TextMeshProUGUI viewMinText;
+    public TextMeshProUGUI viewMaxText;
+    public TextMeshProUGUI currentTimeText;
+    public TextMeshProUGUI timeScaleText;
+    public TextMeshProUGUI fileName;
     public Text extraInfoText;
 
     public UI_WindowMaker windowMaker;
     public UI_PlayRecord playRecord;
+    public UI_PlaybackButton playbackButton;
 
     //Timeline Zoom View
     public float viewZoomMin = 0;
@@ -56,7 +60,7 @@ public class TimelineEditor : MonoBehaviour
 
     //Camera Feeds
     GameObject cameraFeeds;
-    public GameObject camFeedTemplate;
+    public UI_CamFeedButton camFeedButtonTemplate;
     public GameObject camFeedHolder;
     public GameObject editLineBox;
     public int currentCamFeed;
@@ -70,6 +74,10 @@ public class TimelineEditor : MonoBehaviour
         {
             tlRecordGroup[i].bit = i + 1;
         }
+    }
+
+    private void Start() {
+        // timelineBitVis.RepaintTimeline(viewZoomMin, viewZoomMax, audioLengthMax);
     }
 
     public void Update()
@@ -118,10 +126,13 @@ public class TimelineEditor : MonoBehaviour
                     viewZoomMax = dragPos + length;
                 }
             }
+            
             currentTimeText.text = System.TimeSpan.FromSeconds(speaker.time).ToString().TrimEnd(new Char[] { '0' }); ;
+            
+            // Sets the playback marker to its correct position
             viewZoomMax = Mathf.Clamp(viewZoomMax, viewZoomMin + 0.1f, audioLengthMax);
             viewZoomMin = Mathf.Clamp(viewZoomMin, 0, viewZoomMax - 0.1f);
-            playbackMarker.transform.position = new Vector3((remap(speaker.time, viewZoomMin, viewZoomMax, 0, 1) * Screen.width), playbackMarker.transform.position.y, 0);
+            playbackMarker.gameObject.transform.position = new Vector3((remap(speaker.time, viewZoomMin, viewZoomMax, 0, 1) * Screen.width), playbackMarker.gameObject.transform.position.y, 0);
             if (uiShowtapeManager.playMovements && speaker.time >= (viewZoomMax + viewZoomMin) / 2.0f)
             {
                 float length = (viewZoomMax - viewZoomMin) / 2.0f;
@@ -161,9 +172,9 @@ public class TimelineEditor : MonoBehaviour
     public void RepaintTimeline()
     {
         waveformVisualizer.PaintWaveformSpectrum(viewZoomMin, viewZoomMax, audioLengthMax);
-        viewMinText.text = System.TimeSpan.FromSeconds(viewZoomMin).ToString().TrimEnd(new Char[] { '0' }); ;
-        viewMaxText.text = System.TimeSpan.FromSeconds(viewZoomMax).ToString().TrimEnd(new Char[] { '0' }); ;
-        timeScaleText.text = "[ " + (viewZoomMax - viewZoomMin).ToString() + "s ]";
+        viewMinText.text = "| " + TimeSpan.FromSeconds(viewZoomMin).ToString().TrimEnd('0');
+        viewMaxText.text = TimeSpan.FromSeconds(viewZoomMax).ToString().TrimEnd('0') + " |";
+        timeScaleText.text = "[ " + TimeSpan.FromSeconds(viewZoomMax - viewZoomMin) + "s ]";
         timelineBitVis.RepaintTimeline(viewZoomMin, viewZoomMax, audioLengthMax);
     }
     public void FileValueChanged()
@@ -335,6 +346,7 @@ public class TimelineEditor : MonoBehaviour
         DoubleCheckViewBounds();
     }
 
+    /** Checks the view zoom min/max to see if they're out of bounds and fixes it */
     void DoubleCheckViewBounds()
     {
         if(viewZoomMin < 0)
@@ -491,12 +503,12 @@ public class TimelineEditor : MonoBehaviour
 
     public void setCurtains()
     {
-        sidePanel.AutoCurtains(0);
+        if (sidePanel) sidePanel.AutoCurtains(0);
     }
 
     public void setTechLights()
     {
-        sidePanel.Upperlights(0);
+        if (sidePanel) sidePanel.Upperlights(0);
     }
 
     IEnumerator CreateAndLinkScene(string url)
@@ -535,7 +547,7 @@ public class TimelineEditor : MonoBehaviour
 
         currentCamFeed = 0;
 
-        if (GameVersion.gameName == "Faz-Anim")
+        if (InternalGameVersion.gameName == "Faz-Anim")
         {
             switch (url)
             {
@@ -740,10 +752,11 @@ public class TimelineEditor : MonoBehaviour
         }
         for (int i = 0; i < cameraFeeds.transform.childCount; i++)
         {
-            GameObject temp = GameObject.Instantiate(camFeedTemplate,camFeedHolder.transform,true);
+            GameObject temp = GameObject.Instantiate(camFeedButtonTemplate.gameObject, camFeedHolder.gameObject.transform,true);
             RectTransform rect = temp.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(rect.anchoredPosition.x + ((i % 2) * 50), rect.anchoredPosition.y - (40 * Mathf.FloorToInt(i/2.0f)));
             temp.name = i.ToString();
+            temp.GetComponent<UI_CamFeedButton>().text.text = $"CAM {i}";
             temp.SetActive(true);
         }
     }
@@ -751,6 +764,7 @@ public class TimelineEditor : MonoBehaviour
     {
         Debug.Log("Audio Video Play");
         speaker.Play();
+        playbackButton.setPlaying(true);
         if (uiShowtapeManager.videoPath != "")
         {
             video.Play();
@@ -761,6 +775,7 @@ public class TimelineEditor : MonoBehaviour
     {
         Debug.Log("Audio Video Pause");
         speaker.Pause();
+        playbackButton.setPlaying(false);
         if (uiShowtapeManager.videoPath != "")
         {
             video.Pause();
@@ -776,38 +791,29 @@ public class TimelineEditor : MonoBehaviour
         }
     }
 
-    public void SwapViews(int view)
-    {
-        for (int i = 0; i < views.Length; i++)
-        {
-            views[i].enabled = false;
+    public void SwapViews(int view) {
+        if (view >= views.Length) {
+            Debug.LogError($"View '{view}' is out of bounds. There are only '{views.Length}' views present.");
+            return;
+        }
+        
+        foreach (var t in views) {
+            t.enabled = false;
         }
         views[view].enabled = true;
-        if(view != 2 && cameraFeeds != null)
-        {
-            for (int i = 0; i < cameraFeeds.transform.childCount; i++)
-            {
+        if(view != 2 && cameraFeeds) {
+            for (int i = 0; i < cameraFeeds.transform.childCount; i++) {
                 cameraFeeds.transform.GetChild(i).gameObject.SetActive(false);
             }
         }    
     }
 
-    public void ChangeCameraFeed(GameObject feedObj)
-    {
+    public void ChangeCameraFeed(GameObject feedObj) {
         int feed = Int32.Parse(feedObj.name);
-        if(cameraFeeds != null)
-        {
+        if(cameraFeeds) {
             feed = Mathf.Min(feed, cameraFeeds.transform.childCount-1);
-            for (int i = 0; i < cameraFeeds.transform.childCount; i++)
-            {
-                if(i == feed)
-                {
-                    cameraFeeds.transform.GetChild(i).gameObject.SetActive(true);
-                }
-                else
-                {
-                    cameraFeeds.transform.GetChild(i).gameObject.SetActive(false);
-                }
+            for (int i = 0; i < cameraFeeds.transform.childCount; i++) {
+                cameraFeeds.transform.GetChild(i).gameObject.SetActive(i == feed);
             }
         }
     }

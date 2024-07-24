@@ -77,7 +77,7 @@ public class UI_SidePanel : MonoBehaviour
         FlowUpdate();
         yield return new WaitForSeconds(.2f);
         showPanelUI.thePlayer = GameObject.Find("Player");
-        if (GameVersion.isVR != "true")
+        if (InternalGameVersion.isVR != "true")
         {
             if (showPanelUI.thePlayer != null)
             {

@@ -46,15 +46,39 @@ MonoBehaviour:
   accumulationFactor:
     m_OverrideState: 0
     m_Value: 0.75
+  biasFactor:
+    m_OverrideState: 0
+    m_Value: 0.5
+  speedRejectionParam:
+    m_OverrideState: 0
+    m_Value: 0.5
+  speedRejectionScalerFactor:
+    m_OverrideState: 0
+    m_Value: 0.2
+  speedSmoothReject:
+    m_OverrideState: 0
+    m_Value: 0
+  speedSurfaceOnly:
+    m_OverrideState: 0
+    m_Value: 1
+  speedTargetOnly:
+    m_OverrideState: 0
+    m_Value: 1
+  enableWorldSpeedRejection:
+    m_OverrideState: 0
+    m_Value: 0
   m_RayMaxIterations:
     m_OverrideState: 1
-    m_Value: 140
+    m_Value: 64
   rayMiss:
     m_OverrideState: 0
     m_Value: 3
   lastBounceFallbackHierarchy:
     m_OverrideState: 0
     m_Value: 3
+  ambientProbeDimmer:
+    m_OverrideState: 0
+    m_Value: 1
   layerMask:
     m_OverrideState: 1
     m_Value:
@@ -111,7 +135,7 @@ MonoBehaviour:
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0
   maximumVelocity:
     m_OverrideState: 0
     m_Value: 200
@@ -208,6 +232,9 @@ MonoBehaviour:
   lastBounceFallbackHierarchy:
     m_OverrideState: 0
     m_Value: 3
+  ambientProbeDimmer:
+    m_OverrideState: 0
+    m_Value: 0
   layerMask:
     m_OverrideState: 1
     m_Value:
@@ -273,10 +300,10 @@ MonoBehaviour:
     m_Value: 7
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.45
   scatter:
     m_OverrideState: 1
-    m_Value: 0.811
+    m_Value: 0.846
   tint:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -528,6 +555,9 @@ MonoBehaviour:
     m_Value:
       serializedVersion: 2
       m_Bits: 4294967295
+  specularOcclusion:
+    m_OverrideState: 0
+    m_Value: 0.5
   occluderMotionRejection:
     m_OverrideState: 0
     m_Value: 1

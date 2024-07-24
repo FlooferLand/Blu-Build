@@ -1,15 +1,19 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TimelineScreen : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public TimelineEditor tle;
+    public GameObject holder;
+    public TextMeshProUGUI bitHeaderName;
+    
     private bool mouse_over = false;
     public bool otherScroll;
     public bool rightClickBitBar;
     public bool deleteClickBar;
     public int rCBitBarNumber;
-
+    
     void Update()
     {
         if (mouse_over)

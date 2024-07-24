@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class VersionWriter : IPreprocessBuildWithReport
 {
-    private const string targetFile = "GameVersion.cs";
+    private const string targetFile = "InternalGameVersion.gen.cs";
 
     public int callbackOrder => 0;
 
@@ -21,7 +21,7 @@ public class VersionWriter : IPreprocessBuildWithReport
     {
         string finalPath = Path.Combine(Application.dataPath + "/Scripts/VR/", targetFile);
 
-        string newText = $"public static class GameVersion\r\n" +
+        string newText = $"public static class InternalGameVersion\r\n" +
             "{\r\n" +
             FormatVar("gameName", PlayerSettings.productName);
         if (PlayerSettings.bundleVersion.Length == 7)
@@ -40,7 +40,7 @@ public class VersionWriter : IPreprocessBuildWithReport
 
         if (currentText != newText)
         {
-            Debug.Log("Updated GameVersion.cs");
+            Debug.Log("Updated Internal Game Version (generated)");
 
             File.WriteAllText(finalPath, newText);
             AssetDatabase.Refresh();

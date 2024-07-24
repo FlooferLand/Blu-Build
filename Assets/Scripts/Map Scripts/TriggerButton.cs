@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class TriggerButton : MonoBehaviour
 {
-    TutorialStart gc;
+    TutorialManager gc;
     public LayerMask hitMask;
     public string attemptString;
     bool waitwaitwait;
 
     void Awake()
     {
-        gc = GameObject.Find("Tutorial").GetComponent<TutorialStart>();
+        gc = GameObject.Find("Tutorial").GetComponent<TutorialManager>();
     }
 
     private void FixedUpdate()

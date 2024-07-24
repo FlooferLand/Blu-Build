@@ -47,10 +47,8 @@ public class PortalDoor : MonoBehaviour
                     //Debug.Log(loadedScenes[i].name + " was already there");
                     break;
                 }
-                else
-                {
-                    e++;
-                }
+
+                e++;
             }
         }
         //Unload Assets
@@ -64,26 +62,23 @@ public class PortalDoor : MonoBehaviour
             loadedScenes[i] = SceneManager.GetSceneAt(i);
         }
         e = 0;
-        for (int i = 0; i < scenes.Length; i++)
-        {
+        foreach (string s in scenes) {
             e = 0;
             while (true)
             {
                 if (e >= loadedScenes.Length)
                 {
-                    this.StartCoroutine(this.LoadLevelAsync(scenes[i]));
+                    this.StartCoroutine(this.LoadLevelAsync(s));
                     //Debug.Log("Loaded " + scenes[i]);
                     break;
                 }
-                if (scenes[i] == loadedScenes[e].name)
+                if (s == loadedScenes[e].name)
                 {
                     //Debug.Log(scenes[i] + " was already there");
                     break;
                 }
-                else
-                {
-                    e++;
-                }
+
+                e++;
             }
         }
     }

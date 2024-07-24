@@ -92,7 +92,7 @@ public class UI_PlayRecord : MonoBehaviour
                 GameObject tt = GameObject.Find("Tutorial");
                 if (tt != null)
                 {
-                    TutorialStart tut = tt.GetComponent<TutorialStart>();
+                    TutorialManager tut = tt.GetComponent<TutorialManager>();
                     tut.AttemptAdvanceTutorial("FinishShowtape");
                 }
 
@@ -731,7 +731,7 @@ public class UI_PlayRecord : MonoBehaviour
         if (manager.SaveRecordingAs())
         {
             SwitchWindow(input);
-            TutorialStart tut = UnityEngine.Object.FindObjectOfType<TutorialStart>();
+            TutorialManager tut = UnityEngine.Object.FindObjectOfType<TutorialManager>();
             if (tut != null)
             {
                 Debug.Log("tut advance");

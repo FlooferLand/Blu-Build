@@ -20,7 +20,7 @@ public class Button3D : MonoBehaviour
 
     public bool sendToTutorial;
     public string tutorialSend;
-    TutorialStart tut;
+    TutorialManager tut;
 
     public enum uisound
     {
@@ -47,7 +47,7 @@ public class Button3D : MonoBehaviour
             GameObject tt = GameObject.Find("Tutorial");
             if(tt != null)
             {
-                tut = tt.GetComponent<TutorialStart>();
+                tut = tt.GetComponent<TutorialManager>();
             }  
         }
         if (!ignoreCollider)

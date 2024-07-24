@@ -302,7 +302,7 @@ public class UI_ShowtapeManager : MonoBehaviour
         if (fileExtention == "")
         {
             ExtensionFilter[] extensions;
-            if (GameVersion.gameName == "Faz-Anim")
+            if (InternalGameVersion.gameName == "Faz-Anim")
             {
                 extensions = new ExtensionFilter[] { new ExtensionFilter("Show Files", "fshw", "tshw", "mshw") };
             }
@@ -838,7 +838,7 @@ public class UI_ShowtapeManager : MonoBehaviour
         if (fileExtention == "")
         {
             string[] exts = new string[] { };
-            if (GameVersion.gameName == "Faz-Anim")
+            if (InternalGameVersion.gameName == "Faz-Anim")
             {
                 exts = new string[] { "*.fshw", "*.tshw" , "*.mshw"};
             }

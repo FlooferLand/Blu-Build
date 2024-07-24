@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class TimelineBitVis : MonoBehaviour
@@ -8,22 +10,29 @@ public class TimelineBitVis : MonoBehaviour
     public UI_ShowtapeManager uiShowtapeManager;
     public TimelineEditor timelineEditor;
     public GameObject bitPrefab;
-    public GameObject holderPrefab;
-    public GameObject[] holder;
-    int maximumHolders = 10;
+    public GameObject holderTemplate;
+    [FormerlySerializedAs("holders")] [FormerlySerializedAs("holder")] public GameObject[] bitBoxes;
+    int maximumHolders = 15;
 
+    private void Awake() {
+        holderTemplate.SetActive(false);
+    }
+
+    /** Deletes previous tracks and then creates the tracks for the timeline */
     public void RepaintBitGroups()
     {
-        uiShowtapeManager.inputHandler.editorKeys = new UI_WindowMaker.MovementRecordings();
-        for (int i = 0; i < this.transform.childCount; i++)
+        if (uiShowtapeManager?.inputHandler?.editorKeys != null)
+            uiShowtapeManager.inputHandler.editorKeys = new UI_WindowMaker.MovementRecordings();
+        for (int i = 0; i < transform.childCount; i++)
         {
-            if (this.transform.GetChild(i).gameObject.activeSelf)
+            if (transform.GetChild(i).gameObject.activeSelf)
             {
-                Destroy(this.transform.GetChild(i).gameObject);
+                Destroy(transform.GetChild(i).gameObject);
             }
         }
-        holder = new GameObject[Mathf.Min(timelineEditor.tlRecordGroup.Length, maximumHolders)];
-        List<UI_WindowMaker.inputNames> temp = new List<UI_WindowMaker.inputNames>();
+        
+        bitBoxes = new GameObject[Mathf.Min(timelineEditor.tlRecordGroup.Length, maximumHolders)];
+        var temp = new List<UI_WindowMaker.inputNames>();
         for (int i = 0; i < Mathf.Min(timelineEditor.tlRecordGroup.Length, maximumHolders); i++)
         {
             if(timelineEditor.holderOffset + i < timelineEditor.tlRecordGroup.Length)
@@ -40,18 +49,23 @@ public class TimelineBitVis : MonoBehaviour
                     temp[temp.Count - 1].index[0] = i + timelineEditor.holderOffset + 1;
                 }
 
-                holder[i] = GameObject.Instantiate(holderPrefab, this.transform);
-                holder[i].SetActive(true);
-                RectTransform rect = holder[i].transform as RectTransform;
-                rect.anchoredPosition = new Vector3(rect.anchoredPosition.x, rect.anchoredPosition.y - (i * 40));
+                var bitBox = Instantiate(holderTemplate, transform);
+                var bitBoxDimensions = holderTemplate.GetComponent<RectTransform>().sizeDelta;
+                bitBox.SetActive(true);
+                if (bitBox.transform is RectTransform rect)
+                    rect.anchoredPosition = new Vector3(rect.anchoredPosition.x, rect.anchoredPosition.y - (i * (bitBoxDimensions.y + 2)));
                 int temper = i + 1;
-                if(temper == 10)
-                {
-                    temper = 0;
+                if(temper == 10) temper = 0;
+
+                var screen = bitBox.GetComponent<TimelineScreen>();
+                if (screen) {
+                    screen.bitHeaderName.text = "(" + temper + ") " +
+                                    timelineEditor.windowMaker.SearchBitChartName(timelineEditor
+                                        .tlRecordGroup[i + timelineEditor.holderOffset].bit);
+                    screen.rCBitBarNumber = i;
+                    bitBox = screen.holder ?? bitBox;
                 }
-                holder[i].transform.Find("Bit Header").Find("Name").GetComponent<Text>().text = "(" + temper + ") " + timelineEditor.windowMaker.SearchBitChartName(timelineEditor.tlRecordGroup[i + timelineEditor.holderOffset].bit);
-                holder[i].GetComponent<TimelineScreen>().rCBitBarNumber = i;
-                holder[i] = holder[i].transform.Find("Holder").gameObject;
+                bitBoxes[i] = bitBox;
             }
         }
         uiShowtapeManager.inputHandler.editorKeys.inputNames = temp.ToArray();
@@ -64,11 +78,11 @@ public class TimelineBitVis : MonoBehaviour
             timelineEditor.tlRecordGroup[i].checkedObject = false;
             timelineEditor.tlRecordGroup[i].currentBit = null;
         }
-        for (int i = 0; i < holder.Length; i++)
+        for (int i = 0; i < bitBoxes.Length; i++)
         {
-            if(holder[i] != null)
+            if(bitBoxes[i] != null)
             {
-                foreach (Transform child in holder[i].transform)
+                foreach (Transform child in bitBoxes[i].transform)
                 {
                     Destroy(child.gameObject);
                 }
@@ -86,14 +100,17 @@ public class TimelineBitVis : MonoBehaviour
             {
                 break;
             }
-            if (bitStart + secondIndex < uiShowtapeManager.rshwData.Length)
+
+            var data = uiShowtapeManager.rshwData ?? new BitArray[80];
+            if (bitStart + secondIndex < data.Length)
             {
-                for (int i = 0; i < holder.Length; i++)
+                for (int i = 0; i < bitBoxes.Length; i++)
                 {
-                    if (holder[i] != null && i + timelineEditor.holderOffset < timelineEditor.tlRecordGroup.Length)
+                    if (bitBoxes[i] && i + timelineEditor.holderOffset < timelineEditor.tlRecordGroup.Length)
                     {
                         //If bit is true on the current frame
-                        if (uiShowtapeManager.rshwData[bitStart + secondIndex].Get(timelineEditor.tlRecordGroup[i + timelineEditor.holderOffset].bit-1))
+                        if (timelineEditor.tlRecordGroup == null || data.Length < bitStart + secondIndex) continue;
+                        if (data[bitStart + secondIndex].Get(timelineEditor.tlRecordGroup[i + timelineEditor.holderOffset].bit-1))
                         {
                             if (timelineEditor.tlRecordGroup[i + timelineEditor.holderOffset].currentBit == null)
                             {
@@ -103,10 +120,17 @@ public class TimelineBitVis : MonoBehaviour
                             {
                                 UpdateButton(false, viewzoomMin, viewZoomMax, i);
                             }
+                            
+                            // Making the playback marker light up when it hits a note or a note is held
+                            // TODO: FIXME: Very unorganized. Should be moved to TimelineEditor.Update under the playbackMarker set position section
+                            timelineEditor.playbackMarker.triggerBitHit();
+                        }
+                        else {
+                            timelineEditor.playbackMarker.triggerBitReset();
                         }
                     }
                 }
-                for (int i = 0; i < holder.Length; i++)
+                for (int i = 0; i < bitBoxes.Length; i++)
                 {
                     UpdateButton(true, viewzoomMin, viewZoomMax, i);
                 }
@@ -117,9 +141,9 @@ public class TimelineBitVis : MonoBehaviour
 
     void CreateButton(float viewzoomMin, float viewZoomMax, float audioLengthMax, int secondIndex, int recGroupIndex)
     {
-        if(holder[recGroupIndex] != null)
+        if(bitBoxes[recGroupIndex] != null)
         {
-            timelineEditor.tlRecordGroup[recGroupIndex + timelineEditor.holderOffset].currentBit = GameObject.Instantiate(bitPrefab, holder[recGroupIndex].transform);
+            timelineEditor.tlRecordGroup[recGroupIndex + timelineEditor.holderOffset].currentBit = GameObject.Instantiate(bitPrefab, bitBoxes[recGroupIndex].transform);
             timelineEditor.tlRecordGroup[recGroupIndex + timelineEditor.holderOffset].currentBit.SetActive(true);
             RectTransform rect = timelineEditor.tlRecordGroup[recGroupIndex + timelineEditor.holderOffset].currentBit.transform as RectTransform;
             rect.position = new Vector3((remap(viewzoomMin + (secondIndex / 60.0f), viewzoomMin, viewZoomMax, 0, 1) * (Screen.width)), rect.position.y, 0);
@@ -134,7 +158,7 @@ public class TimelineBitVis : MonoBehaviour
 
     void UpdateButton(bool checkOnly, float viewzoomMin, float viewZoomMax, int recGroupIndex)
     {
-        if (holder[recGroupIndex] != null)
+        if (bitBoxes[recGroupIndex] != null)
         {
             if (checkOnly)
             {

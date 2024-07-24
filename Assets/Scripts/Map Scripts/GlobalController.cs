@@ -14,13 +14,16 @@ public class GlobalController : MonoBehaviour
     public GameObject player;
     public VolumeProfile regularVolume;
     public bool TwoJoined = false;
-    public bool debugJoinPlayerTwo;
+    public bool debugJoinPlayerTwo = false;
     public bool debugResetProgress;
     public ShowObject[] showSceneNames;
     public PrizeStringGroups[] prizeStrings;
     public BuildBlockMats[] buildMaterials;
     public bool unlockAllPrizes = false;
 
+    public Transform fazAnimSpawn;
+    public Transform fazAnimTutSpawn;
+    
     void OnEnable()
     {
         gamepad.Gamepad.Enable();
@@ -59,42 +62,36 @@ public class GlobalController : MonoBehaviour
         }
     }
 
-    void JoinPlayerOne()
-    {
-        if (GameObject.Find("Player") == null)
-        {
+    void JoinPlayerOne() {
+        if (GameObject.Find("Player") == null) {
             GameObject playernew = GameObject.Instantiate(player);
             playernew.name = "Player";
             DontDestroyOnLoad(playernew);
             Camera.main.GetComponent<Volume>().profile = regularVolume;
-            if (GameVersion.isVR == "true")
-            {
+            if (InternalGameVersion.isVR == "true") {
                 QualitySettings.vSyncCount = 0;
                 Screen.fullScreenMode = FullScreenMode.Windowed;
                 playernew.GetComponent<Player>().isVR = true;
                 Destroy(playernew.transform.Find("Main Camera").gameObject);
                 playernew.transform.Find("VR").gameObject.SetActive(true);
                 playernew.transform.Find("PlayerModel").gameObject.SetActive(false);
-            }
-            else
-            {
+            } else {
                 Destroy(playernew.transform.Find("VR").gameObject);
             }
-            if (GameVersion.gameName == "Faz-Anim")
-            {
+            
+            // Setting the position
+            if (InternalGameVersion.gameName == "Faz-Anim") {
                 //Faz-Anim
-                if (PlayerPrefs.GetInt("Tutorial Save 0") == 0 || !PlayerPrefs.HasKey("Tutorial Save 0"))
-                {
-                    playernew.transform.position = new Vector3(-14.11837f, -7.837707f, -15.63654f);
-                    playernew.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 176.625f, 0.0f));
+                if (TutorialManager.ShouldDoTutorial()) {
+                    // Crate
+                    playernew.transform.position = fazAnimTutSpawn.position;
+                    playernew.transform.rotation = fazAnimTutSpawn.rotation;
+                } else {
+                    // Normal
+                    playernew.transform.position = fazAnimSpawn.position;
+                    playernew.transform.rotation = fazAnimSpawn.rotation;
                 }
-                else
-                {
-                    playernew.transform.position = new Vector3(-0.7653216f, -0.7132773f, -1.245667f);
-                }
-            }
-            else
-            {
+            } else {
                 //PTP
                 playernew.transform.position = new Vector3(44.86588f, -1.078f, -4.248048f);
                 playernew.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 283.725f, 0.0f));
@@ -118,7 +115,7 @@ public class GlobalController : MonoBehaviour
             playernew.name = "Player 2";
             playernew.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>().playerNum = 2;
             playernew.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>().LoadCharacterData();
-            if (GameVersion.gameName == "Faz-Anim")
+            if (InternalGameVersion.gameName == "Faz-Anim")
             {
                 playernew.transform.position = new Vector3(0f, -0.7132773f, 0f);
             }
