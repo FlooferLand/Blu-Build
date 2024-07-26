@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,11 +10,14 @@ using UnityEngine.UI;
 
 public class TitleScreen : MonoBehaviour {
     public AudioSource globalAudio;
+    public AudioSource music;
     
     public GameObject starlow;
     public GameObject starmed;
     public GameObject starhigh;
+    public GameObject starultra;
 
+    // Settings text
     public GameObject vsyncText;
     public GameObject textureText;
     public GameObject resText;
@@ -26,6 +30,7 @@ public class TitleScreen : MonoBehaviour {
     public GameObject resPercentText;
     public GameObject dlssText;
 
+    // Settings widgets
     public GameObject settingW;
     public GameObject faqW;
     public GameObject creditsW;
@@ -35,6 +40,7 @@ public class TitleScreen : MonoBehaviour {
     public GameObject bottomBar;
     public GameObject tutorialAskPopup;
     public GameObject showtimeButton;
+    public GameObject cog;
     public GameObject logo;
     public GameObject logoTwo;
 
@@ -50,7 +56,7 @@ public class TitleScreen : MonoBehaviour {
     public RawImage fade;
     public RawImage animatronicImg;
 
-    bool barUp;
+    private bool barUp;
     public BarMove[] bars;
     public Image barGrid;  // reminds me of a large bearded wizard - Floof
 
@@ -63,6 +69,8 @@ public class TitleScreen : MonoBehaviour {
     public bool disableRaytracing;
     public bool fadeWhichWay = false;
     public string sceneLoadCache;
+
+    private bool isHalloween;
 
     private void Start()
     {
@@ -107,20 +115,28 @@ public class TitleScreen : MonoBehaviour {
             fadeWhichWay = false;
         }
         //SceneManager.LoadScene("Arcade Mr Hugs", LoadSceneMode.Single);
+        
+        // Halloween check
+        var date = DateTime.Now;
+        var targetDate = new DateTime(date.Year, 10, 31, 12, 0, 0);
+        isHalloween = Math.Abs((targetDate - date).TotalDays) <= 3.0d;
+        
+        // Playing the cog animation and the music in sync
+        // + Spoopy easter-egg where the cog stops spinning during Halloween
+        if (!isHalloween) {
+            cog.GetComponent<Animator>().Play("Cog animation");
+            music.Play();
+        }
     }
 
     private void Update()
     {
         if (fadeWhichWay)
-        {
             fade.color = new Color(1, 1, 1, Mathf.Min(1,fade.color.a + (2 * Time.deltaTime)));
-        }
         else
-        {
             fade.color = new Color(1, 1, 1, Mathf.Max(0,fade.color.a - (.4f * Time.deltaTime)));
-        }
 
-        if (tutorialAskPopup && tutorialAskPopup.activeSelf) {
+        if (tutorialAskPopup && tutorialAskPopup.activeSelf && animatronicImg) {
             animatronicImg.color = Color.Lerp(animatronicImg.color, Color.clear, Time.deltaTime * 2.5f);
             animatronicImg.uvRect = new Rect(
                 Mathf.InverseLerp(animatronicImg.uvRect.x, 1.1f, Time.deltaTime * 3f),
@@ -143,14 +159,7 @@ public class TitleScreen : MonoBehaviour {
         }
         if (!stopUpdate)
         {
-            if (InternalGameVersion.gameName == "Faz-Anim")
-            {
-                Destroy(logoTwo);
-            }
-            else
-            {
-                Destroy(logo);
-            }
+            Destroy(InternalGameVersion.gameName == "Faz-Anim" ? logoTwo : logo);
             if (barUp)
             {
                 settingG.alpha += .1f;
@@ -203,13 +212,16 @@ public class TitleScreen : MonoBehaviour {
             globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
             globalAudio.Play();
             if (!sandbox) {
-                barUp = true;
-                bottomBar.SetActive(false);
-                for (int i = 0; i < bars.Length; i++)
-                {
-                    bars[i].transition = true;
+                if (tutorialAskPopup) {
+                    barUp = true;
+                    bottomBar.SetActive(false);
+                    foreach (BarMove t in bars) {
+                        t.transition = true;
+                    }
+                    tutorialAskPopup.SetActive(true);
+                } else {
+                    Debug.LogError($"NO {nameof(tutorialAskPopup)} FOUND");
                 }
-                tutorialAskPopup?.SetActive(true);
             } else {
                 sceneLoadCache = "Sandbox";
             }
@@ -499,17 +511,11 @@ public class TitleScreen : MonoBehaviour {
         {
             if (vsyncText != null)
             {
-                if (QualitySettings.vSyncCount == 0)
-                {
-                    vsyncText.GetComponent<Text>().text = "Off";
-                }
-                else
-                {
-                    vsyncText.GetComponent<Text>().text = "On";
-                }
+                vsyncText.GetComponent<Text>().text = QualitySettings.vSyncCount == 0 ? "Off" : "On";
                 starlow.SetActive(false);
                 starmed.SetActive(false);
                 starhigh.SetActive(false);
+                starultra.SetActive(false);
                 switch (PlayerPrefs.GetInt("Settings: Quality"))
                 {
                     case 0:
@@ -520,6 +526,9 @@ public class TitleScreen : MonoBehaviour {
                         break;
                     case 2:
                         starhigh.SetActive(true);
+                        break;
+                    case 3:
+                        starultra.SetActive(true);
                         break;
                     default:
                         break;

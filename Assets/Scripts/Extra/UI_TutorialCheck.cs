@@ -6,23 +6,26 @@ public class UI_TutorialCheck : MonoBehaviour {
     public TextMeshProUGUI stateInfoText;
     
     private void LoadGameScene(bool skipTutorial) {
-        stateInfoText.enabled = false;
-        stateInfoText.text = "Loading..";
+        const string sceneName = InternalGameVersion.gameName != "Faz-Anim" ? "Rival Restaurant" : "Front Entrance";
+        
+        stateInfoText.enabled = true;
+        stateInfoText.text = $"Loading \"{sceneName}\"..";
         stateInfoText.ForceMeshUpdate(true, true);
         
         TutorialManager.skippedTutorial = skipTutorial;
-        if (InternalGameVersion.gameName != "Faz-Anim")
-            SceneManager.LoadScene("Rival Restaurant");
-        else
-            SceneManager.LoadScene("Front Entrance");
+        SceneManager.LoadScene(sceneName);
     }
     
     private void Awake() {
+        var canvas = GetComponent<Canvas>();
+        
         // Skipping if the player already did the tutorial (or if they previously skipped it)
-        if (!TutorialManager.ShouldDoTutorial())
+        if (!TutorialManager.ShouldDoTutorial()) {
+            canvas.enabled = false;
             LoadGameScene(true);
+        }
 
-        GetComponent<Canvas>().enabled = true;
+        canvas.enabled = true;
         stateInfoText.enabled = false;
     }
 
