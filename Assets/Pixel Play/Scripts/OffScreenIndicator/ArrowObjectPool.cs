@@ -1,31 +1,27 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-class ArrowObjectPool : MonoBehaviour
-{
+internal class ArrowObjectPool : MonoBehaviour {
     public static ArrowObjectPool current;
 
-    [Tooltip("Assign the arrow prefab.")]
-    public Indicator pooledObject;
-    [Tooltip("Initial pooled amount.")]
-    public int pooledAmount = 1;
+    [Tooltip("Assign the arrow prefab.")] public Indicator pooledObject;
+
+    [Tooltip("Initial pooled amount.")] public int pooledAmount = 1;
+
     [Tooltip("Should the pooled amount increase.")]
     public bool willGrow = true;
 
-    List<Indicator> pooledObjects;
+    private List<Indicator> pooledObjects;
 
-    void Awake()
-    {
+    private void Awake() {
         current = this;
     }
 
-    void Start()
-    {
+    private void Start() {
         pooledObjects = new List<Indicator>();
 
-        for (int i = 0; i < pooledAmount; i++)
-        {
-            Indicator arrow = Instantiate(pooledObject);
+        for (int i = 0; i < pooledAmount; i++) {
+            var arrow = Instantiate(pooledObject);
             arrow.transform.SetParent(transform, false);
             arrow.Activate(false);
             pooledObjects.Add(arrow);
@@ -33,37 +29,28 @@ class ArrowObjectPool : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets pooled objects from the pool.
+    ///     Gets pooled objects from the pool.
     /// </summary>
     /// <returns></returns>
-    public Indicator GetPooledObject()
-    {
+    public Indicator GetPooledObject() {
         for (int i = 0; i < pooledObjects.Count; i++)
-        {
             if (!pooledObjects[i].Active)
-            {
                 return pooledObjects[i];
-            }
-        }
-        if (willGrow)
-        {
-            Indicator arrow = Instantiate(pooledObject);
+        if (willGrow) {
+            var arrow = Instantiate(pooledObject);
             arrow.transform.SetParent(transform, false);
             arrow.Activate(false);
             pooledObjects.Add(arrow);
             return arrow;
         }
+
         return null;
     }
 
     /// <summary>
-    /// Deactive all the objects in the pool.
+    ///     Deactive all the objects in the pool.
     /// </summary>
-    public void DeactivateAllPooledObjects()
-    {
-        foreach (Indicator arrow in pooledObjects)
-        {
-            arrow.Activate(false);
-        }
+    public void DeactivateAllPooledObjects() {
+        foreach (var arrow in pooledObjects) arrow.Activate(false);
     }
 }

@@ -1,29 +1,28 @@
-using System.Globalization;
+using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-[System.Serializable]
-public class flowFormat
-{
-    
+[Serializable]
+public class flowFormat {
     public flowControls[] characters { get; set; }
 
-    public void Save(string filePath)
-    {
+    public void Save(string filePath) {
         var formatter = new BinaryFormatter();
-        using (var stream = File.Open(filePath, FileMode.Create))
+        using (var stream = File.Open(filePath, FileMode.Create)) {
             formatter.Serialize(stream, this);
+        }
     }
-    public static flowFormat ReadFromFile(string filepath)
-    {
+
+    public static flowFormat ReadFromFile(string filepath) {
         var formatter = new BinaryFormatter();
-        using (var stream = File.OpenRead(filepath))
+        using (var stream = File.OpenRead(filepath)) {
             return (flowFormat)formatter.Deserialize(stream);
+        }
     }
 }
-[System.Serializable]
-public class flowControls
-{
+
+[Serializable]
+public class flowControls {
     public string name;
     public int[] flowsIn { get; set; }
     public int[] flowsOut { get; set; }

@@ -1,89 +1,61 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-
-public class MicController : MonoBehaviour
-{
+public class MicController : MonoBehaviour {
     public bool IsWorking = true;
-    bool _lastValueOfIsWorking;
 
     public bool RaltimeOutput = true;
-    bool _lastValueOfRaltimeOutput;
 
-    AudioSource _audioSource;
-    float _lastVolume = 0;
+    private AudioSource _audioSource;
+    private bool _lastValueOfIsWorking;
+    private bool _lastValueOfRaltimeOutput;
+    private float _lastVolume = 0;
 
-    void Start()
-    {
+    private void Start() {
         _audioSource = GetComponent<AudioSource>();
-        if (IsWorking)
-        {
-            WorkStart();
-        }
+        if (IsWorking) WorkStart();
     }
 
-    void Update()
-    {
+    private void Update() {
         CheckIfIsWorkingChanged();
         CheckIfRealtimeOutputChanged();
     }
 
-    void CheckIfIsWorkingChanged()
-    {
-        if (_lastValueOfIsWorking != IsWorking)
-        {
+    private void CheckIfIsWorkingChanged() {
+        if (_lastValueOfIsWorking != IsWorking) {
             if (IsWorking)
-            {
                 WorkStart();
-            }
             else
-            {
                 WorkStop();
-            }
         }
 
         _lastValueOfIsWorking = IsWorking;
     }
 
-    void CheckIfRealtimeOutputChanged()
-    {
-        if (_lastValueOfRaltimeOutput != RaltimeOutput)
-        {
-            DisableSound(RaltimeOutput);
-        }
+    private void CheckIfRealtimeOutputChanged() {
+        if (_lastValueOfRaltimeOutput != RaltimeOutput) DisableSound(RaltimeOutput);
 
         _lastValueOfRaltimeOutput = RaltimeOutput;
     }
 
-    void DisableSound(bool SoundOn)
-    {
-        if (SoundOn)
-        {
+    private void DisableSound(bool SoundOn) {
+        if (SoundOn) {
             if (_lastVolume > 0)
-            {
                 _audioSource.volume = _lastVolume;
-            }
             else
-            {
                 _audioSource.volume = 1f;
-            }
         }
-        else
-        {
+        else {
             _lastVolume = _audioSource.volume;
             _audioSource.volume = 0f;
         }
     }
 
-    public void WorkStart()
-    {
+    public void WorkStart() {
 #if !UNITY_WEBGL
         IsWorking = true;
 
-        for(int d = 0; d < Microphone.devices.Length; d++)
-        {
-            print(Microphone.devices[d]);
-        }
+        for (int d = 0; d < Microphone.devices.Length; d++) print(Microphone.devices[d]);
         _audioSource.clip = Microphone.Start(null, true, 10, 22050);
         _audioSource.loop = true;
         //while (!(Microphone.GetPosition(null) > 0))
@@ -93,8 +65,7 @@ public class MicController : MonoBehaviour
 #endif
     }
 
-    public void WorkStop()
-    {
+    public void WorkStop() {
 #if !UNITY_WEBGL
         IsWorking = false;
         Microphone.End(null);

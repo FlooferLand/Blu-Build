@@ -1,14 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Rendering;
-using UnityEngine.XR.Management;
 
-public class HMDInfoManager : MonoBehaviour
-{/*
+public class HMDInfoManager : MonoBehaviour { /*
             //Break if data is at end of show
             if (currentTimePos >= playedshowdata.Length)
             {

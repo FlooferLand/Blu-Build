@@ -1,21 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Mack_Valves : MonoBehaviour
-{
+public class Mack_Valves : MonoBehaviour {
     public float PSI = 80f;
     public bool[] topDrawer = new bool[95];
     public bool[] bottomDrawer = new bool[97];
 
     /*Bit Charts:
-     * 
+     *
      * FNAF1
-     * 
+     *
      * TOP DRAWER
      *
      *1         Jaw                 Freddy
-     *2         Head Up             Freddy 
+     *2         Head Up             Freddy
      *3         Eyes Right          Freddy
      *4         Eyes Left           Freddy
      *5         Eyelids Right       Freddy
@@ -47,7 +44,7 @@ public class Mack_Valves : MonoBehaviour
      *31        Eyes Right          Chica
      *32        Eyes Left           Chica
      *33        Jaw                 Bonnie
-     *34        Head Up             Bonnie 
+     *34        Head Up             Bonnie
      *35        Eyes Right          Bonnie
      *36        Eyes Left           Bonnie
      *37        Eyelids Right       Bonnie
@@ -99,7 +96,7 @@ public class Mack_Valves : MonoBehaviour
      *83        Eyes R              Foxy
      *84        Eyes L              Foxy
      *85        Eyelid R            Foxy
-     *86        Eyepatch            Foxy    
+     *86        Eyepatch            Foxy
      *87        Jaw                 Foxy
      *88        Arm Twist L         Foxy
      *89        Main OPN            Curtains
@@ -140,8 +137,8 @@ public class Mack_Valves : MonoBehaviour
      *6         Lower 2             Stage Lights
      *7         Lower 3             Stage Lights
      *6         Lower 4             Stage Lights
-     *9         Lower 5             Stage Lights    
-     *10        Lower 6             Stage Lights    
+     *9         Lower 5             Stage Lights
+     *10        Lower 6             Stage Lights
      *11        Lower 7             Stage Lights
      *12        Bonnie              Spotlights
      *13        Chica               Spotlights
@@ -175,7 +172,7 @@ public class Mack_Valves : MonoBehaviour
      *41        Side Off            TVs
      *42        Freddy Movie        Spotlights
      *43        Freddy Movie Upper  Spotlights
-     *44        
+     *44
      *45        Snacks              Stage Lights
      *
      *
@@ -191,52 +188,48 @@ public class Mack_Valves : MonoBehaviour
      *
      *
      * * FNAF2
-     * 
+     *
      * TOP DRAWER
      *
      *1         Jaw                 Bonnie
-     *2         
+     *2
      *
      *BOTTOM DRAWER
      *
      *1         Bonnie              Spotlights
-     *2         
-     *3         
-     *4         
-     *5         
-     *6         
-     *7         
-     *6         
-     *9           
-     *10          
-     *11        
-     *12        
-     *13        
-     *14        
-     *15        
-     *16        
-     *17        
-     *18        
-     *19        
-     *20        
-     *21        
-     *22        
-     *23        
-     *24        
+     *2
+     *3
+     *4
+     *5
+     *6
+     *7
+     *6
+     *9
+     *10
+     *11
+     *12
+     *13
+     *14
+     *15
+     *16
+     *17
+     *18
+     *19
+     *20
+     *21
+     *22
+     *23
+     *24
      *25        Freddy              Dual Pressure
      *26        Bonnie              Dual Pressure
      *27        Chica               Dual Pressure
      *28        Foxy                Dual Pressure
      *29        Balloon Boy         Dual Pressure
-     *30        
-     *31        
-     *32        
-     *33        
-     *34        
-     *35        
-  */
-
-
-
-
+     *30
+     *31
+     *32
+     *33
+     *34
+     *35
+     */
 }

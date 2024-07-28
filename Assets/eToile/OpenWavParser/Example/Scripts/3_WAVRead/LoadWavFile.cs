@@ -1,78 +1,67 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System.IO;
 
 public class LoadWavFile : MonoBehaviour {
+    private InputField inputFile;
+    private Text loadDisplay;
 
-    AudioSource source;
-    Text loadDisplay;
-    InputField inputFile;
+    private AudioSource source;
 
     // Use this for initialization
-    void Start () {
+    private void Start() {
         source = gameObject.GetComponent<AudioSource>();
         loadDisplay = transform.Find("LoadDisplay").Find("Text").GetComponent<Text>();
         inputFile = transform.Find("InputField").GetComponent<InputField>();
     }
 
     // Update is called once per frame
-    void Update () {
-	
-	}
+    private void Update() { }
 
     // Player interfaces:
-    public void Play()
-    {
+    public void Play() {
         source.Play();
     }
-    public void Pause()
-    {
+
+    public void Pause() {
         source.Pause();
     }
-    public void Stop()
-    {
+
+    public void Stop() {
         source.Stop();
     }
 
     // File control:
-    public void DeleteClip()
-    {
+    public void DeleteClip() {
         source.clip = null;
         File.Delete(Path.Combine(Application.persistentDataPath, "MyFile.wav"));
     }
-    public void SaveClip()
-    {
+
+    public void SaveClip() {
         byte[] wavFile = OpenWavParser.AudioClipToByteArray(source.clip);
         File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "MyFile.wav"), wavFile);
     }
 
-    public void LoadDefaultFile()
-    {
+    public void LoadDefaultFile() {
         string filePath = Path.Combine(Application.persistentDataPath, "MyFile.wav");
-        if (File.Exists(filePath))
-        {
+        if (File.Exists(filePath)) {
             byte[] wavFile = File.ReadAllBytes(filePath);
             source.clip = OpenWavParser.ByteArrayToAudioClip(wavFile);
-            loadDisplay.text = "Samples: " + source.clip.samples.ToString();
+            loadDisplay.text = "Samples: " + source.clip.samples;
         }
-        else
-        {
+        else {
             loadDisplay.text = "File not found";
         }
     }
 
-    public void LoadCustomFile()
-    {
+    public void LoadCustomFile() {
         string filePath = Path.Combine(Application.persistentDataPath, inputFile.text);
-        if (File.Exists(filePath))
-        {
+        if (File.Exists(filePath)) {
             byte[] wavFile = File.ReadAllBytes(filePath);
             source.clip = OpenWavParser.ByteArrayToAudioClip(wavFile);
-            loadDisplay.text = "Samples: " + source.clip.samples.ToString();
+            loadDisplay.text = "Samples: " + source.clip.samples;
         }
-        else
-        {
+        else {
             loadDisplay.text = "File not found";
         }
     }

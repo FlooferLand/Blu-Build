@@ -12,7 +12,7 @@ namespace SFB {
     }
 
     public class StandaloneFileBrowser {
-        private static IStandaloneFileBrowser _platformWrapper = null;
+        private static readonly IStandaloneFileBrowser _platformWrapper = null;
 
         static StandaloneFileBrowser() {
 #if UNITY_STANDALONE_OSX
@@ -27,7 +27,7 @@ namespace SFB {
         }
 
         /// <summary>
-        /// Native open file dialog
+        ///     Native open file dialog
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
@@ -35,50 +35,53 @@ namespace SFB {
         /// <param name="multiselect">Allow multiple file selection</param>
         /// <returns>Returns array of chosen paths. Zero length array when cancelled</returns>
         public static string[] OpenFilePanel(string title, string directory, string extension, bool multiselect) {
-            var extensions = string.IsNullOrEmpty(extension) ? null : new [] { new ExtensionFilter("", extension) };
+            var extensions = string.IsNullOrEmpty(extension) ? null : new[] { new ExtensionFilter("", extension) };
             return OpenFilePanel(title, directory, extensions, multiselect);
         }
 
         /// <summary>
-        /// Native open file dialog
+        ///     Native open file dialog
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="extensions">List of extension filters. Filter Example: new ExtensionFilter("Image Files", "jpg", "png")</param>
         /// <param name="multiselect">Allow multiple file selection</param>
         /// <returns>Returns array of chosen paths. Zero length array when cancelled</returns>
-        public static string[] OpenFilePanel(string title, string directory, ExtensionFilter[] extensions, bool multiselect) {
+        public static string[] OpenFilePanel(string title, string directory, ExtensionFilter[] extensions,
+            bool multiselect) {
             return _platformWrapper.OpenFilePanel(title, directory, extensions, multiselect);
         }
 
         /// <summary>
-        /// Native open file dialog async
+        ///     Native open file dialog async
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="extension">Allowed extension</param>
         /// <param name="multiselect">Allow multiple file selection</param>
         /// <param name="cb">Callback")</param>
-        public static void OpenFilePanelAsync(string title, string directory, string extension, bool multiselect, Action<string[]> cb) {
-            var extensions = string.IsNullOrEmpty(extension) ? null : new [] { new ExtensionFilter("", extension) };
+        public static void OpenFilePanelAsync(string title, string directory, string extension, bool multiselect,
+            Action<string[]> cb) {
+            var extensions = string.IsNullOrEmpty(extension) ? null : new[] { new ExtensionFilter("", extension) };
             OpenFilePanelAsync(title, directory, extensions, multiselect, cb);
         }
 
         /// <summary>
-        /// Native open file dialog async
+        ///     Native open file dialog async
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="extensions">List of extension filters. Filter Example: new ExtensionFilter("Image Files", "jpg", "png")</param>
         /// <param name="multiselect">Allow multiple file selection</param>
         /// <param name="cb">Callback")</param>
-        public static void OpenFilePanelAsync(string title, string directory, ExtensionFilter[] extensions, bool multiselect, Action<string[]> cb) {
+        public static void OpenFilePanelAsync(string title, string directory, ExtensionFilter[] extensions,
+            bool multiselect, Action<string[]> cb) {
             _platformWrapper.OpenFilePanelAsync(title, directory, extensions, multiselect, cb);
         }
 
         /// <summary>
-        /// Native open folder dialog
-        /// NOTE: Multiple folder selection doesn't supported on Windows
+        ///     Native open folder dialog
+        ///     NOTE: Multiple folder selection doesn't supported on Windows
         /// </summary>
         /// <param name="title"></param>
         /// <param name="directory">Root directory</param>
@@ -89,8 +92,8 @@ namespace SFB {
         }
 
         /// <summary>
-        /// Native open folder dialog async
-        /// NOTE: Multiple folder selection doesn't supported on Windows
+        ///     Native open folder dialog async
+        ///     NOTE: Multiple folder selection doesn't supported on Windows
         /// </summary>
         /// <param name="title"></param>
         /// <param name="directory">Root directory</param>
@@ -101,52 +104,55 @@ namespace SFB {
         }
 
         /// <summary>
-        /// Native save file dialog
+        ///     Native save file dialog
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="defaultName">Default file name</param>
         /// <param name="extension">File extension</param>
         /// <returns>Returns chosen path. Empty string when cancelled</returns>
-        public static string SaveFilePanel(string title, string directory, string defaultName , string extension) {
-            var extensions = string.IsNullOrEmpty(extension) ? null : new [] { new ExtensionFilter("", extension) };
+        public static string SaveFilePanel(string title, string directory, string defaultName, string extension) {
+            var extensions = string.IsNullOrEmpty(extension) ? null : new[] { new ExtensionFilter("", extension) };
             return SaveFilePanel(title, directory, defaultName, extensions);
         }
 
         /// <summary>
-        /// Native save file dialog
+        ///     Native save file dialog
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="defaultName">Default file name</param>
         /// <param name="extensions">List of extension filters. Filter Example: new ExtensionFilter("Image Files", "jpg", "png")</param>
         /// <returns>Returns chosen path. Empty string when cancelled</returns>
-        public static string SaveFilePanel(string title, string directory, string defaultName, ExtensionFilter[] extensions) {
+        public static string SaveFilePanel(string title, string directory, string defaultName,
+            ExtensionFilter[] extensions) {
             return _platformWrapper.SaveFilePanel(title, directory, defaultName, extensions);
         }
 
         /// <summary>
-        /// Native save file dialog async
+        ///     Native save file dialog async
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="defaultName">Default file name</param>
         /// <param name="extension">File extension</param>
         /// <param name="cb">Callback")</param>
-        public static void SaveFilePanelAsync(string title, string directory, string defaultName , string extension, Action<string> cb) {
-            var extensions = string.IsNullOrEmpty(extension) ? null : new [] { new ExtensionFilter("", extension) };
+        public static void SaveFilePanelAsync(string title, string directory, string defaultName, string extension,
+            Action<string> cb) {
+            var extensions = string.IsNullOrEmpty(extension) ? null : new[] { new ExtensionFilter("", extension) };
             SaveFilePanelAsync(title, directory, defaultName, extensions, cb);
         }
 
         /// <summary>
-        /// Native save file dialog async
+        ///     Native save file dialog async
         /// </summary>
         /// <param name="title">Dialog title</param>
         /// <param name="directory">Root directory</param>
         /// <param name="defaultName">Default file name</param>
         /// <param name="extensions">List of extension filters. Filter Example: new ExtensionFilter("Image Files", "jpg", "png")</param>
         /// <param name="cb">Callback")</param>
-        public static void SaveFilePanelAsync(string title, string directory, string defaultName, ExtensionFilter[] extensions, Action<string> cb) {
+        public static void SaveFilePanelAsync(string title, string directory, string defaultName,
+            ExtensionFilter[] extensions, Action<string> cb) {
             _platformWrapper.SaveFilePanelAsync(title, directory, defaultName, extensions, cb);
         }
     }

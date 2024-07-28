@@ -1,57 +1,49 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System.IO;
 
 public class SaveWavFile : MonoBehaviour {
+    private Text button;
+    private MicController mic;
 
-    AudioSource source;
-    MicController mic;
-    Text button;
+    private Text recordDisplay;
+    private float recordingTimer;
 
-    Text recordDisplay;
-    float recordingTimer;
+    private AudioSource source;
 
-	// Use this for initialization
-	void Start ()
-    {
+    // Use this for initialization
+    private void Start() {
         print("Persistent data path: " + Application.persistentDataPath);
         source = gameObject.GetComponent<AudioSource>();
         mic = gameObject.GetComponent<MicController>();
         button = transform.Find("Button_Mic").Find("Text").GetComponent<Text>();
         recordDisplay = transform.Find("RecordDisplay").Find("Text").GetComponent<Text>();
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
+
+    // Update is called once per frame
+    private void Update() {
         // Animates the recording timer:
-	    if(mic.IsWorking)
-        {
+        if (mic.IsWorking) {
             recordingTimer -= Time.deltaTime;
             recordDisplay.text = "Remaining: " + recordingTimer.ToString("0.0");
-            if(recordingTimer <= 0f)
-            {
+            if (recordingTimer <= 0f) {
                 recordingTimer = 0f;
-                recordDisplay.text = "Time samples: " + source.timeSamples.ToString();
-                StartRecording();   // Toggles the recording automatically.
+                recordDisplay.text = "Time samples: " + source.timeSamples;
+                StartRecording(); // Toggles the recording automatically.
             }
         }
-	}
+    }
 
     // Toggles the recording status:
-    public void StartRecording()
-    {
-        if(mic.IsWorking)
-        {
+    public void StartRecording() {
+        if (mic.IsWorking) {
             button.text = "Start recording";
             mic.WorkStop();
             // Timer:
             recordingTimer = 0f;
-            recordDisplay.text = "Time samples: " + source.timeSamples.ToString();
+            recordDisplay.text = "Time samples: " + source.timeSamples;
         }
-        else
-        {
+        else {
             button.text = "Stop recording";
             mic.WorkStart();
             // Timer:
@@ -61,27 +53,25 @@ public class SaveWavFile : MonoBehaviour {
     }
 
     // Player interfaces:
-    public void Play()
-    {
+    public void Play() {
         source.Play();
     }
-    public void Pause()
-    {
+
+    public void Pause() {
         source.Pause();
     }
-    public void Stop()
-    {
+
+    public void Stop() {
         source.Stop();
     }
 
     // File control:
-    public void DeleteClip()
-    {
+    public void DeleteClip() {
         source.clip = null;
         File.Delete(Path.Combine(Application.persistentDataPath, "MyFile.wav"));
     }
-    public void SaveClip()
-    {
+
+    public void SaveClip() {
         byte[] wavFile = OpenWavParser.AudioClipToByteArray(source.clip);
         File.WriteAllBytes(Path.Combine(Application.persistentDataPath, "MyFile.wav"), wavFile);
     }

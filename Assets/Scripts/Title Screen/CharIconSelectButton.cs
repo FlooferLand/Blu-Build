@@ -1,23 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CharIconSelectButton : MonoBehaviour
-{
-    public int num;
-    public ButtonType bt;
-    public enum ButtonType
-    {
+public class CharIconSelectButton : MonoBehaviour {
+    public enum ButtonType {
         charIcon,
         edit,
         assignp1,
-        assignp2,
+        assignp2
     }
-    public void SelectButton()
-    {
-        UI_ModelMaker[] components = GameObject.FindObjectsOfType<UI_ModelMaker>();
-        switch (bt)
-        {
+
+    public int num;
+    public ButtonType bt;
+
+    public void SelectButton() {
+        var components = FindObjectsOfType<UI_ModelMaker>();
+        switch (bt) {
             case ButtonType.charIcon:
                 components[0].NewSelection(num);
                 break;
@@ -29,9 +25,6 @@ public class CharIconSelectButton : MonoBehaviour
             case ButtonType.assignp2:
                 PlayerPrefs.SetInt("Player2: Preset", components[0].currentSelection);
                 break;
-            default:
-                break;
         }
-        
     }
 }

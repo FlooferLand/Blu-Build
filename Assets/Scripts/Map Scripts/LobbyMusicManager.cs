@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LobbyMusicManager : MonoBehaviour {
-    private AudioSource[] sources;
     private Player[] players;
-    
+    private AudioSource[] sources;
+
     private void Start() {
         sources = GetComponentsInChildren<AudioSource>();
-        foreach (AudioSource source in sources) {
-            source.Play();
-        }
+        foreach (var source in sources) source.Play();
     }
 
     private void Update() {

@@ -5,41 +5,37 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-public class VersionWriter : IPreprocessBuildWithReport
-{
+public class VersionWriter : IPreprocessBuildWithReport {
     private const string targetFile = "InternalGameVersion.gen.cs";
 
     public int callbackOrder => 0;
 
-    public void OnPreprocessBuild(BuildReport report)
-    {
+    public void OnPreprocessBuild(BuildReport report) {
         WriteVersion();
     }
 
     [DidReloadScripts]
-    public static void WriteVersion()
-    {
+    public static void WriteVersion() {
         string finalPath = Path.Combine(Application.dataPath + "/Scripts/VR/", targetFile);
 
-        string newText = $"public static class InternalGameVersion\r\n" +
-            "{\r\n" +
-            FormatVar("gameName", PlayerSettings.productName);
-        if (PlayerSettings.bundleVersion.Length == 7)
-        {
-            newText += FormatVar("gameVersion", PlayerSettings.bundleVersion.Substring(0, PlayerSettings.bundleVersion.Length - 3));
+        string newText = "public static class InternalGameVersion\r\n" +
+                         "{\r\n" +
+                         FormatVar("gameName", PlayerSettings.productName);
+        if (PlayerSettings.bundleVersion.Length == 7) {
+            newText += FormatVar("gameVersion",
+                PlayerSettings.bundleVersion.Substring(0, PlayerSettings.bundleVersion.Length - 3));
             newText += FormatVar("isVR", "true");
         }
-        else
-        {
+        else {
             newText += FormatVar("gameVersion", PlayerSettings.bundleVersion);
             newText += FormatVar("isVR", "false");
         }
+
         newText += "}";
 
-       string currentText = File.ReadAllText(finalPath);
+        string currentText = File.ReadAllText(finalPath);
 
-        if (currentText != newText)
-        {
+        if (currentText != newText) {
             Debug.Log("Updated Internal Game Version (generated)");
 
             File.WriteAllText(finalPath, newText);
@@ -47,8 +43,7 @@ public class VersionWriter : IPreprocessBuildWithReport
         }
     }
 
-    private static string FormatVar(string varName, string varValue)
-    {
+    private static string FormatVar(string varName, string varValue) {
         return $"    public const string {varName} = \"{varValue}\";\r\n";
     }
 }

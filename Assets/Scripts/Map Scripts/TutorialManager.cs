@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TutorialManager : MonoBehaviour {
+    public static bool skippedTutorial = false;
     public float timeScale = 1;
     public GameObject waypoint1;
     public GameObject waypoint2;
@@ -13,23 +11,14 @@ public class TutorialManager : MonoBehaviour {
     public SkinnedMeshRenderer door;
     public Animator robotohmygod;
     public TTS textToSpeechRobot;
-    TTS textToSpeechPlayer;
     public float time = -2;
     public int state;
     public float walkSpeed;
     public float sideSpeed;
-    GlobalController gc;
-    GameObject player;
-    Player playerCPT;
-    AudioSource sc;
-    Vector3 oldRobotTransform;
-    bool unlockShowControls = false;
-    bool finalWords;
     public GameObject finalBot;
-    public static bool skippedTutorial = false;
-    
+
     //Lines
-    readonly string[] lines = {
+    private readonly string[] lines = {
         "Ah, you are online.",
         "Seems you have turned on before we arrived.",
         "...",
@@ -91,14 +80,21 @@ public class TutorialManager : MonoBehaviour {
         "Speaking of creativity, there are more animatronic stages currently set up in the building. They are more complex, but management hopes you'll have them all mastered by opening.",
         "Best of luck, FAB. If you want any more info and help, I'll be in the conference room.",
         "I shall come to you with any plights for information, as well as let you gawk at my creations.",
-        "I live in your head. I can literally see everything you do. Let's just hope your stumblings won't be as bad as R-12's.",
+        "I live in your head. I can literally see everything you do. Let's just hope your stumblings won't be as bad as R-12's."
     };
 
-    void Start()
-    {
+    private bool finalWords;
+    private GlobalController gc;
+    private Vector3 oldRobotTransform;
+    private GameObject player;
+    private Player playerCPT;
+    private AudioSource sc;
+    private TTS textToSpeechPlayer;
+    private bool unlockShowControls = false;
+
+    private void Start() {
         sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-        if (ShouldDoTutorial())
-        {
+        if (ShouldDoTutorial()) {
             player = GameObject.Find("Player");
             fakeFnaF2.SetActive(false);
             fakeMangle.SetActive(false);
@@ -110,8 +106,7 @@ public class TutorialManager : MonoBehaviour {
             playerCPT.canPause = false;
             textToSpeechPlayer = player.GetComponent<TTS>();
         }
-        else
-        {
+        else {
             if (Application.isEditor)
                 Debug.Log("Skipped the tutorial for convenience, as we're in the editor!");
             finalBot.SetActive(true);
@@ -119,133 +114,132 @@ public class TutorialManager : MonoBehaviour {
         }
     }
 
-    public void Update()
-    {
-        time += Mathf.Min(Time.deltaTime,0.2f) * timeScale;
+    public void Update() {
+        time += Mathf.Min(Time.deltaTime, 0.2f) * timeScale;
         //Need states to prevent looping of commands
-        if (time > 6 && state == 0)
-        {
+        if (time > 6 && state == 0) {
             state++;
             robotohmygod.gameObject.SetActive(true);
             textToSpeechRobot.inputText = lines[0];
         }
-        if (time > 8 && state == 1)
-        {
+
+        if (time > 8 && state == 1) {
             state++;
             playerCPT.SetFade(0, 1);
         }
 
-        if (time > 14 && state == 2)
-        {
+        if (time > 14 && state == 2) {
             state++;
             textToSpeechRobot.inputText = lines[1];
         }
-        if (time > 18 && state == 3)
-        {
+
+        if (time > 18 && state == 3) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[2];
         }
-        if (time > 21 && state == 4)
-        {
+
+        if (time > 21 && state == 4) {
             state++;
             textToSpeechPlayer.inputText = lines[3];
         }
-        if (time > 25 && state == 5)
-        {
+
+        if (time > 25 && state == 5) {
             state++;
             textToSpeechRobot.inputText = lines[4];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 32 && state == 6)
-        {
+
+        if (time > 32 && state == 6) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[5];
         }
-        if (time > 34.5 && state == 7)
-        {
+
+        if (time > 34.5 && state == 7) {
             state++;
             textToSpeechRobot.inputText = lines[6];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 48 && state == 8)
-        {
+
+        if (time > 48 && state == 8) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[7];
         }
-        if (time > 52 && state == 9)
-        {
+
+        if (time > 52 && state == 9) {
             state++;
             textToSpeechRobot.inputText = lines[8];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 60 && state == 10)
-        {
+
+        if (time > 60 && state == 10) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[9];
         }
-        if (time > 66 && state == 11)
-        {
+
+        if (time > 66 && state == 11) {
             state++;
             textToSpeechRobot.inputText = lines[10];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 82 && state == 12)
-        {
+
+        if (time > 82 && state == 12) {
             state++;
             textToSpeechRobot.inputText = lines[11];
         }
-        if (time > 96 && state == 13)
-        {
+
+        if (time > 96 && state == 13) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[12];
         }
-        if (time > 99.5f && state == 14)
-        {
+
+        if (time > 99.5f && state == 14) {
             state++;
             textToSpeechRobot.inputText = lines[13];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 103.5 && state == 15)
-        {
+
+        if (time > 103.5 && state == 15) {
             state++;
             textToSpeechRobot.inputText = "";
             playerCPT.SetFade(255, 3);
         }
-        if (time > 113 && time < 122 && state == 16)
-        {
+
+        if (time > 113 && time < 122 && state == 16) {
             playerCPT.keyboardLayout.gameObject.SetActive(true);
-            playerCPT.keyboardLayout.color = new Color(1, 1, 1, Mathf.Min(playerCPT.keyboardLayout.color.a + (1 * Time.deltaTime), 1));
+            playerCPT.keyboardLayout.color = new Color(1, 1, 1,
+                Mathf.Min(playerCPT.keyboardLayout.color.a + 1 * Time.deltaTime, 1));
         }
-        if (time > 122 && time < 130 && state == 16)
-        {
+
+        if (time > 122 && time < 130 && state == 16) {
             playerCPT.keyboardLayout.gameObject.SetActive(true);
-            playerCPT.keyboardLayout.color = new Color(1, 1, 1, Mathf.Max(playerCPT.keyboardLayout.color.a - (1 * Time.deltaTime), 0));
+            playerCPT.keyboardLayout.color = new Color(1, 1, 1,
+                Mathf.Max(playerCPT.keyboardLayout.color.a - 1 * Time.deltaTime, 0));
         }
-        if (time > 124 && state == 16)
-        {
+
+        if (time > 124 && state == 16) {
             robotohmygod.gameObject.transform.position += new Vector3(0, 10, 0);
             player.transform.position = new Vector3(0.39633f, -0.53f, -2.731902f);
             player.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 362.0f, 0.0f));
             state++;
         }
-        if (time > 131 && state == 17)
-        {
+
+        if (time > 131 && state == 17) {
             state++;
             player.GetComponent<Player>().SetFade(0, 20);
         }
-        if (time > 134 && state == 18)
-        {
+
+        if (time > 134 && state == 18) {
             state++;
             textToSpeechRobot.inputText = lines[14];
         }
+
         //LATER
-        if (time > 140 && state == 19)
-        {
+        if (time > 140 && state == 19) {
             state++;
             robotohmygod.GetComponent<AudioSource>().spatialBlend = 1;
             robotohmygod.gameObject.transform.position -= new Vector3(0, 10, 0);
@@ -254,261 +248,255 @@ public class TutorialManager : MonoBehaviour {
             sc.Play();
             robotohmygod.SetBool("Start", true);
         }
-        if (time > 143.5f && state == 20)
-        {
+
+        if (time > 143.5f && state == 20) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[15];
         }
-        if (time > 146 && state == 21)
-        {
+
+        if (time > 146 && state == 21) {
             state++;
             textToSpeechRobot.inputText = lines[16];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 149 && state == 22)
-        {
+
+        if (time > 149 && state == 22) {
             state++;
             textToSpeechRobot.inputText = lines[17];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 157.5 && state == 23)
-        {
+
+        if (time > 157.5 && state == 23) {
             state++;
             textToSpeechRobot.inputText = lines[18];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 160.5 && state == 24)
-        {
+
+        if (time > 160.5 && state == 24) {
             textToSpeechRobot.inputText = "";
             state++;
             button.SetActive(true);
         }
 
 
-
         //DOOOR SECTION
 
 
-        if (state >= 26 )
-        {
-            Vector3 vel = oldRobotTransform - robotohmygod.transform.position;
-            Vector3 localVel = robotohmygod.transform.InverseTransformDirection(vel);
-            robotohmygod.SetFloat("Velocity X", Mathf.Max(Mathf.Min(localVel.x * -sideSpeed, 1), -1), 0.1f, Time.deltaTime);
-            robotohmygod.SetFloat("Velocity Z", Mathf.Max(Mathf.Min(localVel.z * -walkSpeed, 1), -1), 0.1f, Time.deltaTime);
+        if (state >= 26) {
+            var vel = oldRobotTransform - robotohmygod.transform.position;
+            var localVel = robotohmygod.transform.InverseTransformDirection(vel);
+            robotohmygod.SetFloat("Velocity X", Mathf.Max(Mathf.Min(localVel.x * -sideSpeed, 1), -1), 0.1f,
+                Time.deltaTime);
+            robotohmygod.SetFloat("Velocity Z", Mathf.Max(Mathf.Min(localVel.z * -walkSpeed, 1), -1), 0.1f,
+                Time.deltaTime);
             oldRobotTransform = robotohmygod.transform.position;
         }
-        if (time > 3 && state == 26)
-        {
+
+        if (time > 3 && state == 26) {
             state++;
             textToSpeechRobot.inputText = lines[19];
             textToSpeechPlayer.inputText = "";
             robotohmygod.SetBool("Walk", true);
             robotohmygod.SetInteger("State", 1);
         }
-        if (time > 10 && state == 27)
-        {
+
+        if (time > 10 && state == 27) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[20];
             waypoint1.SetActive(true);
         }
-        if (time > 12 && state == 28)
-        {
+
+        if (time > 12 && state == 28) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = "";
         }
-
 
 
         //TUTORIAL START
 
-        if (time > 3 && state == 30)
-        {
+        if (time > 3 && state == 30) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = "";
         }
 
-        if (time > 3 && state == 32)
-        {
+        if (time > 3 && state == 32) {
             state++;
             textToSpeechRobot.inputText = lines[22];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 10 && state == 33)
-        {
+
+        if (time > 10 && state == 33) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[23];
         }
-        if (time > 14 && state == 34)
-        {
+
+        if (time > 14 && state == 34) {
             state++;
             textToSpeechRobot.inputText = lines[24];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 28 && state == 35)
-        {
+
+        if (time > 28 && state == 35) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[25];
         }
-        if (time > 31 && state == 36)
-        {
+
+        if (time > 31 && state == 36) {
             state++;
             textToSpeechRobot.inputText = lines[26];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 34 && state == 37)
-        {
+
+        if (time > 34 && state == 37) {
             state++;
             textToSpeechPlayer.inputText = "";
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 4 && state == 40)
-        {
+
+        if (time > 4 && state == 40) {
             state++;
             textToSpeechRobot.inputText = lines[27];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 20 && state == 41)
-        {
+
+        if (time > 20 && state == 41) {
             state++;
             textToSpeechRobot.inputText = lines[28];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 2 && state == 43)
-        {
+
+        if (time > 2 && state == 43) {
             state++;
             textToSpeechRobot.inputText = lines[29];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 13 && state == 44)
-        {
+
+        if (time > 13 && state == 44) {
             state++;
             textToSpeechRobot.inputText = lines[30];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 46)
-        {
+
+        if (time > 1 && state == 46) {
             state++;
             textToSpeechRobot.inputText = lines[31];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 48)
-        {
+
+        if (time > 1 && state == 48) {
             state++;
             textToSpeechRobot.inputText = lines[32];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 50)
-        {
+
+        if (time > 1 && state == 50) {
             state++;
             textToSpeechRobot.inputText = lines[33];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 52)
-        {
+
+        if (time > 1 && state == 52) {
             state++;
             textToSpeechRobot.inputText = lines[34];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 54)
-        {
+
+        if (time > 1 && state == 54) {
             state++;
             textToSpeechRobot.inputText = lines[35];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 9 && state == 55)
-        {
+
+        if (time > 9 && state == 55) {
             state++;
             textToSpeechRobot.inputText = lines[36];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 17 && state == 56)
-        {
-            state++;
-        }
-        if (state == 57 && Input.GetKeyDown(KeyCode.Alpha4))
-        {
+
+        if (time > 17 && state == 56) state++;
+        if (state == 57 && Input.GetKeyDown(KeyCode.Alpha4)) {
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[37];
         }
-        if (state == 57 && Input.GetKeyUp(KeyCode.Alpha4))
-        {
+
+        if (state == 57 && Input.GetKeyUp(KeyCode.Alpha4)) {
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 29 && state == 57)
-        {
+
+        if (time > 29 && state == 57) {
             state++;
             textToSpeechRobot.inputText = lines[38];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 41 && state == 58)
-        {
+
+        if (time > 41 && state == 58) {
             state++;
             textToSpeechRobot.inputText = lines[39];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 61)
-        {
+
+        if (time > 1 && state == 61) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[40];
         }
-        if (time > 9 && state == 62)
-        {
+
+        if (time > 9 && state == 62) {
             state++;
             textToSpeechRobot.inputText = lines[41];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 64)
-        {
+
+        if (time > 1 && state == 64) {
             state++;
             textToSpeechRobot.inputText = lines[42];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 67)
-        {
+
+        if (time > 1 && state == 67) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[43];
         }
-        if (time > 10f && state == 68)
-        {
+
+        if (time > 10f && state == 68) {
             state++;
             textToSpeechRobot.inputText = lines[44];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 18 && state == 69)
-        {
+
+        if (time > 18 && state == 69) {
             state++;
             textToSpeechRobot.inputText = lines[45];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 71)
-        {
+
+        if (time > 1 && state == 71) {
             state++;
             textToSpeechRobot.inputText = lines[46];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 1 && state == 74)
-        {
+
+        if (time > 1 && state == 74) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[47];
         }
-        if (time > 7 && state == 75)
-        {
+
+        if (time > 7 && state == 75) {
             state++;
             textToSpeechRobot.inputText = lines[48];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 13 && state == 76)
-        {
+
+        if (time > 13 && state == 76) {
             state++;
             unlockShowControls = true;
             fakeFnaF2.SetActive(true);
@@ -516,14 +504,14 @@ public class TutorialManager : MonoBehaviour {
             textToSpeechRobot.inputText = lines[49];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 30 && state == 77)
-        {
+
+        if (time > 30 && state == 77) {
             state++;
             textToSpeechRobot.inputText = lines[50];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 40 && state == 78)
-        {
+
+        if (time > 40 && state == 78) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[51];
@@ -531,8 +519,8 @@ public class TutorialManager : MonoBehaviour {
             robotohmygod.SetInteger("State", 2);
             waypoint2.SetActive(true);
         }
-        if (time > 43 && state == 79)
-        {
+
+        if (time > 43 && state == 79) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = "";
@@ -540,77 +528,76 @@ public class TutorialManager : MonoBehaviour {
 
         //===========================================
 
-        if (time > 0 && state == 81)
-        {
+        if (time > 0 && state == 81) {
             state++;
             playerCPT.canPause = true;
             textToSpeechRobot.inputText = lines[52];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 18 && state == 82)
-        {
+
+        if (time > 18 && state == 82) {
             state++;
             textToSpeechRobot.inputText = lines[53];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 29 && state == 83)
-        {
+
+        if (time > 29 && state == 83) {
             state++;
             textToSpeechRobot.inputText = lines[54];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 38 && state == 84)
-        {
+
+        if (time > 38 && state == 84) {
             state++;
             textToSpeechRobot.inputText = lines[55];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 49.5 && state == 85)
-        {
+
+        if (time > 49.5 && state == 85) {
             state++;
             textToSpeechRobot.inputText = lines[56];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 61 && state == 86)
-        {
+
+        if (time > 61 && state == 86) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[57];
         }
-        if (time > 69.5 && state == 87)
-        {
+
+        if (time > 69.5 && state == 87) {
             state++;
             textToSpeechRobot.inputText = lines[58];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 84 && state == 88)
-        {
+
+        if (time > 84 && state == 88) {
             state++;
             textToSpeechRobot.inputText = lines[59];
             textToSpeechPlayer.inputText = "";
             robotohmygod.SetBool("Walk", true);
             robotohmygod.SetInteger("State", 3);
         }
-        if (time > 93 && state == 89)
-        {
+
+        if (time > 93 && state == 89) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = lines[60];
         }
-        if (time > 100.5 && state == 90)
-        {
+
+        if (time > 100.5 && state == 90) {
             state++;
             textToSpeechRobot.inputText = lines[61];
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 110 && state == 91)
-        {
+
+        if (time > 110 && state == 91) {
             state++;
             textToSpeechRobot.inputText = "";
             textToSpeechPlayer.inputText = "";
         }
-        if (time > 111 && state == 92)
-        {
+
+        if (time > 111 && state == 92) {
             state++;
             finalBot.SetActive(true);
             PlayerPrefs.SetInt("Tutorial Save 0", 1);
@@ -618,7 +605,7 @@ public class TutorialManager : MonoBehaviour {
             Destroy(this);
         }
     }
-    
+
 /*
         "Glad you're enjoying being on the job. Anyways, here is the Prize Corner. Fazbear Entertainment is substituting a pay grade, as you have no human rights, in favor of gimmicky prizes for your hard work.",
         "You may have noticed on the Live Editor panel your Ticket count going up. Programming shows will earn you tickets to buy here.",
@@ -632,164 +619,162 @@ public class TutorialManager : MonoBehaviour {
         "I live in your head. I can literally see everything you do. Let's just hope your stumblings won't be as bad as R-12's.",
 */
 
-    public void TipDoor(int nothing)
-    {
+    public void TipDoor(int nothing) {
         time = 0;
         state = 26;
-        this.GetComponent<Animation>().Play();
-        Destroy(this.GetComponent<AudioSource>());
+        GetComponent<Animation>().Play();
+        Destroy(GetComponent<AudioSource>());
         playerCPT.keyboardLayout.color = new Color(1, 1, 1, 0);
         door.useLightProbes = true;
         Destroy(button);
     }
 
-    public bool AttemptAdvanceTutorial(string attempt)
-    {
-        if (state == 80 && attempt == "Reach Prize")
-        {
+    public bool AttemptAdvanceTutorial(string attempt) {
+        if (state == 80 && attempt == "Reach Prize") {
             state++;
             time = 0;
             textToSpeechRobot.inputText = "";
             return true;
         }
-        if (!unlockShowControls)
-        {
+
+        if (!unlockShowControls) {
             Debug.Log("Attempt: " + attempt);
-            if (state == 29 && attempt == "Reach Showroom")
-            {
+            if (state == 29 && attempt == "Reach Showroom") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 textToSpeechPlayer.inputText = lines[21];
                 return true;
             }
-            if (state == 31 && attempt == "OpenPanel")
-            {
+
+            if (state == 31 && attempt == "OpenPanel") {
                 state++;
                 time = 0;
                 return true;
             }
-            if (state == 38 && attempt == "Access Show Live Panel")
-            {
+
+            if (state == 38 && attempt == "Access Show Live Panel") {
                 state++;
                 time = 0;
                 return true;
             }
-            if (state == 39 && attempt == "Open Curtain")
-            {
+
+            if (state == 39 && attempt == "Open Curtain") {
                 state++;
                 time = 0;
                 return true;
             }
-            if (state == 42 && attempt == "Open Main Panel")
-            {
-                state++;
-                time = 0;
-                textToSpeechRobot.inputText = "";
-                return true;
-            }
-            if (state == 45 && attempt == "3Window 3")
-            {
+
+            if (state == 42 && attempt == "Open Main Panel") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 47 && attempt == "2Window 1")
-            {
+
+            if (state == 45 && attempt == "3Window 3") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 49 && attempt == "Create WAV")
-            {
+
+            if (state == 47 && attempt == "2Window 1") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 51 && attempt == "2Window 2")
-            {
+
+            if (state == 49 && attempt == "Create WAV") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 53 && attempt == "Freddy Moves")
-            {
+
+            if (state == 51 && attempt == "2Window 2") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if ((state == 59 || state == 60) && attempt == "ReadyShowtape")
-            {
+
+            if (state == 53 && attempt == "Freddy Moves") {
+                state++;
+                time = 0;
+                textToSpeechRobot.inputText = "";
+                return true;
+            }
+
+            if ((state == 59 || state == 60) && attempt == "ReadyShowtape") {
                 state = 60;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 60 && attempt == "FinishShowtape")
-            {
+
+            if (state == 60 && attempt == "FinishShowtape") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 63 && attempt == "Freddy Moves")
-            {
+
+            if (state == 63 && attempt == "Freddy Moves") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if ((state == 65 || state == 66) && attempt == "ReadyShowtape")
-            {
+
+            if ((state == 65 || state == 66) && attempt == "ReadyShowtape") {
                 state = 66;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 66 && attempt == "FinishShowtape")
-            {
+
+            if (state == 66 && attempt == "FinishShowtape") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 70 && attempt == "Lights Moves")
-            {
+
+            if (state == 70 && attempt == "Lights Moves") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if ((state == 72 || state == 73) && attempt == "ReadyShowtape")
-            {
+
+            if ((state == 72 || state == 73) && attempt == "ReadyShowtape") {
                 state = 73;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
-            if (state == 73 && attempt == "FinishShowtape")
-            {
+
+            if (state == 73 && attempt == "FinishShowtape") {
                 state++;
                 time = 0;
                 textToSpeechRobot.inputText = "";
                 return true;
             }
+
             return false;
         }
-        else
-        {
-            return true;
-        }    
+
+        return true;
     }
 
-    /** True if the tutorial has already been done */
+    /**
+     * True if the tutorial has already been done
+     */
     public static bool ShouldDoTutorial() {
         return !Application.isEditor && !skippedTutorial && (PlayerPrefs.GetInt("Tutorial Save 0") == 0 ||
-               !PlayerPrefs.HasKey("Tutorial Save 0") && InternalGameVersion.isVR != "true");
+                                                             (!PlayerPrefs.HasKey("Tutorial Save 0") &&
+                                                              InternalGameVersion.isVR != "true"));
     }
 }

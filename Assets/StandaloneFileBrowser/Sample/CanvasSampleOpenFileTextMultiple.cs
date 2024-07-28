@@ -1,11 +1,10 @@
-using System.Text;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using SFB;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class CanvasSampleOpenFileTextMultiple : MonoBehaviour, IPointerDownHandler {
@@ -32,31 +31,30 @@ public class CanvasSampleOpenFileTextMultiple : MonoBehaviour, IPointerDownHandl
     //
     public void OnPointerDown(PointerEventData eventData) { }
 
-    void Start() {
+    private void Start() {
         var button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
     }
 
     private void OnClick() {
         // var paths = StandaloneFileBrowser.OpenFilePanel("Title", "", "txt", true);
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", true);
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", true);
         if (paths.Length > 0) {
             var urlArr = new List<string>(paths.Length);
-            for (int i = 0; i < paths.Length; i++) {
-                urlArr.Add(new System.Uri(paths[i]).AbsoluteUri);
-            }
+            for (int i = 0; i < paths.Length; i++) urlArr.Add(new Uri(paths[i]).AbsoluteUri);
             StartCoroutine(OutputRoutine(urlArr.ToArray()));
         }
     }
 #endif
 
     private IEnumerator OutputRoutine(string[] urlArr) {
-        var outputText = "";
+        string outputText = "";
         for (int i = 0; i < urlArr.Length; i++) {
             var loader = new WWW(urlArr[i]);
             yield return loader;
             outputText += loader.text;
         }
+
         output.text = outputText;
     }
 }

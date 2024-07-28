@@ -1,42 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerButton : MonoBehaviour
-{
-    TutorialManager gc;
+public class TriggerButton : MonoBehaviour {
     public LayerMask hitMask;
     public string attemptString;
-    bool waitwaitwait;
+    private TutorialManager gc;
+    private bool waitwaitwait;
 
-    void Awake()
-    {
+    private void Awake() {
         gc = GameObject.Find("Tutorial").GetComponent<TutorialManager>();
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         if (waitwaitwait)
-        {
             if (gc.AttemptAdvanceTutorial(attemptString))
-            {
-                Destroy(this.gameObject);
-            }
-        }
+                Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (hitMask == (hitMask | (1 << other.gameObject.layer)))
-        {
+    private void OnTriggerEnter(Collider other) {
+        if (hitMask == (hitMask | (1 << other.gameObject.layer))) {
             if (gc.AttemptAdvanceTutorial(attemptString))
-            {
-                Destroy(this.gameObject);
-            }
+                Destroy(gameObject);
             else
-            {
                 waitwaitwait = true;
-            }
         }
     }
 }

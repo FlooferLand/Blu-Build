@@ -1,31 +1,27 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BoxObjectPool : MonoBehaviour
-{
+public class BoxObjectPool : MonoBehaviour {
     public static BoxObjectPool current;
 
-    [Tooltip("Assign the box prefab.")]
-    public Indicator pooledObject;
-    [Tooltip("Initial pooled amount.")]
-    public int pooledAmount = 1;
+    [Tooltip("Assign the box prefab.")] public Indicator pooledObject;
+
+    [Tooltip("Initial pooled amount.")] public int pooledAmount = 1;
+
     [Tooltip("Should the pooled amount increase.")]
     public bool willGrow = true;
 
-    List<Indicator> pooledObjects;
+    private List<Indicator> pooledObjects;
 
-    void Awake()
-    {
+    private void Awake() {
         current = this;
     }
 
-    void Start()
-    {
+    private void Start() {
         pooledObjects = new List<Indicator>();
 
-        for (int i = 0; i < pooledAmount; i++)
-        {
-            Indicator box = Instantiate(pooledObject);
+        for (int i = 0; i < pooledAmount; i++) {
+            var box = Instantiate(pooledObject);
             box.transform.SetParent(transform, false);
             box.Activate(false);
             pooledObjects.Add(box);
@@ -33,37 +29,28 @@ public class BoxObjectPool : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets pooled objects from the pool.
+    ///     Gets pooled objects from the pool.
     /// </summary>
     /// <returns></returns>
-    public Indicator GetPooledObject()
-    {
+    public Indicator GetPooledObject() {
         for (int i = 0; i < pooledObjects.Count; i++)
-        {
             if (!pooledObjects[i].Active)
-            {
                 return pooledObjects[i];
-            }
-        }
-        if (willGrow)
-        {
-            Indicator box = Instantiate(pooledObject);
+        if (willGrow) {
+            var box = Instantiate(pooledObject);
             box.transform.SetParent(transform, false);
             box.Activate(false);
             pooledObjects.Add(box);
             return box;
         }
+
         return null;
     }
 
     /// <summary>
-    /// Deactive all the objects in the pool.
+    ///     Deactive all the objects in the pool.
     /// </summary>
-    public void DeactivateAllPooledObjects()
-    {
-        foreach (Indicator box in pooledObjects)
-        {
-            box.Activate(false);
-        }
+    public void DeactivateAllPooledObjects() {
+        foreach (var box in pooledObjects) box.Activate(false);
     }
 }

@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Video;
-[System.Serializable]
-public class VideoSelector
-{
+
+[Serializable]
+public class VideoSelector {
     public VideoClip video;
     public string videoName;
     public string videoDescription;

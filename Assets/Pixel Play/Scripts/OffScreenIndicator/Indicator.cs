@@ -2,81 +2,62 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// Assign this script to the indicator prefabs.
+///     Assign this script to the indicator prefabs.
 /// </summary>
-public class Indicator : MonoBehaviour
-{
+public class Indicator : MonoBehaviour {
     [SerializeField] private IndicatorType indicatorType;
-    private Image indicatorImage;
     private Text distanceText;
+    private Image indicatorImage;
 
     /// <summary>
-    /// Gets if the game object is active in hierarchy.
+    ///     Gets if the game object is active in hierarchy.
     /// </summary>
-    public bool Active
-    {
-        get
-        {
-            return transform.gameObject.activeInHierarchy;
-        }
-    }
+    public bool Active => transform.gameObject.activeInHierarchy;
 
     /// <summary>
-    /// Gets the indicator type
+    ///     Gets the indicator type
     /// </summary>
-    public IndicatorType Type
-    {
-        get
-        {
-            return indicatorType;
-        }
-    }
+    public IndicatorType Type => indicatorType;
 
-    void Awake()
-    {
+    private void Awake() {
         indicatorImage = transform.GetComponent<Image>();
         distanceText = transform.GetComponentInChildren<Text>();
     }
 
     /// <summary>
-    /// Sets the image color for the indicator.
+    ///     Sets the image color for the indicator.
     /// </summary>
     /// <param name="color"></param>
-    public void SetImageColor(Color color)
-    {
+    public void SetImageColor(Color color) {
         indicatorImage.color = color;
     }
 
     /// <summary>
-    /// Sets the distance text for the indicator.
+    ///     Sets the distance text for the indicator.
     /// </summary>
     /// <param name="value"></param>
-    public void SetDistanceText(float value)
-    {
+    public void SetDistanceText(float value) {
         distanceText.text = value >= 0 ? Mathf.Floor(value) + " m" : "";
     }
 
     /// <summary>
-    /// Sets the distance text rotation of the indicator.
+    ///     Sets the distance text rotation of the indicator.
     /// </summary>
     /// <param name="rotation"></param>
-    public void SetTextRotation(Quaternion rotation)
-    {
+    public void SetTextRotation(Quaternion rotation) {
         distanceText.rectTransform.rotation = rotation;
     }
 
     /// <summary>
-    /// Sets the indicator as active or inactive.
+    ///     Sets the indicator as active or inactive.
     /// </summary>
     /// <param name="value"></param>
-    public void Activate(bool value)
-    {
+    public void Activate(bool value) {
         transform.gameObject.SetActive(value);
     }
 }
 
-public enum IndicatorType
-{
+public enum IndicatorType {
     BOX,
     ARROW
 }

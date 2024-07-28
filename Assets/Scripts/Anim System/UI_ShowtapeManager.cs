@@ -1,27 +1,31 @@
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using SFB;
 using System.IO;
 using System.Linq;
-using UnityEngine.UI;
-using System;
-using System.Collections;
+using SFB;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 public class FloatEvent : UnityEvent<float> { }
 
-public class UI_ShowtapeManager : MonoBehaviour
-{
-    //Inspector Objects
-    [Header("Inspector Objects")]
-    public Mack_Valves mack;
-    public InputHandler inputHandler;
-    [Space(20)]
+public class UI_ShowtapeManager : MonoBehaviour {
+    public enum addWavResult {
+        none,
+        noSource,
+        uncompressed
+    }
 
-    //File Show MetaData
-    [Header("File Show Metadata")]
-    [HideInInspector] public BitArray[] rshwData;
+    public enum LoopVers {
+        noLoop,
+        loopPlaylist,
+        loopSong
+    }
+
+    //Inspector Objects
+    [Header("Inspector Objects")] public Mack_Valves mack;
+
+    public InputHandler inputHandler;
     public AudioSource referenceSpeaker;
     public AudioClip speakerClip;
     public LoopVers songLoopSetting;
@@ -31,10 +35,12 @@ public class UI_ShowtapeManager : MonoBehaviour
     public string[] showtapeSegmentPaths = new string[1];
     public int currentShowtapeSegment = -1;
     public int dataStreamedFPS = 60;
+
     [Space(20)]
 
     //Events
     public UnityEvent audioVideoPlay;
+
     public UnityEvent audioVideoPause;
     public UnityEvent audioVideoGetData;
     public UnityEvent newDataRecorded;
@@ -43,235 +49,157 @@ public class UI_ShowtapeManager : MonoBehaviour
     public UnityEvent syncTvsAndSpeakers;
     public UnityEvent updateTickets;
 
-    //Extra Variables
-    bool ticketCheck;
-    bool ticketCheck2;
-    bool disableCharactersOnStart = true;
-
     //Sim States
     public bool recordMovements = false;
     public bool playMovements = false;
     public bool isRandomPlaybackOn;
+    private bool disableCharactersOnStart = true;
+    private bool previousAnyButtonHeld = false;
+    private int previousFramePosition = 0;
 
-    //New Simulation
-    float timeSongStarted = 0;
-    float timeSongOffset = 0;
-    float timePauseStart = 0;
-    float timeInputSpeedStart = 0;
-    int previousFramePosition = 0;
-    bool previousAnyButtonHeld = false;
+    [Space(20)]
+
+    //File Show MetaData
+    [Header("File Show Metadata")]
+    [HideInInspector]
+    public BitArray[] rshwData;
 
     //Sync TV for Large Shows (Unity's Fault)
-    float syncTimer;
+    private float syncTimer;
 
-    public enum LoopVers
-    {
-        noLoop,
-        loopPlaylist,
-        loopSong
-    }
+    //Extra Variables
+    private bool ticketCheck;
+    private bool ticketCheck2;
+    private float timeInputSpeedStart = 0;
+    private float timePauseStart = 0;
+    private float timeSongOffset = 0;
 
-    void Update()
-    {
+    //New Simulation
+    private float timeSongStarted = 0;
 
+    private void Update() {
         //Big Show Sync
         syncTimer += Time.deltaTime;
-        if (syncTimer >= 30)
-        {
+        if (syncTimer >= 30) {
             syncTimer = 0;
             syncTvsAndSpeakers.Invoke();
         }
 
-        if(inputHandler != null)
-        {
-        InputDataObj inputDataObj = inputHandler.InputCheck();
+        if (inputHandler != null) {
+            var inputDataObj = inputHandler.InputCheck();
 
-        //Clear Drawers
-        mack.topDrawer = inputDataObj.topDrawer;
-        mack.bottomDrawer = inputDataObj.bottomDrawer;
+            //Clear Drawers
+            mack.topDrawer = inputDataObj.topDrawer;
+            mack.bottomDrawer = inputDataObj.bottomDrawer;
 
             //Check for inputs and send to mack valves
             if (inputHandler != null && mack != null && referenceSpeaker.clip != null)
-            {
-
-
-                if (rshwData != null)
-                {
+                if (rshwData != null) {
                     //Show Code
                     //Being paused means the same frame of data will loop
                     //Being unpaused means deciding where to start next sim frame
                     int arrayDestination = (int)(referenceSpeaker.time * dataStreamedFPS);
 
                     //Check if new frames need to be created
-                    if (arrayDestination >= rshwData.Length && rshwData.Length != 0)
-                    {
+                    if (arrayDestination >= rshwData.Length && rshwData.Length != 0) {
                         if (recordMovements)
-                        {
                             while (arrayDestination + 1 > rshwData.Length)
-                            {
                                 rshwData = rshwData.Append(new BitArray(300)).ToArray();
-                            }
-                        }
                         else
-                        {
                             arrayDestination = rshwData.Length;
-                        }
                     }
 
                     //Record
-                    if (recordMovements)
-                    {
+                    if (recordMovements) {
                         //Record
-                        if (inputDataObj.anyButtonHeld)
-                        {
-                            for (int i = 0; i < 150; i++)
-                            {
-                                if (inputDataObj.topDrawer[i])
-                                {
-                                    rshwData[arrayDestination].Set(i, true);
-                                }
-                                if (inputDataObj.bottomDrawer[i])
-                                {
-                                    rshwData[arrayDestination].Set(i + 150, true);
-                                }
+                        if (inputDataObj.anyButtonHeld) {
+                            for (int i = 0; i < 150; i++) {
+                                if (inputDataObj.topDrawer[i]) rshwData[arrayDestination].Set(i, true);
+                                if (inputDataObj.bottomDrawer[i]) rshwData[arrayDestination].Set(i + 150, true);
                             }
-                            if (previousAnyButtonHeld)
-                            {
+
+                            if (previousAnyButtonHeld) {
                                 //Record forward or backward
                                 if (previousFramePosition <= arrayDestination)
-                                {
                                     //Forward
                                     for (int i = 0; i < arrayDestination - previousFramePosition; i++)
-                                    {
-                                        for (int e = 0; e < 150; e++)
-                                        {
-                                            if (inputDataObj.topDrawer[e])
-                                            {
-                                                rshwData[previousFramePosition + i].Set(e, true);
-                                            }
-                                            if (inputDataObj.bottomDrawer[e])
-                                            {
-                                                rshwData[previousFramePosition + i].Set(e + 150, true);
-                                            }
-                                        }
+                                    for (int e = 0; e < 150; e++) {
+                                        if (inputDataObj.topDrawer[e]) rshwData[previousFramePosition + i].Set(e, true);
+                                        if (inputDataObj.bottomDrawer[e])
+                                            rshwData[previousFramePosition + i].Set(e + 150, true);
                                     }
-                                }
                                 else
-                                {
                                     //Backward
                                     for (int i = 0; i < previousFramePosition - arrayDestination; i++)
-                                    {
-                                        for (int e = 0; e < 150; e++)
-                                        {
-                                            if (inputDataObj.topDrawer[e])
-                                            {
-                                                rshwData[previousFramePosition - i].Set(e, true);
-                                            }
-                                            if (inputDataObj.bottomDrawer[e])
-                                            {
-                                                rshwData[previousFramePosition - i].Set(e + 150, true);
-                                            }
-                                        }
+                                    for (int e = 0; e < 150; e++) {
+                                        if (inputDataObj.topDrawer[e]) rshwData[previousFramePosition - i].Set(e, true);
+                                        if (inputDataObj.bottomDrawer[e])
+                                            rshwData[previousFramePosition - i].Set(e + 150, true);
                                     }
-                                }
                             }
+
                             newDataRecorded.Invoke();
                         }
 
 
-
                         //Ticket Earning Code
-                        if (Input.anyKey)
-                        {
-                            ticketCheck = true;
-                        }
-                        if (referenceSpeaker.time % 5 < 1 && !ticketCheck2)
-                        {
+                        if (Input.anyKey) ticketCheck = true;
+                        if (referenceSpeaker.time % 5 < 1 && !ticketCheck2) {
                             ticketCheck2 = true;
-                            if (Input.anyKey)
-                            {
-                                ticketCheck = false;
-                            }
-                            if (ticketCheck)
-                            {
+                            if (Input.anyKey) ticketCheck = false;
+                            if (ticketCheck) {
                                 PlayerPrefs.SetInt("TicketCount", PlayerPrefs.GetInt("TicketCount") + 1);
                                 updateTickets.Invoke();
                             }
+
                             ticketCheck = false;
                         }
-                        if (referenceSpeaker.time % 5 >= 1)
-                        {
-                            ticketCheck2 = false;
-                        }
+
+                        if (referenceSpeaker.time % 5 >= 1) ticketCheck2 = false;
                     }
 
 
                     //Apply the current frame of simulation data to the Mack Valves
                     if (arrayDestination < rshwData.Length)
-                    {
-                        for (int i = 0; i < 150; i++)
-                        {
-                            if (rshwData[arrayDestination].Get(i))
-                            {
-                                mack.topDrawer[i] = true;
-                            }
-                            if (rshwData[arrayDestination].Get(i + 150))
-                            {
-                                mack.bottomDrawer[i] = true;
-                            }
+                        for (int i = 0; i < 150; i++) {
+                            if (rshwData[arrayDestination].Get(i)) mack.topDrawer[i] = true;
+                            if (rshwData[arrayDestination].Get(i + 150)) mack.bottomDrawer[i] = true;
                         }
-                    }
 
                     //Check if show is over
-                    if (referenceSpeaker.time >= referenceSpeaker.clip.length)
-                    {
-                        if (isRandomPlaybackOn)
-                        {
+                    if (referenceSpeaker.time >= referenceSpeaker.clip.length) {
+                        if (isRandomPlaybackOn) {
                             LoadMasterRandom();
                         }
-                        else
-                        {
-                            if (!recordMovements)
-                            {
+                        else {
+                            if (!recordMovements) {
                                 Debug.Log("Song is over. Queuing next song / stopping.");
                                 Play(true, false);
-                                if (songLoopSetting == LoopVers.loopSong)
-                                {
+                                if (songLoopSetting == LoopVers.loopSong) {
                                     if (currentShowtapeSegment == -1)
-                                    {
                                         referenceSpeaker.time = 0;
-                                    }
                                     else
-                                    {
                                         LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
-                                    }
                                 }
-                                else
-                                {
+                                else {
                                     //Check if multi showtape or single
-                                    if (currentShowtapeSegment == -1)
-                                    {
+                                    if (currentShowtapeSegment == -1) {
                                         referenceSpeaker.time = 0;
                                         Unload();
                                     }
-                                    else
-                                    {
+                                    else {
                                         currentShowtapeSegment++;
                                         //Check if end of multi showtape or not
-                                        if (currentShowtapeSegment >= showtapeSegmentPaths.Length)
-                                        {
-                                            if (songLoopSetting == LoopVers.loopPlaylist)
-                                            {
+                                        if (currentShowtapeSegment >= showtapeSegmentPaths.Length) {
+                                            if (songLoopSetting == LoopVers.loopPlaylist) {
                                                 currentShowtapeSegment = 0;
                                                 LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
                                             }
-                                            else
-                                            {
+                                            else {
                                                 Unload();
                                             }
                                         }
-                                        else
-                                        {
+                                        else {
                                             LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
                                         }
                                     }
@@ -279,145 +207,110 @@ public class UI_ShowtapeManager : MonoBehaviour
                             }
                         }
                     }
+
                     previousFramePosition = arrayDestination;
                     previousAnyButtonHeld = inputDataObj.anyButtonHeld;
                 }
-            }
         }
     }
 
-    public void Load()
-    {
-        CursorLockMode lockState = Cursor.lockState;
+    public void Load() {
+        var lockState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Load");
-        if (referenceSpeaker != null)
-        {
-            referenceSpeaker.time = 0;
-        }
+        if (referenceSpeaker != null) referenceSpeaker.time = 0;
 
         //Call File Browser
         showtapeSegmentPaths = new string[1];
         string[] paths;
-        if (fileExtention == "")
-        {
+        if (fileExtention == "") {
             ExtensionFilter[] extensions;
             if (InternalGameVersion.gameName == "Faz-Anim")
-            {
-                extensions = new ExtensionFilter[] { new ExtensionFilter("Show Files", "fshw", "tshw", "mshw") };
-            }
+                extensions = new ExtensionFilter[] { new("Show Files", "fshw", "tshw", "mshw") };
             else
-            {
-                extensions = new ExtensionFilter[] { new ExtensionFilter("Show Files", "cshw", "sshw", "rshw", "nshw") };
-            }
+                extensions = new ExtensionFilter[] { new("Show Files", "cshw", "sshw", "rshw", "nshw") };
 
             paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", extensions, false);
         }
-        else
-        {
+        else {
             paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", fileExtention, false);
         }
-        if (paths.Length > 0)
-        {
+
+        if (paths.Length > 0) {
             showtapeSegmentPaths[0] = paths[0];
             currentShowtapeSegment = 0;
             LoadFromURL(paths[0]);
         }
+
         Cursor.lockState = lockState;
     }
 
-    public void LoadFolder()
-    {
-        CursorLockMode lockState = Cursor.lockState;
+    public void LoadFolder() {
+        var lockState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
         referenceSpeaker.time = 0;
         //Call File Browser
-        var paths = StandaloneFileBrowser.OpenFolderPanel("Select Folder of Showtapes", "", false);
-        if (paths.Length > 0)
-        {
+        string[] paths = StandaloneFileBrowser.OpenFolderPanel("Select Folder of Showtapes", "", false);
+        if (paths.Length > 0) {
             showtapeSegmentPaths = Directory.GetFiles(paths[0], "*." + fileExtention);
             currentShowtapeSegment = 0;
             LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
         }
+
         Cursor.lockState = lockState;
     }
 
-    public void Play(bool force, bool onOff)
-    {
+    public void Play(bool force, bool onOff) {
         if (force)
-        {
             playMovements = onOff;
-        }
         else
-        {
             playMovements = !playMovements;
-        }
         syncTvsAndSpeakers.Invoke();
-        if (playMovements)
-        {
+        if (playMovements) {
             timeSongOffset += Time.time - timePauseStart;
             timePauseStart = 0;
             audioVideoPlay.Invoke();
         }
-        else
-        {
+        else {
             timePauseStart = Time.time;
             audioVideoPause.Invoke();
         }
     }
 
-    public void SwapLoop()
-    {
+    public void SwapLoop() {
         if (songLoopSetting == LoopVers.loopPlaylist)
-        {
             songLoopSetting = LoopVers.loopSong;
-        }
         else if (songLoopSetting == LoopVers.loopSong)
-        {
             songLoopSetting = LoopVers.noLoop;
-        }
         else
-        {
             songLoopSetting = LoopVers.loopPlaylist;
-        }
     }
 
-    public void SkipSong(int skip)
-    {
-        if (isRandomPlaybackOn)
-        {
+    public void SkipSong(int skip) {
+        if (isRandomPlaybackOn) {
             LoadMasterRandom();
         }
-        else
-        {
+        else {
             playMovements = false;
             referenceSpeaker.time = 0;
             if (songLoopSetting == LoopVers.noLoop || songLoopSetting == LoopVers.loopPlaylist)
-            {
                 currentShowtapeSegment += skip;
-            }
 
-            if (currentShowtapeSegment < 0)
-            {
+            if (currentShowtapeSegment < 0) {
                 currentShowtapeSegment = 0;
             }
-            else if (currentShowtapeSegment >= showtapeSegmentPaths.Length)
-            {
+            else if (currentShowtapeSegment >= showtapeSegmentPaths.Length) {
                 if (songLoopSetting == LoopVers.loopPlaylist)
-                {
                     currentShowtapeSegment = 0;
-                }
                 else
-                {
                     currentShowtapeSegment = showtapeSegmentPaths.Length - 1;
-                }
             }
+
             LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
         }
     }
 
-    public void Unload()
-    {
+    public void Unload() {
         isRandomPlaybackOn = false;
         videoPath = "";
         playMovements = false;
@@ -431,283 +324,216 @@ public class UI_ShowtapeManager : MonoBehaviour
     }
 
 
-
-    public void DeleteMove(int bitDelete)
-    {
-        int combinedNewInput = bitDelete + (24 * this.GetComponent<UI_WindowMaker>().deletePage);
+    public void DeleteMove(int bitDelete) {
+        int combinedNewInput = bitDelete + 24 * GetComponent<UI_WindowMaker>().deletePage;
         Debug.Log("Deleting Move: " + combinedNewInput);
 
 
         //Call File Browser
         showtapeSegmentPaths = new string[1];
-        var paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape", "", fileExtention, false);
-        if (paths.Length > 0)
-        {
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape", "", fileExtention, false);
+        if (paths.Length > 0) {
             showtapeSegmentPaths[0] = paths[0];
             currentShowtapeSegment = 0;
             playMovements = false;
             //Check if null
-            if (showtapeSegmentPaths[0] != "")
-            {
-                rshwFormat thefile = rshwFormat.ReadFromFile(showtapeSegmentPaths[0]);
+            if (showtapeSegmentPaths[0] != "") {
+                var thefile = rshwFormat.ReadFromFile(showtapeSegmentPaths[0]);
                 speakerClip = OpenWavParser.ByteArrayToAudioClip(thefile.audioData);
-                List<BitArray> newSignals = new List<BitArray>();
+                var newSignals = new List<BitArray>();
                 int countlength = 0;
-                if (thefile.signalData[0] != 0)
-                {
+                if (thefile.signalData[0] != 0) {
                     countlength = 1;
-                    BitArray bit = new BitArray(300);
+                    var bit = new BitArray(300);
                     newSignals.Add(bit);
                 }
+
                 for (int i = 0; i < thefile.signalData.Length; i++)
-                {
-                    if (thefile.signalData[i] == 0)
-                    {
+                    if (thefile.signalData[i] == 0) {
                         countlength += 1;
-                        BitArray bit = new BitArray(300);
+                        var bit = new BitArray(300);
                         newSignals.Add(bit);
                     }
-                    else
-                    {
+                    else {
                         newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                     }
-                }
+
                 rshwData = newSignals.ToArray();
 
                 //Actual Deletion Code
-                for (int i = 0; i < rshwData.Length; i++)
-                {
-                    rshwData[i].Set(combinedNewInput - 1, false);
-                }
+                for (int i = 0; i < rshwData.Length; i++) rshwData[i].Set(combinedNewInput - 1, false);
                 SaveRecording();
             }
         }
     }
 
-    public void DeleteMoveNoSaving(int bitDelete, bool fill)
-    {
+    public void DeleteMoveNoSaving(int bitDelete, bool fill) {
         Debug.Log("Deleting Move (No Save): " + bitDelete);
 
         //Actual Deletion Code
-        for (int i = 0; i < rshwData.Length; i++)
-        {
-            rshwData[i].Set(bitDelete - 1, fill);
-        }
+        for (int i = 0; i < rshwData.Length; i++) rshwData[i].Set(bitDelete - 1, fill);
     }
 
-    public void PadMove(int bitPad, int padding)
-    {
+    public void PadMove(int bitPad, int padding) {
         bitPad -= 1;
-        if (padding > 0)
-        {
+        if (padding > 0) {
             int oldLength = rshwData.Length;
             //Create new space
-            for (int i = 0; i < padding; i++)
-            {
-                rshwData = rshwData.Append(new BitArray(300)).ToArray();
-            }
+            for (int i = 0; i < padding; i++) rshwData = rshwData.Append(new BitArray(300)).ToArray();
             for (int e = 0; e < oldLength; e++)
-            {
                 rshwData[rshwData.Length - 1 - e].Set(bitPad, rshwData[oldLength - 1 - e].Get(bitPad));
-            }
         }
-        else
-        {
+        else {
             padding = Mathf.Abs(padding);
             for (int i = 0; i < rshwData.Length - padding; i++)
-            {
                 rshwData[i].Set(bitPad, rshwData[i + padding].Get(bitPad));
-            }
         }
     }
 
-    public enum addWavResult
-    {
-        none,
-        noSource,
-        uncompressed,
-    }
-    public addWavResult AddWav()
-    {
+    public addWavResult AddWav() {
         speakerClip = null;
-        CursorLockMode lockState = Cursor.lockState;
+        var lockState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Adding Wav");
         //Call File Browser
         wavPath = "";
         showtapeSegmentPaths[0] = "";
-        var paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
-        if (paths.Length > 0)
-        {
-            if (paths[0] != "")
-            {
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
+        if (paths.Length > 0) {
+            if (paths[0] != "") {
                 wavPath = paths[0];
                 speakerClip = OpenWavParser.ByteArrayToAudioClip(File.ReadAllBytes(paths[0]));
                 audioVideoGetData.Invoke();
                 CreateBitArray();
                 if (speakerClip == null)
-                {
                     return addWavResult.uncompressed;
-
-                }
-                else
-                {
-                    return addWavResult.noSource;
-                }
+                return addWavResult.noSource;
             }
+
             return addWavResult.none;
         }
+
         return addWavResult.noSource;
         Cursor.lockState = lockState;
     }
 
-    public void AddWavSpecial()
-    {
-        CursorLockMode lockState = Cursor.lockState;
+    public void AddWavSpecial() {
+        var lockState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Adding Wav");
         //Call File Browser
         wavPath = "";
         showtapeSegmentPaths[0] = "";
-        var paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
         if (paths.Length > 0)
-        {
-            if (paths[0] != "")
-            {
+            if (paths[0] != "") {
                 wavPath = paths[0];
                 speakerClip = OpenWavParser.ByteArrayToAudioClip(File.ReadAllBytes(paths[0]));
                 CreateBitArray();
             }
-        }
+
         Cursor.lockState = lockState;
     }
 
-    public void StartNewShow()
-    {
+    public void StartNewShow() {
         Debug.Log("Starting New Show");
         disableCharactersOnStart = false;
         recordMovements = true;
-        if (wavPath != "")
-        {
-            CreateBitArray();
-        }
+        if (wavPath != "") CreateBitArray();
     }
 
-    void CreateBitArray()
-    {
+    private void CreateBitArray() {
         rshwData = new BitArray[100];
-        for (int i = 0; i < rshwData.Length; i++)
-        {
-            rshwData[i] = new BitArray(300);
-        }
+        for (int i = 0; i < rshwData.Length; i++) rshwData[i] = new BitArray(300);
     }
 
-    public void SaveRecording()
-    {
+    public void SaveRecording() {
         //Stop Show
-        if (rshwData != null)
-        {
+        if (rshwData != null) {
             audioVideoPause.Invoke();
             recordMovements = false;
             playMovements = false;
             var shw = new rshwFormat { audioData = OpenWavParser.AudioClipToByteArray(speakerClip) };
-            List<int> converted = new List<int>();
-            for (int i = 0; i < rshwData.Length; i++)
-            {
+            var converted = new List<int>();
+            for (int i = 0; i < rshwData.Length; i++) {
                 converted.Add(0);
                 for (int e = 0; e < 300; e++)
-                {
-                    if (rshwData[i].Get(e) == true)
-                    {
+                    if (rshwData[i].Get(e))
                         converted.Add(e + 1);
-                    }
-                }
             }
+
             shw.signalData = converted.ToArray();
             shw.Save(showtapeSegmentPaths[0]);
             Debug.Log("Showtape Saved");
         }
-        else
-        {
+        else {
             Debug.Log("No Showtape. Did not save.");
         }
     }
-    public bool SaveRecordingAs()
-    {
-        if (rshwData != null && speakerClip != null)
-        {
-            CursorLockMode lockState = Cursor.lockState;
+
+    public bool SaveRecordingAs() {
+        if (rshwData != null && speakerClip != null) {
+            var lockState = Cursor.lockState;
             Cursor.lockState = CursorLockMode.None;
             //Stop Show
             audioVideoPause.Invoke();
             recordMovements = false;
             playMovements = false;
-            if (speakerClip != null)
-            {
+            if (speakerClip != null) {
                 //Save to file
-                var path = StandaloneFileBrowser.SaveFilePanel("Save Showtape", "", "MyShowtape", fileExtention);
+                string path = StandaloneFileBrowser.SaveFilePanel("Save Showtape", "", "MyShowtape", fileExtention);
                 Debug.Log("Showtape Saved: " + path);
-                if (!string.IsNullOrEmpty(path))
-                {
+                if (!string.IsNullOrEmpty(path)) {
                     showtapeSegmentPaths = new string[1];
                     showtapeSegmentPaths[0] = path;
                     var shw = new rshwFormat { audioData = OpenWavParser.AudioClipToByteArray(speakerClip) };
-                    List<int> converted = new List<int>();
-                    for (int i = 0; i < rshwData.Length; i++)
-                    {
+                    var converted = new List<int>();
+                    for (int i = 0; i < rshwData.Length; i++) {
                         converted.Add(0);
                         for (int e = 0; e < 300; e++)
-                        {
-                            if (rshwData[i].Get(e) == true)
-                            {
+                            if (rshwData[i].Get(e))
                                 converted.Add(e + 1);
-                            }
-                        }
                     }
+
                     shw.signalData = converted.ToArray();
                     shw.Save(path);
                 }
-                else
-                {
+                else {
                     Debug.Log("No Showtape. Did not save.");
-                    AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
+                    var sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
                     sc.volume = 1;
                     sc.PlayOneShot((AudioClip)Resources.Load("Deny"));
                     Cursor.lockState = lockState;
                     return false;
                 }
             }
+
             Cursor.lockState = lockState;
             return true;
         }
-        else
+
         {
             Debug.Log("No Showtape. Did not save.");
-            AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
+            var sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
             sc.volume = 1;
             sc.PlayOneShot((AudioClip)Resources.Load("Deny"));
             return false;
         }
-
     }
 
-    public void LoadFromURL(string url)
-    {
+    public void LoadFromURL(string url) {
         StartCoroutine(LoadRoutineA(url));
     }
 
-    IEnumerator LoadRoutineA(string url)
-    {
+    private IEnumerator LoadRoutineA(string url) {
         yield return StartCoroutine(LoadRoutineB(url));
     }
 
-    IEnumerator LoadRoutineB(string url)
-    {
+    private IEnumerator LoadRoutineB(string url) {
         disableCharactersOnStart = false;
         playMovements = false;
         //Check if null
-        if (url != "")
-        {
+        if (url != "") {
             referenceSpeaker.time = 0;
             timeSongStarted = 0;
             timeSongOffset = 0;
@@ -717,78 +543,68 @@ public class UI_ShowtapeManager : MonoBehaviour
             //Add code for opening .rshw file
             curtainOpen.Invoke();
             yield return null;
-            rshwFormat thefile = rshwFormat.ReadFromFile(url);
+            var thefile = rshwFormat.ReadFromFile(url);
             yield return null;
             speakerClip = OpenWavParser.ByteArrayToAudioClip(thefile.audioData);
             yield return null;
-            List<BitArray> newSignals = new List<BitArray>();
+            var newSignals = new List<BitArray>();
             int countlength = 0;
-            if (thefile.signalData[0] != 0)
-            {
+            if (thefile.signalData[0] != 0) {
                 countlength = 1;
-                BitArray bit = new BitArray(300);
+                var bit = new BitArray(300);
                 newSignals.Add(bit);
             }
+
             for (int i = 0; i < thefile.signalData.Length; i++)
-            {
-                if (thefile.signalData[i] == 0)
-                {
+                if (thefile.signalData[i] == 0) {
                     countlength += 1;
-                    BitArray bit = new BitArray(300);
+                    var bit = new BitArray(300);
                     newSignals.Add(bit);
                 }
-                else
-                {
+                else {
                     newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                 }
-            }
+
             rshwData = newSignals.ToArray();
             yield return null;
-            if (File.Exists(url.Remove(url.Length - Mathf.Max(fileExtention.Length, 4)) + "mp4"))
-            {
+            if (File.Exists(url.Remove(url.Length - Mathf.Max(fileExtention.Length, 4)) + "mp4")) {
                 Debug.Log("Video Found for Showtape.");
                 videoPath = url.Remove(url.Length - Mathf.Max(fileExtention.Length, 4)) + "mp4";
             }
-            else
-            {
+            else {
                 videoPath = "";
             }
+
             audioVideoGetData.Invoke();
             yield return null;
             if (recordMovements)
-            {
-                Debug.Log("Recording Showtape: " + url + " (Length: " + ((float)countlength / 60.0f) + ")");
-            }
+                Debug.Log("Recording Showtape: " + url + " (Length: " + countlength / 60.0f + ")");
             else
-            {
-                Debug.Log("Playing Showtape: " + url + " (Length: " + ((float)countlength / 60.0f) + ")");
-            }
+                Debug.Log("Playing Showtape: " + url + " (Length: " + countlength / 60.0f + ")");
             yield return null;
             timeSongStarted = Time.time;
             syncTvsAndSpeakers.Invoke();
         }
     }
 
-    public void SetMasterFolder()
-    {
-        CursorLockMode lockState = Cursor.lockState;
+    public void SetMasterFolder() {
+        var lockState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
-        var paths = StandaloneFileBrowser.OpenFolderPanel("Select Folder of Showtapes", "", false);
-        if (paths.Length > 0)
-        {
+        string[] paths = StandaloneFileBrowser.OpenFolderPanel("Select Folder of Showtapes", "", false);
+        if (paths.Length > 0) {
             Debug.Log(paths[0]);
             PlayerPrefs.SetString("masterShowtapeList", paths[0]);
         }
+
         Cursor.lockState = lockState;
     }
 
-    public void LoadMasterSegment()
-    {
-        UI_WindowMaker windowMaker = this.GetComponent<UI_WindowMaker>();
-        string subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" + windowMaker.allShowtapes[windowMaker.currentYear].groups[windowMaker.currentGroup].showtapeName;
+    public void LoadMasterSegment() {
+        var windowMaker = GetComponent<UI_WindowMaker>();
+        string subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" + windowMaker
+            .allShowtapes[windowMaker.currentYear].groups[windowMaker.currentGroup].showtapeName;
 
-        if (Directory.Exists(subfolder))
-        {
+        if (Directory.Exists(subfolder)) {
             Debug.Log(subfolder);
             string[] temp = showtapeSegmentPaths;
             showtapeSegmentPaths = Directory.GetFiles(subfolder, "*." + fileExtention);
@@ -798,75 +614,66 @@ public class UI_ShowtapeManager : MonoBehaviour
             currentShowtapeSegment = 0;
             LoadFromURL(pathZero);
         }
-        else
-        {
+        else {
             Debug.Log("Directory does not exist.");
         }
     }
 
-    public void LoadMasterShowtape(int input)
-    {
+    public void LoadMasterShowtape(int input) {
         string subfolder;
-        if (input == 0)
-        {
-            UI_WindowMaker windowMaker = this.GetComponent<UI_WindowMaker>();
-            subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" + windowMaker.allShowtapes[windowMaker.currentYear].groups[windowMaker.currentGroup].showtapeName;
+        if (input == 0) {
+            var windowMaker = GetComponent<UI_WindowMaker>();
+            subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" + windowMaker
+                .allShowtapes[windowMaker.currentYear].groups[windowMaker.currentGroup].showtapeName;
         }
-        else
-        {
-            UI_WindowMaker windowMaker = this.GetComponent<UI_WindowMaker>();
-            subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" + windowMaker.allShowtapes[windowMaker.currentYear].groups[input - 1].showtapeName;
+        else {
+            var windowMaker = GetComponent<UI_WindowMaker>();
+            subfolder = PlayerPrefs.GetString("masterShowtapeList") + "\\" +
+                        windowMaker.allShowtapes[windowMaker.currentYear].groups[input - 1].showtapeName;
         }
-        if (Directory.Exists(subfolder))
-        {
+
+        if (Directory.Exists(subfolder)) {
             Debug.Log(subfolder);
             showtapeSegmentPaths = Directory.GetFiles(subfolder, "*." + fileExtention);
             currentShowtapeSegment = 0;
             LoadFromURL(showtapeSegmentPaths[currentShowtapeSegment]);
         }
-        else
-        {
+        else {
             Debug.Log("Directory does not exist.");
         }
     }
 
-    public void LoadMasterRandom()
-    {
+    public void LoadMasterRandom() {
         isRandomPlaybackOn = true;
-        var random = new System.Random();
-        string[] fileNames = new string[] { };
-        if (fileExtention == "")
-        {
-            string[] exts = new string[] { };
+        var random = new Random();
+        string[] fileNames = { };
+        if (fileExtention == "") {
+            string[] exts = { };
             if (InternalGameVersion.gameName == "Faz-Anim")
-            {
-                exts = new string[] { "*.fshw", "*.tshw" , "*.mshw"};
-            }
+                exts = new[] { "*.fshw", "*.tshw", "*.mshw" };
             else
-            {
-                exts = new string[] { "*.cshw", "*.sshw", "*.rshw", "*.nshw" };
-            }
-            fileNames = GetFilez(PlayerPrefs.GetString("masterShowtapeList"), SearchOption.AllDirectories, exts).ToArray();
+                exts = new[] { "*.cshw", "*.sshw", "*.rshw", "*.nshw" };
+            fileNames = GetFilez(PlayerPrefs.GetString("masterShowtapeList"), SearchOption.AllDirectories, exts)
+                .ToArray();
         }
-        else
-        {
-            fileNames = System.IO.Directory.GetFiles(PlayerPrefs.GetString("masterShowtapeList"), "*." + fileExtention, SearchOption.AllDirectories);
+        else {
+            fileNames = Directory.GetFiles(PlayerPrefs.GetString("masterShowtapeList"), "*." + fileExtention,
+                SearchOption.AllDirectories);
         }
+
         string randomFile = fileNames[random.Next(0, fileNames.Length)];
         Debug.Log(randomFile);
         showtapeSegmentPaths[0] = randomFile;
         currentShowtapeSegment = 0;
         LoadFromURL(randomFile);
     }
-    public List<string> GetFilez(string path, System.IO.SearchOption opt, params string[] patterns)
-    {
-        List<string> filez = new List<string>();
+
+    public List<string> GetFilez(string path, SearchOption opt, params string[] patterns) {
+        var filez = new List<string>();
         foreach (string pattern in patterns)
-        {
             filez.AddRange(
-                System.IO.Directory.GetFiles(path, pattern, opt)
+                Directory.GetFiles(path, pattern, opt)
             );
-        }
 
 
         // filez.Sort(); // Optional
@@ -874,61 +681,50 @@ public class UI_ShowtapeManager : MonoBehaviour
     }
 
 
-
-    public void ReplaceShowAudio()
-    {
+    public void ReplaceShowAudio() {
         //Call File Browser
         showtapeSegmentPaths = new string[1];
-        var paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape", "", fileExtention, false);
-        if (paths.Length > 0)
-        {
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape", "", fileExtention, false);
+        if (paths.Length > 0) {
             showtapeSegmentPaths[0] = paths[0];
             currentShowtapeSegment = 0;
             referenceSpeaker.time = 0;
             playMovements = false;
             //Check if null
-            if (showtapeSegmentPaths[0] != "")
-            {
-                rshwFormat thefile = rshwFormat.ReadFromFile(showtapeSegmentPaths[0]);
-                List<BitArray> newSignals = new List<BitArray>();
+            if (showtapeSegmentPaths[0] != "") {
+                var thefile = rshwFormat.ReadFromFile(showtapeSegmentPaths[0]);
+                var newSignals = new List<BitArray>();
                 int countlength = 0;
-                if (thefile.signalData[0] != 0)
-                {
+                if (thefile.signalData[0] != 0) {
                     countlength = 1;
-                    BitArray bit = new BitArray(300);
+                    var bit = new BitArray(300);
                     newSignals.Add(bit);
                 }
+
                 for (int i = 0; i < thefile.signalData.Length; i++)
-                {
-                    if (thefile.signalData[i] == 0)
-                    {
+                    if (thefile.signalData[i] == 0) {
                         countlength += 1;
-                        BitArray bit = new BitArray(300);
+                        var bit = new BitArray(300);
                         newSignals.Add(bit);
                     }
-                    else
-                    {
+                    else {
                         newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                     }
-                }
+
                 rshwData = newSignals.ToArray();
 
                 paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
                 if (paths.Length > 0)
-                {
-                    if (paths[0] != "")
-                    {
+                    if (paths[0] != "") {
                         wavPath = paths[0];
                         speakerClip = OpenWavParser.ByteArrayToAudioClip(File.ReadAllBytes(paths[0]));
                         SaveRecording();
                     }
-                }
             }
         }
     }
 
-    public void EraseShowtape()
-    {
+    public void EraseShowtape() {
         disableCharactersOnStart = false;
         playMovements = false;
         referenceSpeaker.time = 0;

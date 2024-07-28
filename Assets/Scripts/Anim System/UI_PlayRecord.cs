@@ -1,25 +1,29 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_PlayRecord : MonoBehaviour
-{
+public class UI_PlayRecord : MonoBehaviour {
+    public enum SignalChange {
+        normal,
+        PreCU,
+        PrePTT
+    }
+
     //Stages
-    [Header("Stage / Characters")]
-    public StageSelector[] stages;
-    [HideInInspector]
-    public int currentStage = 0;
+    [Header("Stage / Characters")] public StageSelector[] stages;
+
+    [HideInInspector] public int currentStage = 0;
 
     //Characters
     public CharacterSelector[] characters;
-    public FloatEvent characterEvent = new();
     public bool CharSwapCheck = false;
     [HideInInspector] public bool swap = false;
+
     [Space(20)]
 
     //Inspector Objects
     [Header("Inspector Objects")]
     public AudioSource[] speakerR;
+
     public AudioSource[] speakerL;
     public Sprite[] icons;
     public GameObject characterHolder;
@@ -30,29 +34,26 @@ public class UI_PlayRecord : MonoBehaviour
     public Text AddSource;
     public Text Uncompress;
     public Text ticketText;
+
+    [HideInInspector] public GameObject thePlayer;
+
+    public SignalChange signalChange;
+
+    public UI_ShowtapeManager manager;
+    public FloatEvent characterEvent = new();
+    private InputHandler inputHandlercomp;
+
     [Space(20)]
 
     //Show Data
     [Header("Show Data")]
-    Mack_Valves mack;
-    InputHandler inputHandlercomp;
-    [HideInInspector]
-    public GameObject thePlayer;
-    bool ticketCheck = false;
-    bool ticketCheck2 = false;
-    public SignalChange signalChange;
-    public enum SignalChange
-    {
-        normal,
-        PreCU,
-        PrePTT,
-    }
+    private Mack_Valves mack;
 
-    public UI_ShowtapeManager manager;
+    private bool ticketCheck = false;
+    private bool ticketCheck2 = false;
     private UI_WindowMaker windowMaker;
 
-    void Awake()
-    {
+    private void Awake() {
         //Update Ticket Text
         UpdateTickets();
 
@@ -64,9 +65,7 @@ public class UI_PlayRecord : MonoBehaviour
         windowMaker = GetComponent<UI_WindowMaker>();
 
         //Start up stages
-        foreach (var stage in stages) {
-            stage.Startup();
-        }
+        foreach (var stage in stages) stage.Startup();
 
         //Spawn in current Characters
         RecreateAllCharacters("");
@@ -75,33 +74,26 @@ public class UI_PlayRecord : MonoBehaviour
         SwapCheck();
     }
 
-    void Update()
-    {
+    private void Update() {
         //Advances the tutorial if it is active
         if (manager.recordMovements && manager.referenceSpeaker.clip != null)
-        {
-            if (manager.referenceSpeaker.time >= manager.referenceSpeaker.clip.length)
-            {
-                GameObject tt = GameObject.Find("Tutorial");
-                if (tt != null)
-                {
-                    TutorialManager tut = tt.GetComponent<TutorialManager>();
+            if (manager.referenceSpeaker.time >= manager.referenceSpeaker.clip.length) {
+                var tt = GameObject.Find("Tutorial");
+                if (tt != null) {
+                    var tut = tt.GetComponent<TutorialManager>();
                     tut.AttemptAdvanceTutorial("FinishShowtape");
                 }
 
                 SpecialSaveAs(11);
             }
-        }
 
         //Run the Simulation
         UpdateAnims();
     }
 
-    void UpdateAnims()
-    {
+    private void UpdateAnims() {
         //A special case for swapping signals around in realtime through the Live Editor
-        switch (signalChange)
-        {
+        switch (signalChange) {
             case SignalChange.PreCU:
                 bool g = mack.topDrawer[85];
                 mack.topDrawer[85] = mack.topDrawer[80];
@@ -117,8 +109,6 @@ public class UI_PlayRecord : MonoBehaviour
             case SignalChange.PrePTT:
 
                 break;
-            default:
-                break;
         }
 
         //Update Portable Animatronics
@@ -126,73 +116,47 @@ public class UI_PlayRecord : MonoBehaviour
 
         //Update Lights
         for (int i = 0; i < stages[currentStage].lightValves.Length; i++)
-        {
             stages[currentStage].lightValves[i].CreateMovements(Time.deltaTime * 60);
-        }
 
         //Update Curtains
         if (stages[currentStage].curtainValves != null)
-        {
             stages[currentStage].curtainValves.CreateMovements(Time.deltaTime * 60);
-        }
 
         //Update Turntables
         for (int i = 0; i < stages[currentStage].tableValves.Length; i++)
-        {
             stages[currentStage].tableValves[i].CreateMovements(Time.deltaTime * 60);
-        }
 
         //Update AudioController
-        if (stages[currentStage].texController != null)
-        {
-            stages[currentStage].texController.CreateTex();
-        }
+        if (stages[currentStage].texController != null) stages[currentStage].texController.CreateTex();
 
         //Update TV turn offs
         if (manager.videoPath != "")
-        {
-            for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
+            for (int i = 0; i < stages[currentStage].tvs.Length; i++) {
                 bool onoff = false;
-                if (stages[currentStage].tvs[i].drawer)
-                {
-                    if (mack.bottomDrawer[stages[currentStage].tvs[i].bitOff])
-                    {
-                        onoff = true;
-                    }
+                if (stages[currentStage].tvs[i].drawer) {
+                    if (mack.bottomDrawer[stages[currentStage].tvs[i].bitOff]) onoff = true;
                 }
-                else
-                {
-                    if (mack.topDrawer[stages[currentStage].tvs[i].bitOff])
-                    {
-                        onoff = true;
-                    }
+                else {
+                    if (mack.topDrawer[stages[currentStage].tvs[i].bitOff]) onoff = true;
                 }
 
 
                 for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
                     if (onoff)
-                    {
-                        stages[currentStage].tvs[i].tvs[e].gameObject.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", Color.black);
-                    }
+                        stages[currentStage].tvs[i].tvs[e].gameObject.GetComponent<MeshRenderer>().material
+                            .SetColor("_BaseColor", Color.black);
                     else
-                    {
-                        stages[currentStage].tvs[i].tvs[e].gameObject.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", Color.white);
-                    }
-                }
+                        stages[currentStage].tvs[i].tvs[e].gameObject.GetComponent<MeshRenderer>().material
+                            .SetColor("_BaseColor", Color.white);
             }
-        }
     }
 
     /// <summary>
-    /// Switches which window is displayed on the main UI panel.
+    ///     Switches which window is displayed on the main UI panel.
     /// </summary>
     /// <param name="thewindow"></param>
-    public void SwitchWindow(int thewindow)
-    {
-        switch (thewindow)
-        {
+    public void SwitchWindow(int thewindow) {
+        switch (thewindow) {
             case 0:
                 //Title
                 windowMaker.MakeTitleWindow();
@@ -200,20 +164,18 @@ public class UI_PlayRecord : MonoBehaviour
                 break;
             case 1:
                 //Main Screen
-                windowMaker.MakeThreeWindow(icons[0], icons[1], icons[2], 0, 8, 2, 3, "Customize", "Play", "Record", 45);
+                windowMaker.MakeThreeWindow(icons[0], icons[1], icons[2], 0, 8, 2, 3, "Customize", "Play", "Record",
+                    45);
                 WindowSwitchDisable(true);
                 manager.EraseShowtape();
                 break;
             case 2:
                 //Play Screen
                 if (windowMaker.allShowtapes.Length > 0)
-                {
-                    windowMaker.MakeThreeWindow(icons[4], icons[1], icons[10], 1, 7, 6, 32, "Play Showtape", "Play Segment", "Show List", 37);
-                }
+                    windowMaker.MakeThreeWindow(icons[4], icons[1], icons[10], 1, 7, 6, 32, "Play Showtape",
+                        "Play Segment", "Show List", 37);
                 else
-                {
                     windowMaker.MakeTwoWindow(icons[4], icons[1], 1, 7, 6, "Play Showtape", "Play Segment", 37);
-                }
                 manager.EraseShowtape();
                 WindowSwitchDisable(true);
 
@@ -238,18 +200,12 @@ public class UI_PlayRecord : MonoBehaviour
             case 6:
                 //Player Menu (Single)
                 manager.Load();
-                if (manager.rshwData != null)
-                {
-                    windowMaker.MakePlayWindow(false);
-                }
+                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 7:
                 //Player Menu (Folder)
                 manager.LoadFolder();
-                if (manager.rshwData != null)
-                {
-                    windowMaker.MakePlayWindow(false);
-                }
+                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 8:
                 //Customize Screen
@@ -270,10 +226,7 @@ public class UI_PlayRecord : MonoBehaviour
                 StageCustomMenu();
                 break;
             case 17:
-                if (manager.rshwData != null)
-                {
-                    windowMaker.MakePlayWindow(false);
-                }
+                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 21:
                 //Recording Groups Screen (Standalone)
@@ -323,65 +276,52 @@ public class UI_PlayRecord : MonoBehaviour
             case 35:
                 manager.ReplaceShowAudio();
                 break;
-            default:
-                break;
         }
     }
 
     /// <summary>
-    /// Starts new show.
+    ///     Starts new show.
     /// </summary>
     /// <param name="input"></param>
-    public void StartNewShow(int input)
-    {
+    public void StartNewShow(int input) {
         Debug.Log("Starting New Show");
         manager.Load();
-        if (manager.speakerClip != null)
-        {
-            SwitchWindow(input);
-        }
+        if (manager.speakerClip != null) SwitchWindow(input);
     }
 
     /// <summary>
-    /// Load a customize window for a particular character.
+    ///     Load a customize window for a particular character.
     /// </summary>
     /// <param name="input"></param>
-    public void CharacterCustomMenu(int input)
-    {
+    public void CharacterCustomMenu(int input) {
         windowMaker.MakeCharacterCustomizeWindow(characters, input);
     }
 
     /// <summary>
-    /// Load a customize stage window for a particular stage.
+    ///     Load a customize stage window for a particular stage.
     /// </summary>
-    public void StageCustomMenu()
-    {
+    public void StageCustomMenu() {
         windowMaker.MakeStageCustomizeWindow(stages, currentStage);
     }
 
     /// <summary>
-    /// Index up the current costume of a character. Costume 0 is no character on stage.
+    ///     Index up the current costume of a character. Costume 0 is no character on stage.
     /// </summary>
     /// <param name="input"></param>
-    public void CostumeUp(int input)
-    {
-        if (characters[input].currentCostume > -1)
-        {
+    public void CostumeUp(int input) {
+        if (characters[input].currentCostume > -1) {
             characters[input].currentCostume--;
             RecreateAllCharacters(characters[input].characterName);
             windowMaker.MakeCharacterCustomizeWindow(characters, input);
         }
-
     }
 
     /// <summary>
-    /// Index down the current costume of a character.
+    ///     Index down the current costume of a character.
     /// </summary>
     /// <param name="input"></param>
-    public void CostumeDown(int input)
-    {
-        if (characters[input].currentCostume < characters[input].allCostumes.Length - 1)
-        {
+    public void CostumeDown(int input) {
+        if (characters[input].currentCostume < characters[input].allCostumes.Length - 1) {
             characters[input].currentCostume++;
             RecreateAllCharacters(characters[input].characterName);
             windowMaker.MakeCharacterCustomizeWindow(characters, input);
@@ -389,31 +329,20 @@ public class UI_PlayRecord : MonoBehaviour
     }
 
     /// <summary>
-    /// Index up the current stage presented.
+    ///     Index up the current stage presented.
     /// </summary>
     /// <param name="input"></param>
-    public void StageUp(int input)
-    {
-        if (input > 0)
-        {
+    public void StageUp(int input) {
+        if (input > 0) {
             currentStage--;
             for (int i = 0; i < stages.Length; i++)
-            {
-                if (i != currentStage)
-                {
-                    if (stages[i].stage.activeSelf)
-                    {
-                        stages[i].stage.SetActive(false);
-                    }
+                if (i != currentStage) {
+                    if (stages[i].stage.activeSelf) stages[i].stage.SetActive(false);
                 }
-                else
-                {
-                    if (!stages[i].stage.activeSelf)
-                    {
-                        stages[i].stage.SetActive(true);
-                    }
+                else {
+                    if (!stages[i].stage.activeSelf) stages[i].stage.SetActive(true);
                 }
-            }
+
             RecreateAllCharacters("");
             SwapCheck();
             windowMaker.MakeStageCustomizeWindow(stages, currentStage);
@@ -421,31 +350,20 @@ public class UI_PlayRecord : MonoBehaviour
     }
 
     /// <summary>
-    /// Index down the current stage presented.
+    ///     Index down the current stage presented.
     /// </summary>
     /// <param name="input"></param>
-    public void StageDown(int input)
-    {
-        if (input < stages.Length - 1)
-        {
+    public void StageDown(int input) {
+        if (input < stages.Length - 1) {
             currentStage++;
             for (int i = 0; i < stages.Length; i++)
-            {
-                if (i != currentStage)
-                {
-                    if (stages[i].stage.activeSelf)
-                    {
-                        stages[i].stage.SetActive(false);
-                    }
+                if (i != currentStage) {
+                    if (stages[i].stage.activeSelf) stages[i].stage.SetActive(false);
                 }
-                else
-                {
-                    if (!stages[i].stage.activeSelf)
-                    {
-                        stages[i].stage.SetActive(true);
-                    }
+                else {
+                    if (!stages[i].stage.activeSelf) stages[i].stage.SetActive(true);
                 }
-            }
+
             RecreateAllCharacters("");
             SwapCheck();
             windowMaker.MakeStageCustomizeWindow(stages, currentStage);
@@ -456,216 +374,162 @@ public class UI_PlayRecord : MonoBehaviour
      * Spawns in all the characters when the show selector is pressed (fake stage -> real stage)
      * As well as creates all the characters in general.
      */
-    public void RecreateAllCharacters(string singleCharacter)
-    {
-        if (singleCharacter == "")
-        {
+    public void RecreateAllCharacters(string singleCharacter) {
+        if (singleCharacter == "") {
             //Destroy current Characters
-            foreach (Transform child in characterHolder.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            foreach (Transform child in characterHolder.transform) Destroy(child.gameObject);
 
             //Create current Characters
             int g = 0;
-            foreach (var charPos in stages[currentStage].stageCharacters) {
-                foreach (var charSelector in characters) {
-                    if (charPos.characterName == charSelector.characterName)
-                    {
-                        if (charSelector.currentCostume != -1)
-                        {
-                            GameObject newChar = Instantiate(charSelector.mainCharacter, characterHolder.transform, true);
-                            newChar.name = charSelector.characterName;
-                            newChar.transform.localPosition = charPos.characterPos + charSelector.allCostumes[charSelector.currentCostume].offsetPos;
-                            newChar.transform.rotation = Quaternion.Euler(charPos.characterRot);
-                            var c = newChar.transform.GetChild(0);
-                            var cValves = c.GetComponent<Character_Valves>();
-                            cValves.mackValves = mackValves;
-                            if (charSelector.premadeAnimations.TryGetValue(CharacterSelector.PremadeAnimations.Activate, out var animator)) {
-                                var anim = newChar.AddComponent<Animator>();
-                                anim.runtimeAnimatorController = animator;
-                                anim.SetBool("Active", true);
-                            }
-                            cValves.StartUp();
-                            g++;
-
-                            //Delete other costumes
-                            foreach (Transform mesh in c.transform)
-                            {
-                                if (mesh.gameObject.name != charSelector.allCostumes[charSelector.currentCostume].costumeName && mesh.gameObject.name != "Armature")
-                                {
-                                    Destroy(mesh.gameObject);
-                                }
-                            }
+            foreach (var charPos in stages[currentStage].stageCharacters)
+            foreach (var charSelector in characters)
+                if (charPos.characterName == charSelector.characterName)
+                    if (charSelector.currentCostume != -1) {
+                        var newChar = Instantiate(charSelector.mainCharacter, characterHolder.transform, true);
+                        newChar.name = charSelector.characterName;
+                        newChar.transform.localPosition = charPos.characterPos +
+                                                          charSelector.allCostumes[charSelector.currentCostume]
+                                                              .offsetPos;
+                        newChar.transform.rotation = Quaternion.Euler(charPos.characterRot);
+                        var c = newChar.transform.GetChild(0);
+                        var cValves = c.GetComponent<Character_Valves>();
+                        cValves.mackValves = mackValves;
+                        if (charSelector.premadeAnimations.TryGetValue(CharacterSelector.PremadeAnimations.Activate,
+                                out var animator)) {
+                            var anim = newChar.AddComponent<Animator>();
+                            anim.runtimeAnimatorController = animator;
+                            anim.SetBool("Active", true);
                         }
+
+                        cValves.StartUp();
+                        g++;
+
+                        //Delete other costumes
+                        foreach (Transform mesh in c.transform)
+                            if (mesh.gameObject.name !=
+                                charSelector.allCostumes[charSelector.currentCostume].costumeName &&
+                                mesh.gameObject.name != "Armature")
+                                Destroy(mesh.gameObject);
                     }
-                }
-            }
         }
-        else
-        {
+        else {
             //Destroy Character
             foreach (Transform child in characterHolder.transform)
-            {
                 if (child.name == singleCharacter)
-                {
                     Destroy(child.gameObject);
-                }
-            }
 
             //Create Character
             for (int e = 0; e < characters.Length; e++)
-            {
-                if (singleCharacter == characters[e].characterName)
-                {
+                if (singleCharacter == characters[e].characterName) {
                     //Check for multiple of single character
                     bool[] count = new bool[stages[currentStage].stageCharacters.Length];
                     for (int i = 0; i < stages[currentStage].stageCharacters.Length; i++)
-                    {
                         if (stages[currentStage].stageCharacters[i].characterName == singleCharacter)
-                        {
                             count[i] = true;
-                        }
-                    }
 
                     for (int g = 0; g < count.Length; g++)
-                    {
-                        if (characters[e].currentCostume != -1 && count[g] == true)
-                        {
-                            GameObject newChar = GameObject.Instantiate(characters[e].mainCharacter);
+                        if (characters[e].currentCostume != -1 && count[g]) {
+                            var newChar = Instantiate(characters[e].mainCharacter);
 
                             newChar.name = characters[e].characterName;
                             newChar.transform.parent = characterHolder.transform;
                             newChar.transform.GetChild(0).GetComponent<Character_Valves>().mackValves = mackValves;
                             newChar.transform.localPosition = stages[currentStage].stageCharacters[g].characterPos;
-                            newChar.transform.rotation = Quaternion.Euler(stages[currentStage].stageCharacters[g].characterRot);
+                            newChar.transform.rotation =
+                                Quaternion.Euler(stages[currentStage].stageCharacters[g].characterRot);
                             newChar.transform.GetChild(0).GetComponent<Character_Valves>().StartUp();
                             //Delete other costumes
                             foreach (Transform mesh in newChar.transform.GetChild(0).transform)
-                            {
-                                if (!(mesh.gameObject.name == characters[e].allCostumes[characters[e].currentCostume].costumeName) && mesh.gameObject.name != "Armature")
-                                {
+                                if (!(mesh.gameObject.name ==
+                                      characters[e].allCostumes[characters[e].currentCostume].costumeName) &&
+                                    mesh.gameObject.name != "Armature")
                                     Destroy(mesh.gameObject);
-                                }
-                            }
                         }
-                    }
                 }
-            }
         }
+
         sidePanel.FlowLoad(-1);
     }
 
     /// <summary>
-    /// Old RR engine code that would automatically swap Rolfe and Klunk out.
-    /// This was to prevent either character being on stage at the same time,
-    /// or to have duplcate stages for each. The swapped character was still
-    /// present, but would be below the ground by 100 meters.
+    ///     Old RR engine code that would automatically swap Rolfe and Klunk out.
+    ///     This was to prevent either character being on stage at the same time,
+    ///     or to have duplcate stages for each. The swapped character was still
+    ///     present, but would be below the ground by 100 meters.
     /// </summary>
-    public void SwapCheck()
-    {
-        if (CharSwapCheck == true)
-        {
+    public void SwapCheck() {
+        if (CharSwapCheck) {
             //Rolfe Klunk Swap
             if (swap)
-            {
-                for (int u = 0; u < characters.Length; u++)
-                {
+                for (int u = 0; u < characters.Length; u++) {
                     if (characters[u].characterName == "Rolfe & Earl")
-                    {
                         characters[u].mainCharacter.transform.localPosition = new Vector3(0, -100, 0);
-                    }
                     if (characters[u].characterName == "Klunk")
-                    {
                         for (int i = 0; i < stages[currentStage].stageCharacters.Length; i++)
-                        {
-                            if (stages[currentStage].stageCharacters[i].characterName == characters[u].characterName)
-                            {
-                                characters[u].mainCharacter.transform.localPosition = stages[currentStage].stageCharacters[i].characterPos;
-                                characters[u].mainCharacter.transform.rotation = Quaternion.Euler(stages[currentStage].stageCharacters[i].characterRot);
+                            if (stages[currentStage].stageCharacters[i].characterName == characters[u].characterName) {
+                                characters[u].mainCharacter.transform.localPosition =
+                                    stages[currentStage].stageCharacters[i].characterPos;
+                                characters[u].mainCharacter.transform.rotation =
+                                    Quaternion.Euler(stages[currentStage].stageCharacters[i].characterRot);
                             }
-                        }
-                    }
                 }
-            }
             else
-            {
-                for (int u = 0; u < characters.Length; u++)
-                {
+                for (int u = 0; u < characters.Length; u++) {
                     if (characters[u].characterName == "Rolfe & Earl")
-                    {
                         for (int i = 0; i < stages[currentStage].stageCharacters.Length; i++)
-                        {
-                            if (stages[currentStage].stageCharacters[i].characterName == characters[u].characterName)
-                            {
-                                characters[u].mainCharacter.transform.localPosition = stages[currentStage].stageCharacters[i].characterPos;
-                                characters[u].mainCharacter.transform.rotation = Quaternion.Euler(stages[currentStage].stageCharacters[i].characterRot);
+                            if (stages[currentStage].stageCharacters[i].characterName == characters[u].characterName) {
+                                characters[u].mainCharacter.transform.localPosition =
+                                    stages[currentStage].stageCharacters[i].characterPos;
+                                characters[u].mainCharacter.transform.rotation =
+                                    Quaternion.Euler(stages[currentStage].stageCharacters[i].characterRot);
                             }
-                        }
-                    }
+
                     if (characters[u].characterName == "Klunk")
-                    {
                         characters[u].mainCharacter.transform.localPosition = new Vector3(0, -100, 0);
-                    }
                 }
-            }
         }
     }
 
     /// <summary>
-    /// Open a window for the current movment group to be used.
+    ///     Open a window for the current movment group to be used.
     /// </summary>
     /// <param name="input"></param>
-    public void RecordingGroupMenu(int input)
-    {
+    public void RecordingGroupMenu(int input) {
         windowMaker.MakeMoveTestWindow(input);
     }
 
     /// <summary>
-    /// Stops the recording during a window switch.
+    ///     Stops the recording during a window switch.
     /// </summary>
     /// <param name="curtainStop"></param>
-    void WindowSwitchDisable(bool curtainStop)
-    {
+    private void WindowSwitchDisable(bool curtainStop) {
         manager.recordMovements = false;
         inputHandlercomp.valveMapping = 0;
     }
 
     /// <summary>
-    /// For the "OFF" button on the UI panel. Unloads the current stage and simulation.
+    ///     For the "OFF" button on the UI panel. Unloads the current stage and simulation.
     /// </summary>
     /// <param name="input"></param>
-    public void UnloadScene(int input)
-    {
+    public void UnloadScene(int input) {
         GameObject.Find("Global Controller").GetComponent<GlobalController>().LoadShowScene("");
     }
 
     /// <summary>
-    /// Loads audio and video from the showtape manager into the stage speakers.
+    ///     Loads audio and video from the showtape manager into the stage speakers.
     /// </summary>
-    public void loadAudio()
-    {
+    public void loadAudio() {
         manager.referenceSpeaker.clip = manager.speakerClip;
-        for (int i = 0; i < speakerL.Length; i++)
-        {
-            speakerL[i].clip = manager.speakerClip;
-        }
-        for (int i = 0; i < speakerR.Length; i++)
-        {
-            speakerR[i].clip = manager.speakerClip;
-        }
+        for (int i = 0; i < speakerL.Length; i++) speakerL[i].clip = manager.speakerClip;
+        for (int i = 0; i < speakerR.Length; i++) speakerR[i].clip = manager.speakerClip;
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].url = manager.videoPath;
-                    stages[currentStage].tvs[i].tvs[e].Play();
-                    stages[currentStage].tvs[i].tvs[e].Pause();
-                }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++) {
+                stages[currentStage].tvs[i].tvs[e].url = manager.videoPath;
+                stages[currentStage].tvs[i].tvs[e].Play();
+                stages[currentStage].tvs[i].tvs[e].Pause();
             }
-        }
+
         manager.Play(true, true);
         syncAudio();
         SwitchWindow(17);
@@ -673,185 +537,114 @@ public class UI_PlayRecord : MonoBehaviour
     }
 
     /// <summary>
-    /// Ensures audio and video is synced when the showtape is playing.
+    ///     Ensures audio and video is synced when the showtape is playing.
     /// </summary>
-    public void syncAudio()
-    {
+    public void syncAudio() {
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].time = manager.referenceSpeaker.time;
-                }
-            }
-        }
-        for (int i = 0; i < speakerL.Length; i++)
-        {
-            speakerL[i].time = manager.referenceSpeaker.time;
-        }
-        for (int i = 0; i < speakerR.Length; i++)
-        {
-            speakerR[i].time = manager.referenceSpeaker.time;
-        }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
+                stages[currentStage].tvs[i].tvs[e].time = manager.referenceSpeaker.time;
+        for (int i = 0; i < speakerL.Length; i++) speakerL[i].time = manager.referenceSpeaker.time;
+        for (int i = 0; i < speakerR.Length; i++) speakerR[i].time = manager.referenceSpeaker.time;
     }
 
     /// <summary>
-    /// Stops the showtape.
+    ///     Stops the showtape.
     /// </summary>
-    public void Stop()
-    {
+    public void Stop() {
         manager.referenceSpeaker.time = 0;
         manager.Play(true, false);
         SwitchWindow(2);
     }
 
     /// <summary>
-    /// Pauses or unpauses the showtape.
+    ///     Pauses or unpauses the showtape.
     /// </summary>
-    public void pauseSong()
-    {
+    public void pauseSong() {
         if (manager.referenceSpeaker.isPlaying)
-        {
             AVPause();
-        }
         else
-        {
             AVPlay();
-        }
     }
 
     /// <summary>
-    /// Saves a showtape while returning to the Create Recording menu.
-    /// This is called when creating a new showtape.
+    ///     Saves a showtape while returning to the Create Recording menu.
+    ///     This is called when creating a new showtape.
     /// </summary>
     /// <param name="input"></param>
-    public void SpecialSaveAs(int input)
-    {
-        if (manager.SaveRecordingAs())
-        {
+    public void SpecialSaveAs(int input) {
+        if (manager.SaveRecordingAs()) {
             SwitchWindow(input);
-            TutorialManager tut = UnityEngine.Object.FindObjectOfType<TutorialManager>();
-            if (tut != null)
-            {
+            var tut = FindObjectOfType<TutorialManager>();
+            if (tut != null) {
                 Debug.Log("tut advance");
                 tut.AttemptAdvanceTutorial("Create WAV");
             }
         }
-        if (input == 11)
-        {
-            SwitchWindow(input);
-        }
+
+        if (input == 11) SwitchWindow(input);
     }
 
     /// <summary>
-    /// Pauses audio and video.
+    ///     Pauses audio and video.
     /// </summary>
-    public void AVPause()
-    {
+    public void AVPause() {
         Debug.Log("Audio Video Pause");
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].Pause();
-                }
-            }
-        }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
+                stages[currentStage].tvs[i].tvs[e].Pause();
         manager.referenceSpeaker.Pause();
-        for (int i = 0; i < speakerL.Length; i++)
-        {
-            speakerL[i].Pause();
-        }
-        for (int i = 0; i < speakerR.Length; i++)
-        {
-            speakerR[i].Pause();
-        }
+        for (int i = 0; i < speakerL.Length; i++) speakerL[i].Pause();
+        for (int i = 0; i < speakerR.Length; i++) speakerR[i].Pause();
         syncAudio();
     }
 
     /// <summary>
-    /// Plays audio and video.
+    ///     Plays audio and video.
     /// </summary>
-    public void AVPlay()
-    {
+    public void AVPlay() {
         Debug.Log("Audio Video Pause");
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].Play();
-                }
-            }
-        }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
+                stages[currentStage].tvs[i].tvs[e].Play();
         manager.referenceSpeaker.Play();
-        for (int i = 0; i < speakerL.Length; i++)
-        {
-            speakerL[i].Play();
-        }
-        for (int i = 0; i < speakerR.Length; i++)
-        {
-            speakerR[i].Play();
-        }
+        for (int i = 0; i < speakerL.Length; i++) speakerL[i].Play();
+        for (int i = 0; i < speakerR.Length; i++) speakerR[i].Play();
         syncAudio();
     }
 
     /// <summary>
-    /// Increases the speed of audio and video.
+    ///     Increases the speed of audio and video.
     /// </summary>
     /// <param name="input"></param>
-    public void FFSong(int input)
-    {
+    public void FFSong(int input) {
         if (input == -1)
-        {
             PitchBackward();
-        }
         else if (input == 0)
-        {
             manager.referenceSpeaker.pitch = 1;
-        }
         else
-        {
             PitchForward();
-        }
-        for (int i = 0; i < speakerL.Length; i++)
-        {
-            speakerL[i].pitch = manager.referenceSpeaker.pitch;
-        }
-        for (int i = 0; i < speakerR.Length; i++)
-        {
-            speakerR[i].pitch = manager.referenceSpeaker.pitch;
-        }
+        for (int i = 0; i < speakerL.Length; i++) speakerL[i].pitch = manager.referenceSpeaker.pitch;
+        for (int i = 0; i < speakerR.Length; i++) speakerR[i].pitch = manager.referenceSpeaker.pitch;
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].playbackSpeed = manager.referenceSpeaker.pitch;
-                }
-            }
-        }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
+                stages[currentStage].tvs[i].tvs[e].playbackSpeed = manager.referenceSpeaker.pitch;
         syncAudio();
     }
 
     /// <summary>
-    /// Pitches forward the audio and video by one setting.
+    ///     Pitches forward the audio and video by one setting.
     /// </summary>
-    public void PitchForward()
-    {
-        if (!manager.playMovements)
-        {
+    public void PitchForward() {
+        if (!manager.playMovements) {
             manager.referenceSpeaker.pitch = 0;
             manager.Play(true, true);
         }
-        switch (manager.referenceSpeaker.pitch)
-        {
+
+        switch (manager.referenceSpeaker.pitch) {
             case -10:
                 manager.referenceSpeaker.pitch = 0.5f;
                 break;
@@ -885,24 +678,19 @@ public class UI_PlayRecord : MonoBehaviour
             case 10:
                 manager.referenceSpeaker.pitch = 100f;
                 break;
-            default:
-                break;
         }
-
     }
 
     /// <summary>
-    /// Pitches backward the audio and video by one setting.
+    ///     Pitches backward the audio and video by one setting.
     /// </summary>
-    public void PitchBackward()
-    {
-        if (!manager.playMovements)
-        {
+    public void PitchBackward() {
+        if (!manager.playMovements) {
             manager.referenceSpeaker.pitch = 0;
             manager.Play(true, true);
         }
-        switch (manager.referenceSpeaker.pitch)
-        {
+
+        switch (manager.referenceSpeaker.pitch) {
             case 1:
                 manager.referenceSpeaker.pitch = 0.5f;
                 break;
@@ -927,26 +715,18 @@ public class UI_PlayRecord : MonoBehaviour
             case -10:
                 manager.referenceSpeaker.pitch = -100f;
                 break;
-            default:
-                break;
         }
+
         if (manager.videoPath != "")
-        {
             for (int i = 0; i < stages[currentStage].tvs.Length; i++)
-            {
-                for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
-                {
-                    stages[currentStage].tvs[i].tvs[e].playbackSpeed = manager.referenceSpeaker.pitch;
-                }
-            }
-        }
+            for (int e = 0; e < stages[currentStage].tvs[i].tvs.Length; e++)
+                stages[currentStage].tvs[i].tvs[e].playbackSpeed = manager.referenceSpeaker.pitch;
     }
 
     /// <summary>
-    /// Updates Ticket text with the currently saved ticket count.
+    ///     Updates Ticket text with the currently saved ticket count.
     /// </summary>
-    public void UpdateTickets()
-    {
-        ticketText.text = "x" + PlayerPrefs.GetInt("TicketCount").ToString();
+    public void UpdateTickets() {
+        ticketText.text = "x" + PlayerPrefs.GetInt("TicketCount");
     }
 }

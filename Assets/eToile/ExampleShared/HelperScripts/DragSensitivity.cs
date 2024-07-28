@@ -7,13 +7,11 @@ using UnityEngine.EventSystems;
  */
 
 public class DragSensitivity : MonoBehaviour {
-
     public float screenPercent = 1.5f;
 
-	// Use this for initialization
-	void Start ()
-    {
-        EventSystem es = GameObject.Find("EventSystem").GetComponent<EventSystem>();
-        es.pixelDragThreshold = Mathf.CeilToInt( (float)Screen.width * (screenPercent / 100f) );
-	}
+    // Use this for initialization
+    private void Start() {
+        var es = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+        es.pixelDragThreshold = Mathf.CeilToInt(Screen.width * (screenPercent / 100f));
+    }
 }

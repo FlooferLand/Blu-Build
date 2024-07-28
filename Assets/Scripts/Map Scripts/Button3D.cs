@@ -1,29 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-[RequireComponent (typeof(BoxCollider))]
-public class Button3D : MonoBehaviour
-{
-    public GameObject ui;
-    public string funcName;
-    public int funcWindow;
-    float highlightime;
-    bool click;
-    bool highlighted;
-    AudioSource sc;
-    RectTransform localrect;
-    public bool sendPlayerNum = false;
-    public float clickTime = 0;
-    public string buttonText;
-
-    public bool sendToTutorial;
-    public string tutorialSend;
-    TutorialManager tut;
-
-    public enum uisound
-    {
+[RequireComponent(typeof(BoxCollider))]
+public class Button3D : MonoBehaviour {
+    public enum uisound {
         tap,
         bigTap,
         ting,
@@ -35,81 +14,78 @@ public class Button3D : MonoBehaviour
         deny,
         create,
         unboxCrate,
-        sitDown,
+        sitDown
     }
+
+    public GameObject ui;
+    public string funcName;
+    public int funcWindow;
+    public bool sendPlayerNum = false;
+    public float clickTime = 0;
+    public string buttonText;
+
+    public bool sendToTutorial;
+    public string tutorialSend;
     public uisound uiSound = uisound.tap;
     public bool ignoreCollider = false;
+    private bool click;
+    private bool highlighted;
+    private float highlightime;
+    private RectTransform localrect;
+    private AudioSource sc;
+    private TutorialManager tut;
 
-    void Awake()
-    {
-        if(sendToTutorial)
-        {
-            GameObject tt = GameObject.Find("Tutorial");
-            if(tt != null)
-            {
-                tut = tt.GetComponent<TutorialManager>();
-            }  
+    private void Awake() {
+        if (sendToTutorial) {
+            var tt = GameObject.Find("Tutorial");
+            if (tt != null) tut = tt.GetComponent<TutorialManager>();
         }
-        if (!ignoreCollider)
-        {
-            this.GetComponent<BoxCollider>().size = new Vector3(this.GetComponent<RectTransform>().sizeDelta.x, this.GetComponent<RectTransform>().sizeDelta.y, 0f);
-            localrect = this.GetComponent<RectTransform>();
-        }   
+
+        if (!ignoreCollider) {
+            GetComponent<BoxCollider>().size = new Vector3(GetComponent<RectTransform>().sizeDelta.x,
+                GetComponent<RectTransform>().sizeDelta.y, 0f);
+            localrect = GetComponent<RectTransform>();
+        }
+
         sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(click)
-        {
-            clickTime += Time.deltaTime;
-        }    
-        if(clickTime > 0.2f)
-        {
+    private void Update() {
+        if (click) clickTime += Time.deltaTime;
+        if (clickTime > 0.2f) {
             clickTime = 0;
             click = false;
         }
-        if(highlighted)
-        {
+
+        if (highlighted)
             highlightime += 0.1f;
-        }
         else
-        {
             highlightime -= 0.1f;
-        }
         highlighted = false;
         highlightime = Mathf.Clamp(highlightime, 0, 1);
         if (!ignoreCollider)
-        {
-            localrect.localScale = new Vector3(Mathf.Max(0,1.0f - (highlightime / 20f)), Mathf.Max(0, 1.0f - (highlightime / 20f)),1);
-        }
+            localrect.localScale = new Vector3(Mathf.Max(0, 1.0f - highlightime / 20f),
+                Mathf.Max(0, 1.0f - highlightime / 20f), 1);
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         click = false;
     }
-    public void Highlight(string name)
-    {
+
+    public void Highlight(string name) {
         highlighted = true;
     }
-    public void StartClick(string name)
-    {
+
+    public void StartClick(string name) {
         click = true;
     }
-    public void EndClick(string name)
-    {
-        if(click)
-        {
-            if (funcName != "")
-            {
-                if (sc == null)
-                {
-                    sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
-                }
-                switch (uiSound)
-                {
+
+    public void EndClick(string name) {
+        if (click)
+            if (funcName != "") {
+                if (sc == null) sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
+                switch (uiSound) {
                     case uisound.tap:
                         sc.clip = (AudioClip)Resources.Load("tap");
                         sc.pitch = Random.Range(0.95f, 1.05f);
@@ -157,30 +133,21 @@ public class Button3D : MonoBehaviour
                         sc.clip = (AudioClip)Resources.Load("Sit Down");
                         sc.pitch = 1.0f;
                         break;
-                    default:
-                        break;
                 }
+
                 sc.Play();
                 click = false;
 
                 int finalsend = funcWindow;
 
-                if (sendPlayerNum) {
-                    finalsend = name == "Player" ? 0 : 1;
+                if (sendPlayerNum) finalsend = name == "Player" ? 0 : 1;
+
+                if (sendToTutorial && tut != null) {
+                    if (tut.AttemptAdvanceTutorial(tutorialSend)) ui.SendMessage(funcName, finalsend);
                 }
-                
-                if (sendToTutorial && tut != null)
-                {
-                    if(tut.AttemptAdvanceTutorial(tutorialSend))
-                    {
-                        ui.SendMessage(funcName, finalsend);
-                    }
-                }
-                else
-                {
+                else {
                     ui.SendMessage(funcName, finalsend);
                 }
             }
-        }
     }
 }

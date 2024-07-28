@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FakeChildObject : MonoBehaviour
-{
+public class FakeChildObject : MonoBehaviour {
     public GameObject tracker;
-    void Update()
-    {
-        this.transform.position = tracker.transform.position;
+
+    private void Update() {
+        transform.position = tracker.transform.position;
     }
 }

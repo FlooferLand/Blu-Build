@@ -1,11 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace AYellowpaper.SerializedCollections.Editor.Data
-{
-    public class ElementSettings
-    {
+﻿namespace AYellowpaper.SerializedCollections.Editor.Data {
+    public class ElementSettings {
         public const string DefaultName = "Not Set";
 
         public string DisplayName { get; set; } = DefaultName;

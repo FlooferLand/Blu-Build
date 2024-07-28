@@ -1,10 +1,8 @@
-namespace AYellowpaper.SerializedCollections
-{
-    public enum ModificationType
-    {
+namespace AYellowpaper.SerializedCollections {
+    public enum ModificationType {
         None,
         Add,
         Remove,
-        Confine,
+        Confine
     }
 }

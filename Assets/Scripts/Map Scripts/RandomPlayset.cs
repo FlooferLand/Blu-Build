@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomPlayset : MonoBehaviour
-{
+public class RandomPlayset : MonoBehaviour {
     public SkinnedMeshRenderer[] lods;
-     Material[] bodies;
-     Material[] heads;
 
     public Color[] colors;
     public Texture2D[] faces;
@@ -16,30 +11,24 @@ public class RandomPlayset : MonoBehaviour
     public Texture2D[] shirtscolor;
     public Texture2D[] pants;
     public Texture2D[] pantscolor;
-    Transform[] children;
-    private Vector3[] _connectedAnchor;
     private Vector3[] _anchor;
+    private Vector3[] _connectedAnchor;
+    private Material[] bodies;
+    private Transform[] children;
+
+    private Material[] heads;
+
     // Start is called before the first frame update
-    void Start()
-    {
+    private void Start() {
         bodies = new Material[lods.Length];
         heads = new Material[lods.Length];
 
         //Setup
         for (int i = 0; i < lods.Length; i++)
-        {
-            foreach (Material matt in lods[i].materials)
-            {
-                if (matt.name == "PlayerBody (Instance)")
-                {
-                    bodies[i] = matt;
-                }
-                if (matt.name == "PlayerHead (Instance)")
-                {
-                    heads[i] = matt;
-                }
+            foreach (var matt in lods[i].materials) {
+                if (matt.name == "PlayerBody (Instance)") bodies[i] = matt;
+                if (matt.name == "PlayerHead (Instance)") heads[i] = matt;
             }
-        }
 
 
         //Random Color
@@ -58,39 +47,27 @@ public class RandomPlayset : MonoBehaviour
         int rPants = Random.Range(0, pants.Length);
 
         //Apply Body
-        for (int i = 0; i < bodies.Length; i++)
-        {
+        for (int i = 0; i < bodies.Length; i++) {
             bodies[i].SetColor("_Decal_1_Color", colors[rColor]);
             bodies[i].SetColor("_Decal_2_Color", colors[rColor2]);
-            if (randomOne == 0)
-            {
-                bodies[i].SetColor("_Skin_Color", colors[skinColor]);
-            }
-            if (randomthree == 0)
-            {
+            if (randomOne == 0) bodies[i].SetColor("_Skin_Color", colors[skinColor]);
+            if (randomthree == 0) {
                 bodies[i].SetTexture("_Decal_1", shirts[rShirts]);
                 bodies[i].SetTexture("_Decal_1_C", shirtscolor[rShirts]);
             }
-            if (randomfour == 0)
-            {
+
+            if (randomfour == 0) {
                 bodies[i].SetTexture("_Decal_2", pants[rPants]);
                 bodies[i].SetTexture("_Decal_2_C", pantscolor[rPants]);
             }
         }
 
         //Apply Head
-        for (int i = 0; i < heads.Length; i++)
-        {
+        for (int i = 0; i < heads.Length; i++) {
             heads[i].SetColor("_Decal_1_Color", colors[rColor3]);
             heads[i].SetColor("_Decal_2_Color", colors[rColor4]);
-            if (randomOne == 0)
-            {
-                heads[i].SetColor("_Skin_Color", colors[skinColor]);
-            }
-            if (randomTwo == 0)
-            {
-                heads[i].SetTexture("_Decal_1", faces[rfaces]);
-            }
+            if (randomOne == 0) heads[i].SetColor("_Skin_Color", colors[skinColor]);
+            if (randomTwo == 0) heads[i].SetTexture("_Decal_1", faces[rfaces]);
             heads[i].SetTexture("_Decal_2", hair[rHairs]);
             heads[i].SetTexture("_Decal_2_C", haircolor[rHairs]);
         }
@@ -99,21 +76,15 @@ public class RandomPlayset : MonoBehaviour
         _connectedAnchor = new Vector3[children.Length];
         _anchor = new Vector3[children.Length];
         for (int i = 0; i < children.Length; i++)
-        {
-            if (children[i].GetComponent<Joint>() != null)
-            {
+            if (children[i].GetComponent<Joint>() != null) {
                 _connectedAnchor[i] = children[i].GetComponent<Joint>().connectedAnchor;
                 _anchor[i] = children[i].GetComponent<Joint>().anchor;
             }
-        }
+
         for (int i = 0; i < children.Length; i++)
-        {
-            if (children[i].GetComponent<Joint>() != null)
-            {
+            if (children[i].GetComponent<Joint>() != null) {
                 children[i].GetComponent<Joint>().connectedAnchor = _connectedAnchor[i];
                 children[i].GetComponent<Joint>().anchor = _anchor[i];
             }
-        }
     }
-
 }

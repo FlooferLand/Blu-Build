@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class CalendarNotice : MonoBehaviour {
     private void Awake() {
         var textComp = GetComponent<Text>();
-        
+
         switch (DateTime.Now.Month) {
             case 8 when DateTime.Now.Day == 8:
                 textComp.text = "Happy Birthday FNaF!";

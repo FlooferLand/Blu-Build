@@ -7,9 +7,9 @@ using UnityEngine.UI;
 // Edited by FlooferLand
 
 // Place in an editor folder
-class TextToTextMeshPro : MonoBehaviour {
+internal class TextToTextMeshPro : MonoBehaviour {
     [MenuItem("Tools/Replace Text Component With Text Mesh Pro", true)]
-    static bool TextSelectedValidation() {
+    private static bool TextSelectedValidation() {
         var selectedObjects = Selection.gameObjects;
         if (selectedObjects.Length == 0) return false;
 
@@ -23,7 +23,7 @@ class TextToTextMeshPro : MonoBehaviour {
     }
 
     [MenuItem("Tools/Replace Text Component With Text Mesh Pro")]
-    static void ReplaceSelectedObjects() {
+    private static void ReplaceSelectedObjects() {
         var selectedObjects = Selection.gameObjects;
         Undo.RecordObjects(selectedObjects, "Replace Text Component with Text Mesh Pro Component");
 
@@ -31,7 +31,7 @@ class TextToTextMeshPro : MonoBehaviour {
             var existingTextMeshComp = selectedObject.GetComponent<TextMeshProUGUI>();
             var textComp = selectedObject.GetComponent<Text>();
             if (existingTextMeshComp && !textComp) continue;
-            
+
             var textSizeDelta = textComp.rectTransform.sizeDelta;
             //text component is still alive in memory, so the settings are still intact
             Undo.DestroyObjectImmediate(textComp);
@@ -93,12 +93,14 @@ class TextToTextMeshPro : MonoBehaviour {
                     break;
             }
 
-            tmp.textWrappingMode = (textComp.horizontalOverflow == HorizontalWrapMode.Wrap) ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+            tmp.textWrappingMode = textComp.horizontalOverflow == HorizontalWrapMode.Wrap
+                ? TextWrappingModes.Normal
+                : TextWrappingModes.NoWrap;
 
             tmp.color = textComp.color;
             tmp.raycastTarget = textComp.raycastTarget;
             tmp.richText = textComp.supportRichText;
-            
+
             tmp.rectTransform.sizeDelta = textSizeDelta;
         }
     }

@@ -1,53 +1,38 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 
-namespace AYellowpaper.SerializedCollections.Editor
-{
-    internal static class SCEnumUtility
-    {
-        private static Dictionary<Type, EnumCache> _cache = new Dictionary<Type, EnumCache>();
+namespace AYellowpaper.SerializedCollections.Editor {
+    internal static class SCEnumUtility {
+        private static readonly Dictionary<Type, EnumCache> _cache = new();
 
-        internal static EnumCache GetEnumCache(Type enumType)
-        {
+        internal static EnumCache GetEnumCache(Type enumType) {
             if (_cache.TryGetValue(enumType, out var val))
                 return val;
 
-            try
-            {
-                var classType = typeof(EditorGUI).Assembly.GetType("UnityEditor.EnumDataUtility");
-                var methodInfo = classType.GetMethod("GetCachedEnumData", BindingFlags.Static | BindingFlags.NonPublic);
-                var parameters = new object[] { enumType, true };
-                var result = methodInfo.Invoke(null, parameters);
-                var flagValues = (int[])result.GetType().GetField("flagValues").GetValue(result);
-                var names = (string[])result.GetType().GetField("names").GetValue(result);
-                var cache = new EnumCache(enumType, flagValues, names);
-                _cache.Add(enumType, cache);
-                return cache;
-            }
-            catch
-            {
-                throw;
-            }
+            var classType = typeof(EditorGUI).Assembly.GetType("UnityEditor.EnumDataUtility");
+            var methodInfo = classType.GetMethod("GetCachedEnumData", BindingFlags.Static | BindingFlags.NonPublic);
+            object[] parameters = { enumType, true };
+            object result = methodInfo.Invoke(null, parameters);
+            int[] flagValues = (int[])result.GetType().GetField("flagValues").GetValue(result);
+            string[] names = (string[])result.GetType().GetField("names").GetValue(result);
+            var cache = new EnumCache(enumType, flagValues, names);
+            _cache.Add(enumType, cache);
+            return cache;
         }
     }
 
-    internal record EnumCache
-    {
-        public readonly Type Type;
+    internal record EnumCache {
+        private readonly Dictionary<int, string[]> _namesByValue = new();
+        public readonly int[] FlagValues;
         public readonly bool IsFlag;
         public readonly int Length;
-        public readonly int[] FlagValues;
         public readonly string[] Names;
+        public readonly Type Type;
 
-        private readonly Dictionary<int, string[]> _namesByValue = new Dictionary<int, string[]>();
-
-        public EnumCache(Type type, int[] flagValues, string[] displayNames)
-        {
+        public EnumCache(Type type, int[] flagValues, string[] displayNames) {
             Type = type;
             FlagValues = flagValues;
             Names = displayNames;
@@ -55,9 +40,8 @@ namespace AYellowpaper.SerializedCollections.Editor
             IsFlag = Type.IsDefined(typeof(FlagsAttribute));
         }
 
-        internal string[] GetNamesForValue(int value)
-        {
-            if (_namesByValue.TryGetValue(value, out var list))
+        internal string[] GetNamesForValue(int value) {
+            if (_namesByValue.TryGetValue(value, out string[] list))
                 return list;
 
             string[] array = IsFlag ? GetFlagValues(value).ToArray() : new[] { GetEnumValue(value) };
@@ -66,26 +50,20 @@ namespace AYellowpaper.SerializedCollections.Editor
             return array;
         }
 
-        private string GetEnumValue(int value)
-        {
+        private string GetEnumValue(int value) {
             for (int i = 0; i < Length; i++)
-            {
                 if (FlagValues[i] == value)
                     return Names[i];
-            }
             return null;
         }
 
-        private IEnumerable<string> GetFlagValues(int flagValue)
-        {
-            if (flagValue == 0)
-            {
+        private IEnumerable<string> GetFlagValues(int flagValue) {
+            if (flagValue == 0) {
                 yield return FlagValues[0] == 0 ? Names[0] : "Nothing";
                 yield break;
             }
 
-            for (int i = 0; i < Length; i++)
-            {
+            for (int i = 0; i < Length; i++) {
                 int fv = FlagValues[i];
                 if ((fv & flagValue) == fv && fv != 0)
                     yield return Names[i];
