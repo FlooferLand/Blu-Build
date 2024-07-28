@@ -111,7 +111,6 @@ public class Button3D : MonoBehaviour
                 switch (uiSound)
                 {
                     case uisound.tap:
-
                         sc.clip = (AudioClip)Resources.Load("tap");
                         sc.pitch = Random.Range(0.95f, 1.05f);
                         break;
@@ -166,19 +165,11 @@ public class Button3D : MonoBehaviour
 
                 int finalsend = funcWindow;
 
-                if(sendPlayerNum)
-                {
-                    if(name == "Player")
-                    {
-                        finalsend = 0;
-                    }
-                    else
-                    {
-                        finalsend = 1;
-                    }
+                if (sendPlayerNum) {
+                    finalsend = name == "Player" ? 0 : 1;
                 }
                 
-                if(sendToTutorial && tut != null)
+                if (sendToTutorial && tut != null)
                 {
                     if(tut.AttemptAdvanceTutorial(tutorialSend))
                     {

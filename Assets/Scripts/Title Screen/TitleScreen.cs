@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -18,29 +20,32 @@ public class TitleScreen : MonoBehaviour {
     public GameObject starultra;
 
     // Settings text
-    public GameObject vsyncText;
-    public GameObject textureText;
-    public GameObject resText;
-    public GameObject motionText;
-    public GameObject exposureText;
-    public GameObject versionText;
-    public GameObject ssrText;
-    public GameObject ssaoText;
-    public GameObject timeofdayText;
-    public GameObject resPercentText;
-    public GameObject dlssText;
+    public TextMeshProUGUI vsyncText;
+    public TextMeshProUGUI textureText;
+    public TextMeshProUGUI resText;
+    public TextMeshProUGUI motionText;
+    public TextMeshProUGUI exposureText;
+    public TextMeshProUGUI versionText;
+    public TextMeshProUGUI ssrText;
+    public TextMeshProUGUI ssaoText;
+    public TextMeshProUGUI timeofdayText;
+    public TextMeshProUGUI resPercentText;
+    public TextMeshProUGUI dlssText;
+    public TextMeshProUGUI graphicsApiText;
+    public TextMeshProUGUI brandCosmeticStyleText;
 
     // Settings widgets
     public GameObject settingW;
     public GameObject faqW;
     public GameObject creditsW;
     public GameObject characterW;
+    public GameObject characterWScene;
     public GameObject downButton;
 
     public GameObject bottomBar;
     public GameObject tutorialAskPopup;
     public GameObject showtimeButton;
-    public GameObject cog;
+    public Animator logoAnim;
     public GameObject logo;
     public GameObject logoTwo;
 
@@ -71,6 +76,7 @@ public class TitleScreen : MonoBehaviour {
     public string sceneLoadCache;
 
     private bool isHalloween;
+    private Animator downButtonAnimator;
 
     private void Start()
     {
@@ -87,7 +93,8 @@ public class TitleScreen : MonoBehaviour {
             faqG = faqW.GetComponent<CanvasGroup>();
             creditsG = creditsW.GetComponent<CanvasGroup>();
             characterG = characterW.GetComponent<CanvasGroup>();
-            versionText.GetComponent<Text>().text = "Ver. " + InternalGameVersion.gameVersion;
+            versionText.text = "Ver. " + InternalGameVersion.gameVersion;
+            downButtonAnimator = downButton.GetComponent<Animator>();
             
             barGrid.color = barGrid.color.WithAlpha(0f);
         }
@@ -124,7 +131,7 @@ public class TitleScreen : MonoBehaviour {
         // Playing the cog animation and the music in sync
         // + Spoopy easter-egg where the cog stops spinning during Halloween
         if (!isHalloween) {
-            cog.GetComponent<Animator>().Play("Cog animation");
+            logoAnim.Play("Cog animation");
             music.Play();
         }
     }
@@ -166,7 +173,7 @@ public class TitleScreen : MonoBehaviour {
                 faqG.alpha += .1f;
                 creditsG.alpha += .1f;
                 characterG.alpha += .1f;
-                barGrid.color = Color.Lerp(barGrid.color, barGrid.color.WithAlpha(1f), 0.08f);
+                barGrid.color = Color.Lerp(barGrid.color, barGrid.color.WithAlpha(0.25f), 0.08f);
             }
             else
             {
@@ -191,6 +198,7 @@ public class TitleScreen : MonoBehaviour {
             if (characterG.alpha <= 0)
             {
                 characterW.SetActive(false);
+                characterWScene.SetActive(false);
             }
         }
     }
@@ -244,6 +252,7 @@ public class TitleScreen : MonoBehaviour {
         faqW.SetActive(false);
         settingW.SetActive(true);
         characterW.SetActive(false);
+        characterWScene.SetActive(false);
         showtimeButton.SetActive(false);
     }
     public void FAQMenu()
@@ -252,6 +261,7 @@ public class TitleScreen : MonoBehaviour {
         creditsW.SetActive(false);
         faqW.SetActive(true);
         settingW.SetActive(false);
+        characterW.SetActive(false);
         characterW.SetActive(false);
         showtimeButton.SetActive(false);
     }
@@ -262,6 +272,7 @@ public class TitleScreen : MonoBehaviour {
         faqW.SetActive(false);
         settingW.SetActive(false);
         characterW.SetActive(false);
+        characterWScene.SetActive(false);
         showtimeButton.SetActive(false);
     }
     public void CharacterMenu()
@@ -271,6 +282,7 @@ public class TitleScreen : MonoBehaviour {
         faqW.SetActive(false);
         settingW.SetActive(false);
         characterW.SetActive(true);
+        characterWScene.SetActive(true);
         showtimeButton.SetActive(false);
     }
 
@@ -281,9 +293,10 @@ public class TitleScreen : MonoBehaviour {
         globalAudio.Play();
         barUp = true;
         downButton.SetActive(true);
-        for (int i = 0; i < bars.Length; i++)
-        {
-            bars[i].transition = true;
+        downButtonAnimator.SetTrigger("Normal");
+        downButtonAnimator.Play("Normal");
+        foreach (var bar in bars) {
+            bar.transition = true;
         }
     }
 
@@ -292,11 +305,10 @@ public class TitleScreen : MonoBehaviour {
         globalAudio.clip = (AudioClip)Resources.Load("tap");
         globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
         globalAudio.Play();
-        downButton.SetActive(false);
+        downButtonAnimator.SetTrigger("Pressed");
         barUp = false;
-        for (int i = 0; i < bars.Length; i++)
-        {
-            bars[i].transition = false;
+        foreach (var bar in bars) {
+            bar.transition = false;
         }
         showtimeButton.SetActive(true);
     }
@@ -332,69 +344,51 @@ public class TitleScreen : MonoBehaviour {
 
     public void SetQuality(int quality)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
+        PlayFeedbackSound("ting");
         PlayerPrefs.SetInt("Settings: Quality", quality);
+        QualitySave.ApplySavedQualitySettings();
         UpdateSettings();
     }
-    public void SetSSR(int quality)
+    public void SetSSR(int offset)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
-        int check = PlayerPrefs.GetInt("Settings: SSR") + quality;
+        PlayFeedbackSound("ting");
+        int check = PlayerPrefs.GetInt("Settings: SSR") + offset;
         if (check < 0)
-        {
             check = 0;
-        }
         if (check > 6 && !disableRaytracing)
-        {
             check = 6;
-        }
         if (check > 4 && disableRaytracing)
-        {
             check = 4;
-        }
         PlayerPrefs.SetInt("Settings: SSR", check);
         UpdateSettings();
     }
-    public void SetSSAO(int quality)
+    public void SetSSAO(int offset)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
-        int check = PlayerPrefs.GetInt("Settings: SSAO") + quality;
+        PlayFeedbackSound("ting");
+        int check = PlayerPrefs.GetInt("Settings: SSAO") + offset;
         if (check < 0)
-        {
             check = 0;
-        }
         if (check > 5 && !disableRaytracing)
-        {
             check = 5;
-        }
         if (check > 2 && disableRaytracing)
-        {
             check = 2;
-        }
         PlayerPrefs.SetInt("Settings: SSAO", check);
         UpdateSettings();
     }
     
-    
-    public void SetTextureQ(int quality)
+    public void SetTextureQ(int offset)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
-        int check = PlayerPrefs.GetInt("Settings: Texture") + quality;
-        if (check < 0)
-        {
-            check = 0;
-        }
-        if (check > 3)
-        {
-            check = 3;
+        int check = PlayerPrefs.GetInt("Settings: Texture") + offset;
+        switch (check) {
+            case < 0:
+                check = 0;
+                break;
+            case > 3:
+                check = 3;
+                break;
+            default:
+                PlayFeedbackSound("ting");
+                break;
         }
         PlayerPrefs.SetInt("Settings: Texture", check);
         UpdateSettings();
@@ -402,116 +396,125 @@ public class TitleScreen : MonoBehaviour {
 
     public void SetWindowed(int quality)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
+        PlayFeedbackSound("ting");
         PlayerPrefs.SetInt("Settings: Windowed", quality);
         UpdateSettings();
     }
 
     public void SetMotionBlur(int onoff)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
+        PlayFeedbackSound("ting");
         PlayerPrefs.SetInt("Settings: Motion Blur", onoff);
         UpdateSettings();
     }
 
     public void SetAutoExposure(int onoff)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
+        PlayFeedbackSound("ting");
         PlayerPrefs.SetInt("Settings: Auto Exposure", onoff);
         UpdateSettings();
     }
 
-    public void SetPlaybackRate(int quality)
+    public void SetPlaybackRate(int offset)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
-        int check = PlayerPrefs.GetInt("Settings: Playback") + quality;
-        if (check < 0)
-        {
-            check = 0;
-        }
-        if (check > 1)
-        {
-            check = 1;
+        int check = PlayerPrefs.GetInt("Settings: Playback") + offset;
+        switch (check) {
+            case < 0:
+                check = 0;
+                break;
+            case > 1:
+                check = 1;
+                break;
+            default:
+                PlayFeedbackSound("ting");
+                break;
         }
         PlayerPrefs.SetInt("Settings: Playback", check);
         UpdateSettings();
     }
-    public void SetTimeOfDay(int quality)
+    public void SetTimeOfDay(int offset)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
-        int check = PlayerPrefs.GetInt("Settings: Time of Day") + quality;
-        if (check < 0)
-        {
-            check = 0;
-        }
-        if (check > 4)
-        {
-            check = 4;
+        int check = PlayerPrefs.GetInt("Settings: Time of Day") + offset;
+        switch (check) {
+            case < 0:
+                check = 0;
+                break;
+            case > 4:
+                check = 4;
+                break;
+            default:
+                PlayFeedbackSound("ting");
+                break;
         }
         PlayerPrefs.SetInt("Settings: Time of Day", check);
         UpdateSettings();
     }
+    public void SetBrandingStyle(int offset) {
+        int check = PlayerPrefs.GetInt("Settings: Branding Style") + offset;
+        if (check < BrandingStyle.minValue)
+            check = BrandingStyle.maxValue;
+        else if (check > BrandingStyle.maxValue)
+            check = BrandingStyle.minValue;
+        
+        PlayerPrefs.SetInt("Settings: Branding Style", check);
+        PlayFeedbackSound("ting");
+        UpdateSettings();
+    }
     public void SetVsync(int onOff)
     {
-
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
+        PlayFeedbackSound("ting");
         PlayerPrefs.SetInt("Settings: VSync", onOff);
         UpdateSettings();
     }
     public void SetResPercent(int quality)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: Res Percent") + quality;
-        if (check < 0)
-        {
-            check = 0;
-        }
-        if (check > 18)
-        {
-            check = 18;
+        switch (check) {
+            case < 0:
+                check = 0;
+                break;
+            case > 18:
+                check = 18;
+                break;
+            default:
+                PlayFeedbackSound("ting");
+                break;
         }
         PlayerPrefs.SetInt("Settings: Res Percent", check);
         UpdateSettings();
     }
     public void SetDLSS(int quality)
     {
-        globalAudio.clip = (AudioClip)Resources.Load("ting");
-        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
-        globalAudio.Play();
         int check = PlayerPrefs.GetInt("Settings: DLSS") + quality;
-        if (check < 0)
-        {
-            check = 0;
-        }
-        if (check > 4)
-        {
-            check = 4;
+        switch (check) {
+            case < 0:
+                check = 0;
+                break;
+            case > 4:
+                check = 4;
+                break;
+            default:
+                PlayFeedbackSound("ting");
+                break;
         }
         PlayerPrefs.SetInt("Settings: DLSS", check);
         UpdateSettings();
     }
-    void UpdateSettings()
-    {
+
+    public void PlayFeedbackSound(string sound) {
+        globalAudio.clip = (AudioClip) Resources.Load(sound);
+        globalAudio.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+        globalAudio.Play();
+    }
+    
+    /** Called when the player updates the settings somehow */
+    void UpdateSettings() {
         QualitySave.ApplySavedQualitySettings();
         if (!stopUpdate)
         {
             if (vsyncText != null)
             {
-                vsyncText.GetComponent<Text>().text = QualitySettings.vSyncCount == 0 ? "Off" : "On";
+                vsyncText.text = QualitySettings.vSyncCount == 0 ? "Off" : "On";
                 starlow.SetActive(false);
                 starmed.SetActive(false);
                 starhigh.SetActive(false);
@@ -536,16 +539,16 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: Texture"))
                 {
                     case 0:
-                        textureText.GetComponent<Text>().text = "Very Low";
+                        textureText.text = "Very Low";
                         break;
                     case 1:
-                        textureText.GetComponent<Text>().text = "Low";
+                        textureText.text = "Low";
                         break;
                     case 2:
-                        textureText.GetComponent<Text>().text = "Medium";
+                        textureText.text = "Medium";
                         break;
                     case 3:
-                        textureText.GetComponent<Text>().text = "High";
+                        textureText.text = "High";
                         break;
                     default:
                         break;
@@ -554,10 +557,10 @@ public class TitleScreen : MonoBehaviour {
                 {
 
                     case 0:
-                        resText.GetComponent<Text>().text = "Fullscreen";
+                        resText.text = "Fullscreen";
                         break;
                     case 1:
-                        resText.GetComponent<Text>().text = "Windowed";
+                        resText.text = "Windowed";
                         break;
                     default:
                         break;
@@ -565,10 +568,10 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: Motion Blur"))
                 {
                     case 0:
-                        motionText.GetComponent<Text>().text = "Off";
+                        motionText.text = "Off";
                         break;
                     case 1:
-                        motionText.GetComponent<Text>().text = "On";
+                        motionText.text = "On";
                         break;
                     default:
                         break;
@@ -576,10 +579,10 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: Auto Exposure"))
                 {
                     case 0:
-                        exposureText.GetComponent<Text>().text = "Off";
+                        exposureText.text = "Off";
                         break;
                     case 1:
-                        exposureText.GetComponent<Text>().text = "On";
+                        exposureText.text = "On";
                         break;
                     default:
                         break;
@@ -587,25 +590,25 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: SSR"))
                 {
                     case 0:
-                        ssrText.GetComponent<Text>().text = "Off";
+                        ssrText.text = "Off";
                         break;
                     case 1:
-                        ssrText.GetComponent<Text>().text = "SSR Low";
+                        ssrText.text = "SSR Low";
                         break;
                     case 2:
-                        ssrText.GetComponent<Text>().text = "SSR Medium";
+                        ssrText.text = "SSR Medium";
                         break;
                     case 3:
-                        ssrText.GetComponent<Text>().text = "SSR High";
+                        ssrText.text = "SSR High";
                         break;
                     case 4:
-                        ssrText.GetComponent<Text>().text = "SSR Ultra";
+                        ssrText.text = "SSR Ultra";
                         break;
                     case 5:
-                        ssrText.GetComponent<Text>().text = "RT Performance";
+                        ssrText.text = "RT Performance";
                         break;
                     case 6:
-                        ssrText.GetComponent<Text>().text = "RT Quality";
+                        ssrText.text = "RT Quality";
                         break;
                     default:
                         break;
@@ -613,22 +616,22 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: SSAO"))
                 {
                     case 0:
-                        ssaoText.GetComponent<Text>().text = "Off";
+                        ssaoText.text = "Off";
                         break;
                     case 1:
-                        ssaoText.GetComponent<Text>().text = "SS AO";
+                        ssaoText.text = "SS AO";
                         break;
                     case 2:
-                        ssaoText.GetComponent<Text>().text = "(WIP) SS GI";
+                        ssaoText.text = "(WIP) SS GI";
                         break;
                     case 3:
-                        ssaoText.GetComponent<Text>().text = "(WIP) RT AO";
+                        ssaoText.text = "(WIP) RT AO";
                         break;
                     case 4:
-                        ssaoText.GetComponent<Text>().text = "(WIP) RT GI Performance";
+                        ssaoText.text = "(WIP) RT GI Performance";
                         break;
                     case 5:
-                        ssaoText.GetComponent<Text>().text = "(WIP) RT GI Quality";
+                        ssaoText.text = "(WIP) RT GI Quality";
                         break;
                     default:
                         break;
@@ -636,44 +639,55 @@ public class TitleScreen : MonoBehaviour {
                 switch (PlayerPrefs.GetInt("Settings: Time of Day"))
                 {
                     case 0:
-                        timeofdayText.GetComponent<Text>().text = "PC Clock";
+                        timeofdayText.text = "PC Clock";
                         break;
                     case 1:
-                        timeofdayText.GetComponent<Text>().text = "Day";
+                        timeofdayText.text = "Day";
                         break;
                     case 2:
-                        timeofdayText.GetComponent<Text>().text = "Night";
+                        timeofdayText.text = "Night";
                         break;
                     case 3:
-                        timeofdayText.GetComponent<Text>().text = "Rainy";
+                        timeofdayText.text = "Rainy";
                         break;
                     case 4:
-                        timeofdayText.GetComponent<Text>().text = "Sunset";
+                        timeofdayText.text = "Sunset";
                         break;
                     default:
                         break;  
                 }
-                resPercentText.GetComponent<Text>().text = (100 - (PlayerPrefs.GetInt("Settings: Res Percent") * 5)).ToString();
+                resPercentText.text = (100 - (PlayerPrefs.GetInt("Settings: Res Percent") * 5)).ToString() + '%';
                 switch (PlayerPrefs.GetInt("Settings: DLSS"))
                 {
                     case 0:
-                        dlssText.GetComponent<Text>().text = "Off";
+                        dlssText.text = "Off";
                         break;
                     case 1:
-                        dlssText.GetComponent<Text>().text = "Ultra Performance";
+                        dlssText.text = "Ultra Performance";
                         break;
                     case 2:
-                        dlssText.GetComponent<Text>().text = "Max Performance";
+                        dlssText.text = "Max Performance";
                         break;
                     case 3:
-                        dlssText.GetComponent<Text>().text = "Balanced";
+                        dlssText.text = "Balanced";
                         break;
                     case 4:
-                        dlssText.GetComponent<Text>().text = "Quality";
+                        dlssText.text = "Quality";
                         break;
                     default:
                         break;
                 }
+            }
+
+            switch ((BrandingStyle.Enum) PlayerPrefs.GetInt("Settings: Branding Style")) {
+                case BrandingStyle.Enum.Classic:
+                    brandCosmeticStyleText.text = "Faz-Anim";
+                    break;
+                case BrandingStyle.Enum.RockAfire:
+                    brandCosmeticStyleText.text = "Rock-Afire";
+                    break;
+                default:
+                    break;
             }
         }
     }

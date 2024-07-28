@@ -72,7 +72,7 @@ public class UI_SidePanel : MonoBehaviour
     IEnumerator AwakeCoroutine()
     {
         yield return new WaitForSeconds(1f);
-        allDynamics = FindObjectsOfType(typeof(DynamicBone)) as DynamicBone[];
+        allDynamics = FindObjectsByType<DynamicBone>(FindObjectsSortMode.None);
         yield return new WaitForSeconds(.2f);
         FlowUpdate();
         yield return new WaitForSeconds(.2f);
@@ -91,8 +91,7 @@ public class UI_SidePanel : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
+        if (Input.GetKeyDown(KeyCode.Tab)) {
             if (hidepanels)
             {
                 hidepanels = !hidepanels;
@@ -106,9 +105,13 @@ public class UI_SidePanel : MonoBehaviour
                 showPanelUI.transform.parent.localPosition += Vector3.one * 100;
             }
         }
-        if (Input.GetKeyDown(KeyCode.BackQuote))
-        {
+        
+        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.BackQuote)) {
             showPanelUI.pauseSong();
+        }
+        if (Input.GetKeyDown(KeyCode.F2)) {
+            showPanelUI.pauseSong();
+            // showPanelUI.seek();
         }
     }
 
@@ -169,19 +172,17 @@ public class UI_SidePanel : MonoBehaviour
         if (bonesText.GetComponent<Text>().text == "Off")
         {
             bonesText.text = "On";
-            allDynamics = FindObjectsOfType(typeof(DynamicBone)) as DynamicBone[];
-            for (int i = 0; i < allDynamics.Length; i++)
-            {
-                allDynamics[i].enabled = true;
+            allDynamics = FindObjectsByType<DynamicBone>(FindObjectsSortMode.None);
+            foreach (var bone in allDynamics) {
+                bone.enabled = true;
             }
         }
         else
         {
             bonesText.text = "Off";
-            allDynamics = FindObjectsOfType(typeof(DynamicBone)) as DynamicBone[];
-            for (int i = 0; i < allDynamics.Length; i++)
-            {
-                allDynamics[i].enabled = false;
+            allDynamics = FindObjectsByType<DynamicBone>(FindObjectsSortMode.None);
+            foreach (var bone in allDynamics) {
+                bone.enabled = false;
             }
         }
     }
@@ -407,14 +408,16 @@ public class UI_SidePanel : MonoBehaviour
         {
             return;
         }
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().flowControlIn[flowNumber] = copyPasteValues[0];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().flowControlOut[flowNumber] = copyPasteValues[1];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().gravityScale[flowNumber] = copyPasteValues[2];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().gravityScaleOut[flowNumber] = copyPasteValues[3];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashControlIn[flowNumber] = copyPasteValues[4];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashControlOut[flowNumber] = copyPasteValues[5];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashSpeedIn[flowNumber] = copyPasteValues[6];
-        theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashSpeedOut[flowNumber] = copyPasteValues[7];
+
+        var characterValves = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>();
+        characterValves.flowControlIn[flowNumber] = copyPasteValues[0];
+        characterValves.flowControlOut[flowNumber] = copyPasteValues[1];
+        characterValves.gravityScale[flowNumber] = copyPasteValues[2];
+        characterValves.gravityScaleOut[flowNumber] = copyPasteValues[3];
+        characterValves.smashControlIn[flowNumber] = copyPasteValues[4];
+        characterValves.smashControlOut[flowNumber] = copyPasteValues[5];
+        characterValves.smashSpeedIn[flowNumber] = copyPasteValues[6];
+        characterValves.smashSpeedOut[flowNumber] = copyPasteValues[7];
         FlowUpdate();
     }
 
@@ -432,16 +435,19 @@ public class UI_SidePanel : MonoBehaviour
         {
             return;
         }
+        
+
+        var characterValves = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>();
         flowProfileText.text = showPanelUI.characters[flowProfile].characterName;
-        flowNumText.text = SearchBitChartName(theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().cylBit[flowNumber], theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().cylDrawer[flowNumber]);
-        flowSpeedInText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().flowControlIn[flowNumber].ToString();
-        flowSpeedOutText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().flowControlOut[flowNumber].ToString();
-        flowWeightInText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().gravityScale[flowNumber].ToString();
-        flowWeightOutText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().gravityScaleOut[flowNumber].ToString();
-        flowSlamInText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashControlIn[flowNumber].ToString();
-        flowSlamOutText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashControlOut[flowNumber].ToString();
-        flowSlamSpeedInText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashSpeedIn[flowNumber].ToString();
-        flowSlamSpeedOutText.text = theCharacter.transform.GetChild(0).GetComponent<Character_Valves>().smashSpeedOut[flowNumber].ToString();
+        flowNumText.text = SearchBitChartName(characterValves.cylBit[flowNumber], characterValves.cylDrawer[flowNumber]);
+        flowSpeedInText.text = characterValves.flowControlIn[flowNumber].ToString();
+        flowSpeedOutText.text = characterValves.flowControlOut[flowNumber].ToString();
+        flowWeightInText.text = characterValves.gravityScale[flowNumber].ToString();
+        flowWeightOutText.text = characterValves.gravityScaleOut[flowNumber].ToString();
+        flowSlamInText.text = characterValves.smashControlIn[flowNumber].ToString();
+        flowSlamOutText.text = characterValves.smashControlOut[flowNumber].ToString();
+        flowSlamSpeedInText.text = characterValves.smashSpeedIn[flowNumber].ToString();
+        flowSlamSpeedOutText.text = characterValves.smashSpeedOut[flowNumber].ToString();
     }
 
     public void FlowUpdater(GameObject thetest)

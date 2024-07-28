@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine.XR.Management;
 using UnityEditor.XR.Management;
 
@@ -101,7 +102,7 @@ public class VersionManager : Editor
         {
             tex[i] = exam.fazTexture as Texture2D;
         }
-        PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Standalone, tex);
+        PlayerSettings.SetIcons(NamedBuildTarget.Standalone, tex, IconKind.Any);
     }
     public void SetSimulator()
     {
@@ -124,7 +125,7 @@ public class VersionManager : Editor
         {
             tex[i] = exam.rockTexture as Texture2D;
         }
-        PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Standalone, tex);
+        PlayerSettings.SetIcons(NamedBuildTarget.Standalone, tex, IconKind.Any);
     }
 
     public void SetVR()

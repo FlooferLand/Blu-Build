@@ -113,7 +113,7 @@ public class UI_ModelMaker : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < presets.Length; i++)
         {
             GameObject icon = GameObject.Instantiate(characterUIPrefab, charIconHolder.transform);
             icon.GetComponent<RectTransform>().anchoredPosition = new Vector2(((i % 6) * 400) - 1145, -(Mathf.Floor(i / 6) * 400) - 300);
@@ -142,7 +142,7 @@ public class UI_ModelMaker : MonoBehaviour
 
         Color c = new Color32(255, 190, 0, 255);
 
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < presets.Length; i++)
         {
             PlayerPrefs.SetFloat("Player " + i + ": Smoothness", 0.1f);
             PlayerPrefs.SetInt("Player " + i + ": Metallic", 0);
@@ -156,7 +156,7 @@ public class UI_ModelMaker : MonoBehaviour
 
     void SaveCharacterData()
     {
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < presets.Length; i++)
         {
             PlayerPrefs.SetFloat("Player " + i + ": Smoothness", presets[i].bodySmoothness);
             if (presets[i].bodyMetallic)
@@ -179,7 +179,7 @@ public class UI_ModelMaker : MonoBehaviour
 
     void LoadCharacterData()
     {
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < presets.Length; i++)
         {
             presets[i].bodySmoothness = PlayerPrefs.GetFloat("Player " + i + ": Smoothness");
             presets[i].bodyMetallic = PlayerPrefs.GetInt("Player " + i + ": Metallic") == 1;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,21 +11,22 @@ public class Curtain_Valves : MonoBehaviour
     [Range(0.0001f, .01f)]
     public float[] flowControlIn;
 
-    Animator characterValves;
-    List<int> cylindersTop = new List<int>();
-    List<int> cylindersBottom = new List<int>();
+    Animator curtainAnimator;
+    List<int> cylindersTop = new();
+    List<int> cylindersBottom = new();
     Mack_Valves bitChart;
     public bool[] curtainbools;
     public bool curtainOverride;
 
     private void Start()
     {
-        characterValves = this.GetComponent<Animator>();
+        curtainAnimator = GetComponent<Animator>();
         bitChart = mackValves.GetComponent<Mack_Valves>();
-        for (int e = 0; e < characterValves.layerCount; e++)
+        curtainAnimator.Play("Closed");
+        for (int e = 0; e < curtainAnimator.layerCount; e++)
         {
-            string temp = characterValves.GetLayerName(e);
-            if (temp[temp.Length - 1] == 'T')
+            string temp = curtainAnimator.GetLayerName(e);
+            if (temp[^1] == 'T')
             {
                 cylindersTop.Add(Int32.Parse(temp.Substring(0, temp.Length - 1)));
             }
@@ -36,7 +36,7 @@ public class Curtain_Valves : MonoBehaviour
                 cylindersBottom.Add(Int32.Parse(temp.Substring(0, temp.Length - 1)));
             }
         }
-        curtainbools = new bool[characterValves.layerCount];
+        curtainbools = new bool[curtainAnimator.layerCount];
     }
 
     public void CreateMovements(float num3)
@@ -57,24 +57,18 @@ public class Curtain_Valves : MonoBehaviour
     void SetTime(string drawername, int currentAnim, bool[] drawer, int lasti, float num3)
     {
         //Cycle through parameters to find matching code
-        for (int e = 0; e < characterValves.parameters.Length; e++)
-        {
-            if (characterValves.parameters[e].name.Substring(0, characterValves.parameters[e].name.Length - 1) == currentAnim.ToString())
-            {
+        for (int e = 0; e < curtainAnimator.parameters.Length; e++) {
+            if (curtainAnimator.parameters[e].name.Substring(0, curtainAnimator.parameters[e].name.Length - 1) == currentAnim.ToString()) {
                 //Calculate next value of the parameter
-                float nextTime = characterValves.GetFloat(currentAnim.ToString() + drawername);
+                float nextTime = curtainAnimator.GetFloat(currentAnim + drawername);
 
                 //Check if animation is already done
                 if (!curtainOverride)
                 {
                     if (nextTime == 0 && !drawer[currentAnim - 1])
-                    {
                         break;
-                    }
                     if (nextTime == 1 && drawer[currentAnim - 1])
-                    {
                         break;
-                    }
                 }
 
                 //Set bool
@@ -105,7 +99,7 @@ public class Curtain_Valves : MonoBehaviour
                 nextTime = Mathf.Min(Mathf.Max(nextTime, 0), 1);
 
                 //Apply parameter
-                characterValves.SetFloat(currentAnim.ToString() + drawername, nextTime);
+                curtainAnimator.SetFloat(currentAnim + drawername, nextTime);
                 break;
             }
         }

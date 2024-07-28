@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorSound : MonoBehaviour
@@ -8,19 +6,20 @@ public class DoorSound : MonoBehaviour
     public float zRotationAwake;
     bool stillShut = true;
     HingeJoint hj;
+    AudioSource source;
 
     private void Awake()
     {
-        hj = this.GetComponent<HingeJoint>();
+        hj = GetComponent<HingeJoint>();
         zRotationAwake = hj.angle;
+        source = GetComponent<AudioSource>();
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (this.GetComponent<Rigidbody>().constraints == RigidbodyConstraints.None && timeOpen < Time.time - 1 && collision.gameObject.layer == 11)
+        if (GetComponent<Rigidbody>().constraints == RigidbodyConstraints.None && timeOpen < Time.time - 1 && collision.gameObject.layer == 11)
         {
             stillShut = false;
             timeOpen = Time.time;
-            AudioSource source = this.GetComponent<AudioSource>();
             int sound = Random.Range(0, 4);
             AudioClip clip = Resources.Load("DoorOpen0" + sound) as AudioClip;
             source.clip = clip;
@@ -34,7 +33,7 @@ public class DoorSound : MonoBehaviour
         if(!stillShut && timeOpen < Time.time - 1 && hj.angle < zRotationAwake + 2 && hj.angle > zRotationAwake - 2)
         {
             stillShut = true;
-            AudioSource source = this.GetComponent<AudioSource>();
+            
             int sound = Random.Range(0, 4);
             AudioClip clip = Resources.Load("DoorClose0" + sound) as AudioClip;
             source.clip = clip;

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
+using UnityEditor.Animations;
 using UnityEngine;
 
 [System.Serializable]
@@ -10,10 +12,18 @@ public class CharacterSelector
     public Sprite icon;
     public int currentCostume;
     public CharacterCostume[] allCostumes;
+    
+    [SerializedDictionary("Animation type", "Controller")]
+    public SerializedDictionary<PremadeAnimations, RuntimeAnimatorController> premadeAnimations = new();
 
     public void SwapCharacter(int costumeIndex)
     {
         currentCostume = costumeIndex;
+    }
+
+    [System.Serializable]
+    public enum PremadeAnimations {
+        Activate
     }
 }
 [System.Serializable]

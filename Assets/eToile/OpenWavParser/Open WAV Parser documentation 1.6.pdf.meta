@@ -5,3 +5,10 @@ DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 90832
+  packageName: Open WAV Parser
+  packageVersion: 1.6
+  assetPath: Assets/eToile/OpenWavParser/Open WAV Parser documentation 1.6.pdf
+  uploadId: 560184

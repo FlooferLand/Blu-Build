@@ -1,12 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SFB;
-using System.IO;
-using System.Linq;
 using UnityEngine.UI;
-using System;
-using System.Collections;
-using UnityEngine.Events;
 
 public class UI_PlayRecord : MonoBehaviour
 {
@@ -18,10 +12,9 @@ public class UI_PlayRecord : MonoBehaviour
 
     //Characters
     public CharacterSelector[] characters;
-    public FloatEvent characterEvent = new FloatEvent();
+    public FloatEvent characterEvent = new();
     public bool CharSwapCheck = false;
-    [HideInInspector]
-    public bool swap = false;
+    [HideInInspector] public bool swap = false;
     [Space(20)]
 
     //Inspector Objects
@@ -56,7 +49,7 @@ public class UI_PlayRecord : MonoBehaviour
     }
 
     public UI_ShowtapeManager manager;
-
+    private UI_WindowMaker windowMaker;
 
     void Awake()
     {
@@ -68,11 +61,11 @@ public class UI_PlayRecord : MonoBehaviour
         inputHandlercomp = mackValves.GetComponent<InputHandler>();
         mack = mackValves.GetComponent<Mack_Valves>();
         manager.inputHandler = inputHandlercomp;
+        windowMaker = GetComponent<UI_WindowMaker>();
 
         //Start up stages
-        for (int i = 0; i < stages.Length; i++)
-        {
-            stages[i].Startup();
+        foreach (var stage in stages) {
+            stage.Startup();
         }
 
         //Spawn in current Characters
@@ -202,24 +195,24 @@ public class UI_PlayRecord : MonoBehaviour
         {
             case 0:
                 //Title
-                this.GetComponent<UI_WindowMaker>().MakeTitleWindow();
+                windowMaker.MakeTitleWindow();
                 manager.EraseShowtape();
                 break;
             case 1:
                 //Main Screen
-                this.GetComponent<UI_WindowMaker>().MakeThreeWindow(icons[0], icons[1], icons[2], 0, 8, 2, 3, "Customize", "Play", "Record", 45);
+                windowMaker.MakeThreeWindow(icons[0], icons[1], icons[2], 0, 8, 2, 3, "Customize", "Play", "Record", 45);
                 WindowSwitchDisable(true);
                 manager.EraseShowtape();
                 break;
             case 2:
                 //Play Screen
-                if (this.GetComponent<UI_WindowMaker>().allShowtapes.Length > 0)
+                if (windowMaker.allShowtapes.Length > 0)
                 {
-                    this.GetComponent<UI_WindowMaker>().MakeThreeWindow(icons[4], icons[1], icons[10], 1, 7, 6, 32, "Play Showtape", "Play Segment", "Show List", 37);
+                    windowMaker.MakeThreeWindow(icons[4], icons[1], icons[10], 1, 7, 6, 32, "Play Showtape", "Play Segment", "Show List", 37);
                 }
                 else
                 {
-                    this.GetComponent<UI_WindowMaker>().MakeTwoWindow(icons[4], icons[1], 1, 7, 6, "Play Showtape", "Play Segment", 37);
+                    windowMaker.MakeTwoWindow(icons[4], icons[1], 1, 7, 6, "Play Showtape", "Play Segment", 37);
                 }
                 manager.EraseShowtape();
                 WindowSwitchDisable(true);
@@ -227,19 +220,19 @@ public class UI_PlayRecord : MonoBehaviour
                 break;
             case 3:
                 //Record Screen
-                this.GetComponent<UI_WindowMaker>().MakeTwoWindow(icons[2], icons[3], 1, 5, 4, "New Recording", "Edit Recording", 37);
+                windowMaker.MakeTwoWindow(icons[2], icons[3], 1, 5, 4, "New Recording", "Edit Recording", 37);
                 WindowSwitchDisable(true);
                 manager.EraseShowtape();
                 break;
             case 4:
                 //Edit Recording Screen
-                this.GetComponent<UI_WindowMaker>().MakeTwoWindow(icons[3], icons[5], 3, 34, 21, "Edit Segment", "Add to Segment", 30);
+                windowMaker.MakeTwoWindow(icons[3], icons[5], 3, 34, 21, "Edit Segment", "Add to Segment", 30);
                 WindowSwitchDisable(true);
                 manager.EraseShowtape();
                 break;
             case 5:
                 //New Recording Screen
-                this.GetComponent<UI_WindowMaker>().MakeNewRecordWindow();
+                windowMaker.MakeNewRecordWindow();
                 manager.EraseShowtape();
                 break;
             case 6:
@@ -247,7 +240,7 @@ public class UI_PlayRecord : MonoBehaviour
                 manager.Load();
                 if (manager.rshwData != null)
                 {
-                    this.GetComponent<UI_WindowMaker>().MakePlayWindow(false);
+                    windowMaker.MakePlayWindow(false);
                 }
                 break;
             case 7:
@@ -255,20 +248,20 @@ public class UI_PlayRecord : MonoBehaviour
                 manager.LoadFolder();
                 if (manager.rshwData != null)
                 {
-                    this.GetComponent<UI_WindowMaker>().MakePlayWindow(false);
+                    windowMaker.MakePlayWindow(false);
                 }
                 break;
             case 8:
                 //Customize Screen
-                this.GetComponent<UI_WindowMaker>().MakeTwoWindow(icons[8], icons[9], 1, 16, 9, "Edit Stage", "Edit Characters", 35);
+                windowMaker.MakeTwoWindow(icons[8], icons[9], 1, 16, 9, "Edit Stage", "Edit Characters", 35);
                 break;
             case 9:
                 //Edit Character Screen
-                this.GetComponent<UI_WindowMaker>().MakeCharacterCustomizeIconsWindow(characters);
+                windowMaker.MakeCharacterCustomizeIconsWindow(characters);
                 break;
             case 11:
                 //Recording Groups Screen (Or New Recording Screen)
-                this.GetComponent<UI_WindowMaker>().MakeRecordIconsWindow();
+                windowMaker.MakeRecordIconsWindow();
                 WindowSwitchDisable(false);
                 manager.EraseShowtape();
                 break;
@@ -279,53 +272,53 @@ public class UI_PlayRecord : MonoBehaviour
             case 17:
                 if (manager.rshwData != null)
                 {
-                    this.GetComponent<UI_WindowMaker>().MakePlayWindow(false);
+                    windowMaker.MakePlayWindow(false);
                 }
                 break;
             case 21:
                 //Recording Groups Screen (Standalone)
-                this.GetComponent<UI_WindowMaker>().MakeRecordIconsWindow();
+                windowMaker.MakeRecordIconsWindow();
                 WindowSwitchDisable(false);
                 manager.EraseShowtape();
                 break;
             case 22:
                 //Delete Movement Screen 1
-                this.GetComponent<UI_WindowMaker>().MakeDeleteMoveMenu(0);
+                windowMaker.MakeDeleteMoveMenu(0);
                 break;
             case 23:
                 //Delete Movement Back 1
-                this.GetComponent<UI_WindowMaker>().MakeDeleteMoveMenu(-1);
+                windowMaker.MakeDeleteMoveMenu(-1);
                 break;
             case 24:
                 //Delete Movement Forward 1
-                this.GetComponent<UI_WindowMaker>().MakeDeleteMoveMenu(1);
+                windowMaker.MakeDeleteMoveMenu(1);
                 break;
             case 28:
                 //Showtape Window 0
-                this.GetComponent<UI_WindowMaker>().MakeShowtapeWindow(0);
+                windowMaker.MakeShowtapeWindow(0);
                 break;
             case 29:
                 //Segment Window 1
-                this.GetComponent<UI_WindowMaker>().MakeSegmentWindow(1);
+                windowMaker.MakeSegmentWindow(1);
                 break;
             case 30:
                 //Segment Window -1
-                this.GetComponent<UI_WindowMaker>().MakeSegmentWindow(-1);
+                windowMaker.MakeSegmentWindow(-1);
                 break;
             case 31:
                 //Showtape Help Window
-                this.GetComponent<UI_WindowMaker>().MakeShowtapeHelpWindow(0);
+                windowMaker.MakeShowtapeHelpWindow(0);
                 break;
             case 32:
                 //Showtape Window 1
-                this.GetComponent<UI_WindowMaker>().MakeShowtapeWindow(1);
+                windowMaker.MakeShowtapeWindow(1);
                 break;
             case 33:
                 //Showtape Window -1
-                this.GetComponent<UI_WindowMaker>().MakeShowtapeWindow(-1);
+                windowMaker.MakeShowtapeWindow(-1);
                 break;
             case 34:
-                this.GetComponent<UI_WindowMaker>().MakeTwoWindow(icons[6], icons[5], 4, 22, 35, "Delete Bits", "Replace Audio", 30);
+                windowMaker.MakeTwoWindow(icons[6], icons[5], 4, 22, 35, "Delete Bits", "Replace Audio", 30);
                 break;
             case 35:
                 manager.ReplaceShowAudio();
@@ -355,7 +348,7 @@ public class UI_PlayRecord : MonoBehaviour
     /// <param name="input"></param>
     public void CharacterCustomMenu(int input)
     {
-        this.GetComponent<UI_WindowMaker>().MakeCharacterCustomizeWindow(characters, input);
+        windowMaker.MakeCharacterCustomizeWindow(characters, input);
     }
 
     /// <summary>
@@ -363,7 +356,7 @@ public class UI_PlayRecord : MonoBehaviour
     /// </summary>
     public void StageCustomMenu()
     {
-        this.GetComponent<UI_WindowMaker>().MakeStageCustomizeWindow(stages, currentStage);
+        windowMaker.MakeStageCustomizeWindow(stages, currentStage);
     }
 
     /// <summary>
@@ -376,7 +369,7 @@ public class UI_PlayRecord : MonoBehaviour
         {
             characters[input].currentCostume--;
             RecreateAllCharacters(characters[input].characterName);
-            this.GetComponent<UI_WindowMaker>().MakeCharacterCustomizeWindow(characters, input);
+            windowMaker.MakeCharacterCustomizeWindow(characters, input);
         }
 
     }
@@ -391,7 +384,7 @@ public class UI_PlayRecord : MonoBehaviour
         {
             characters[input].currentCostume++;
             RecreateAllCharacters(characters[input].characterName);
-            this.GetComponent<UI_WindowMaker>().MakeCharacterCustomizeWindow(characters, input);
+            windowMaker.MakeCharacterCustomizeWindow(characters, input);
         }
     }
 
@@ -423,7 +416,7 @@ public class UI_PlayRecord : MonoBehaviour
             }
             RecreateAllCharacters("");
             SwapCheck();
-            this.GetComponent<UI_WindowMaker>().MakeStageCustomizeWindow(stages, currentStage);
+            windowMaker.MakeStageCustomizeWindow(stages, currentStage);
         }
     }
 
@@ -455,10 +448,14 @@ public class UI_PlayRecord : MonoBehaviour
             }
             RecreateAllCharacters("");
             SwapCheck();
-            this.GetComponent<UI_WindowMaker>().MakeStageCustomizeWindow(stages, currentStage);
+            windowMaker.MakeStageCustomizeWindow(stages, currentStage);
         }
     }
 
+    /**
+     * Spawns in all the characters when the show selector is pressed (fake stage -> real stage)
+     * As well as creates all the characters in general.
+     */
     public void RecreateAllCharacters(string singleCharacter)
     {
         if (singleCharacter == "")
@@ -471,27 +468,31 @@ public class UI_PlayRecord : MonoBehaviour
 
             //Create current Characters
             int g = 0;
-            for (int i = 0; i < stages[currentStage].stageCharacters.Length; i++)
-            {
-                for (int e = 0; e < characters.Length; e++)
-                {
-                    if (stages[currentStage].stageCharacters[i].characterName == characters[e].characterName)
+            foreach (var charPos in stages[currentStage].stageCharacters) {
+                foreach (var charSelector in characters) {
+                    if (charPos.characterName == charSelector.characterName)
                     {
-                        if (characters[e].currentCostume != -1)
+                        if (charSelector.currentCostume != -1)
                         {
-                            GameObject newChar = GameObject.Instantiate(characters[e].mainCharacter);
-                            newChar.name = characters[e].characterName;
-                            newChar.transform.parent = characterHolder.transform;
-                            newChar.transform.localPosition = stages[currentStage].stageCharacters[i].characterPos + characters[e].allCostumes[characters[e].currentCostume].offsetPos;
-                            newChar.transform.rotation = Quaternion.Euler(stages[currentStage].stageCharacters[i].characterRot);
-                            newChar.transform.GetChild(0).GetComponent<Character_Valves>().mackValves = mackValves;
-                            newChar.transform.GetChild(0).GetComponent<Character_Valves>().StartUp();
+                            GameObject newChar = Instantiate(charSelector.mainCharacter, characterHolder.transform, true);
+                            newChar.name = charSelector.characterName;
+                            newChar.transform.localPosition = charPos.characterPos + charSelector.allCostumes[charSelector.currentCostume].offsetPos;
+                            newChar.transform.rotation = Quaternion.Euler(charPos.characterRot);
+                            var c = newChar.transform.GetChild(0);
+                            var cValves = c.GetComponent<Character_Valves>();
+                            cValves.mackValves = mackValves;
+                            if (charSelector.premadeAnimations.TryGetValue(CharacterSelector.PremadeAnimations.Activate, out var animator)) {
+                                var anim = newChar.AddComponent<Animator>();
+                                anim.runtimeAnimatorController = animator;
+                                anim.SetBool("Active", true);
+                            }
+                            cValves.StartUp();
                             g++;
 
                             //Delete other costumes
-                            foreach (Transform mesh in newChar.transform.GetChild(0).transform)
+                            foreach (Transform mesh in c.transform)
                             {
-                                if (!(mesh.gameObject.name == characters[e].allCostumes[characters[e].currentCostume].costumeName) && mesh.gameObject.name != "Armature")
+                                if (mesh.gameObject.name != charSelector.allCostumes[charSelector.currentCostume].costumeName && mesh.gameObject.name != "Armature")
                                 {
                                     Destroy(mesh.gameObject);
                                 }
@@ -617,7 +618,7 @@ public class UI_PlayRecord : MonoBehaviour
     /// <param name="input"></param>
     public void RecordingGroupMenu(int input)
     {
-        this.GetComponent<UI_WindowMaker>().MakeMoveTestWindow(input);
+        windowMaker.MakeMoveTestWindow(input);
     }
 
     /// <summary>

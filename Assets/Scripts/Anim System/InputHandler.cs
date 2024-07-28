@@ -136,6 +136,7 @@ public class InputHandler : MonoBehaviour
                             if (Input.GetKey(KeyCode.RightBracket)) { applyKey = true; }
                             break;
                     }
+                    
                     //Control Invert Check
                     if (invertcooldown > 0)
                     {
@@ -154,7 +155,6 @@ public class InputHandler : MonoBehaviour
                     {
                         applyKey = false;
                     }
-
 
                     //Apply bool
                     if (!programmingGroups.recordingGroups[valveMapping - 1].inputNames[i].drawer)
@@ -280,7 +280,6 @@ public class InputHandler : MonoBehaviour
                 keypadInvert[i] = false;
             }
         }
-
         return frameInputs;
     }
 }

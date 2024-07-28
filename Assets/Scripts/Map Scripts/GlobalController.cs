@@ -41,9 +41,15 @@ public class GlobalController : MonoBehaviour
         gamepad.Gamepad.Flashlight.performed += ctx => JoinPlayerTwo();
         gamepad.Gamepad.Run.performed += ctx => JoinPlayerTwo();
         gamepad.Gamepad.Crouch.performed += ctx => JoinPlayerTwo();
+        
         JoinPlayerOne();
+        
         //Set Height
         player.transform.localScale = new Vector3(1.245614f, 1.245614f, 1.245614f);
+        
+        if (SceneManager.GetActiveScene().name == "Sandbox") {
+            unlockAllPrizes = true;
+        }
     }
 
 
@@ -84,8 +90,8 @@ public class GlobalController : MonoBehaviour
                 //Faz-Anim
                 if (TutorialManager.ShouldDoTutorial()) {
                     // Crate
-                    playernew.transform.position = fazAnimTutSpawn.position;
-                    playernew.transform.rotation = fazAnimTutSpawn.rotation;
+                    playernew.transform.position = fazAnimTutSpawn?.position ?? fazAnimSpawn.position;
+                    playernew.transform.rotation = fazAnimTutSpawn?.rotation ?? fazAnimSpawn.rotation;
                 } else {
                     // Normal
                     playernew.transform.position = fazAnimSpawn.position;
@@ -173,13 +179,17 @@ public class GlobalController : MonoBehaviour
 
     public void LoadShowScene(string scene)
     {
-        for (int i = 0; i < showSceneNames.Length; i++)
-        {
-            if (SceneManager.GetSceneByName(showSceneNames[i].sceneName).IsValid())
+        // TODO: Add a ref to Toy Foxy somehow to play the activation animation.
+        if (scene == "Toy Foxy") {
+            
+        }
+        
+        foreach (var obj in showSceneNames) {
+            if (SceneManager.GetSceneByName(obj.sceneName).IsValid())
             {
-                SceneManager.UnloadSceneAsync(showSceneNames[i].sceneName);
-                showSceneNames[i].objectShow.SetActive(true);
-                showSceneNames[i].objectShow.GetComponentInChildren(typeof(Button3D), true).gameObject.SetActive(true);
+                SceneManager.UnloadSceneAsync(obj.sceneName);
+                obj.objectShow.SetActive(true);
+                obj.objectShow.GetComponentInChildren(typeof(Button3D), true).gameObject.SetActive(true);
             }
         }
         Resources.UnloadUnusedAssets();
@@ -272,25 +282,28 @@ public class GlobalController : MonoBehaviour
         FrameSettingsOverrideMask frameSettingsOverrideMask = camData.renderingPathCustomFrameSettingsOverrideMask;
         camData.customRenderingSettings = true;
 
+        var volume = player.GetComponentInChildren<Volume>();
+        if (PlayerPrefs.GetInt("Settings: Quality") == 0) {
+            volume.profile = player.GetComponent<Player>().lowEffectsVolume;
+        }
+        
         if (PlayerPrefs.GetInt("Settings: Motion Blur") == 0)
         {
             MotionBlur testDoF;
-            player.GetComponentInChildren<Volume>().profile.TryGet<MotionBlur>(out testDoF);
+            volume.profile.TryGet<MotionBlur>(out testDoF);
             testDoF.intensity.value = 0;
         }
         if (PlayerPrefs.GetInt("Settings: Auto Exposure") == 0)
         {
             Exposure testDoF;
-            player.GetComponentInChildren<Volume>().profile.TryGet<Exposure>(out testDoF);
+            volume.profile.TryGet<Exposure>(out testDoF);
             testDoF.mode.value = ExposureMode.Fixed;
             if (!(testDoF.limitMin.value == 1))
             {
                 testDoF.fixedExposure.value = 0.71f;
             }
         }
-        ScreenSpaceReflection ssr = null;
-        player.GetComponentInChildren<Volume>().profile.TryGet<ScreenSpaceReflection>(out ssr);
-        if (ssr != null)
+        if (volume.profile.TryGet<ScreenSpaceReflection>(out var ssr) && ssr != null)
         {
             switch (PlayerPrefs.GetInt("Settings: SSR"))
             {
@@ -343,8 +356,8 @@ public class GlobalController : MonoBehaviour
         }
         ScreenSpaceAmbientOcclusion ssao = null;
         GlobalIllumination ssgi = null;
-        player.GetComponentInChildren<Volume>().profile.TryGet<ScreenSpaceAmbientOcclusion>(out ssao);
-        player.GetComponentInChildren<Volume>().profile.TryGet<GlobalIllumination>(out ssgi);
+        volume.profile.TryGet<ScreenSpaceAmbientOcclusion>(out ssao);
+        volume.profile.TryGet<GlobalIllumination>(out ssgi);
         if (ssao != null && ssgi != null)
         {
             switch (PlayerPrefs.GetInt("Settings: SSAO"))
@@ -441,7 +454,6 @@ public class GlobalController : MonoBehaviour
         switch (attemptString)
         {
             case "TruckFade":
-
                 break;
             case "TruckDone":
                 player.transform.position = new Vector3(0.39633f, -0.53f, -2.731902f);

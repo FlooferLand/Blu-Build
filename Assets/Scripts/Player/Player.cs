@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
@@ -76,6 +72,9 @@ public class Player : MonoBehaviour
     public float smoothSpeed;
     public float maxVeclocity;
     Vector2 camAcceleration;
+
+    [Header("CameraProfiles")]
+    public VolumeProfile lowEffectsVolume;
 
     [Header("Footstep")]
     Vector3 oldPosition;
@@ -144,6 +143,8 @@ public class Player : MonoBehaviour
     bool fixedcamera = false;
     bool newvr = false;
     bool fixedUpdatelowerFPS;
+    private static readonly int Sprint = Animator.StringToHash("Sprint");
+
     public enum ControllerType
     {
         keyboard,
@@ -161,14 +162,15 @@ public class Player : MonoBehaviour
     }
     void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
         camHeight = camInitialHeight;
         smoothScroll = PlayerCamScript.fieldOfView;
         Cursor.lockState = CursorLockMode.Locked;
         //Initialize Variables
-        _animator = this.transform.Find("PlayerModel").GetComponent<Animator>();
+        _animator = transform.Find("PlayerModel").GetComponent<Animator>();
+        pauseMenu.SetActive(false);
         CharCont = GetComponent<CharacterController>();
-        oldPosition = this.transform.position;
+        oldPosition = transform.position;
         gamepad = new Controller();
         gamepad.Gamepad.Click.canceled += ctx => clickGamepad = false;
         gamepad.Gamepad.Click.performed += ctx => clickGamepad = true;
@@ -214,7 +216,7 @@ public class Player : MonoBehaviour
     {
         if (isVR && !fixedcamera)
         {
-            if (PlayerCamScript == null)
+            if (!PlayerCamScript)
             {
                 fixedcamera = true;
                 PlayerCamScript = Camera.main;
@@ -224,9 +226,9 @@ public class Player : MonoBehaviour
         if (isVR)
         {
             Vector3 temp = XRRig.transform.position;
-            Vector3 trans = PlayerCamScript.transform.position - this.transform.position;
+            Vector3 trans = PlayerCamScript.transform.position - transform.position;
             trans.y = 0;
-            this.transform.position += trans;
+            transform.position += trans;
             XRRig.transform.position = temp;
             if (!newvr)
             {
@@ -279,8 +281,6 @@ public class Player : MonoBehaviour
                     screenShotItem.enabled = false;
                     prizeDeleteItem.enabled = true;
                     prizeDeleteItem.DeleterCheck();
-                    break;
-                default:
                     break;
             }
 
@@ -336,7 +336,7 @@ public class Player : MonoBehaviour
                 CrouchCheck();
             }
             //Footstep
-            if (Vector3.Distance(this.transform.position, oldPosition) > 1.3f && CharCont.isGrounded)
+            if (Vector3.Distance(transform.position, oldPosition) > 1.3f && CharCont.isGrounded)
             {
                 FootstepSoundCheck();
             }
@@ -352,6 +352,7 @@ public class Player : MonoBehaviour
                 {
                     pauseMenu.SetActive(false);
                     playerState = PlayerState.normal;
+                    Cursor.lockState = CursorLockMode.Locked;
                 }
             }
         }
@@ -359,7 +360,7 @@ public class Player : MonoBehaviour
         switch (Cursor.lockState)
         {
             case CursorLockMode.None:
-                if (playerState != PlayerState.frozenAllUnlock && playerState != PlayerState.frozenCamUnlock)
+                if ((playerState != PlayerState.frozenAllUnlock && playerState != PlayerState.frozenCamUnlock) || playerState == PlayerState.normal)
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                 }
@@ -369,8 +370,6 @@ public class Player : MonoBehaviour
                 {
                     Cursor.lockState = CursorLockMode.None;
                 }
-                break;
-            default:
                 break;
         }
 
@@ -386,36 +385,28 @@ public class Player : MonoBehaviour
         spineBone.transform.rotation = Quaternion.Lerp(spineBone.transform.rotation, Quaternion.LookRotation(PlayerCamScript.transform.forward, spineBone.transform.up), 0.2f);
     }
 
-    void FootstepSoundCheck()
-    {
+    void FootstepSoundCheck() {
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, ~playerLayerMask))
-        {
-            for (int i = 0; i < meshTypes.Length; i++)
-            {
-                if (hit.collider.gameObject.name == meshTypes[i].meshName)
-                {
-                    footstepSpeaker.clip = meshTypes[i].clips[UnityEngine.Random.Range(0, meshTypes[i].clips.Length)];
-                    footstepSpeaker.volume = meshTypes[i].volume;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, ~playerLayerMask)) {
+            foreach (var t in meshTypes) {
+                if (hit.collider.gameObject.name == t.meshName) {
+                    footstepSpeaker.clip = t.clips[Random.Range(0, t.clips.Length)];
+                    footstepSpeaker.volume = t.volume * Random.Range(0.9f, 1.1f);
 
                     //Volume
                     float nowSpeed = 0.3f;
                     if ((Input.GetKey(KeyCode.LeftShift) && controlType == ControllerType.keyboard) || (runGamepad && controlType == ControllerType.gamepad))
-                    {
                         nowSpeed = .7f;
-                    }
                     if ((Input.GetKey(KeyCode.LeftControl) && enableCrouch && controlType == ControllerType.keyboard) || (crouchGamepad && enableCrouch && controlType == ControllerType.gamepad))
-                    {
                         nowSpeed = .2f;
-                    }
                     footstepSpeaker.volume *= nowSpeed;
-
+                    //footstepSpeaker.pitch = Random.Range(0.9f, 1.1f);
                     footstepSpeaker.Play();
                 }
             }
         }
-        oldPosition = this.transform.position;
+        oldPosition = transform.position;
     }
 
     float Remap(float val, float in1, float in2, float out1, float out2)
@@ -426,18 +417,6 @@ public class Player : MonoBehaviour
     float realModulo(float a, float b)
     {
         return a - b * Mathf.Floor(a / b);
-    }
-
-    void UncrouchCheck()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(unCrouch.transform.position, transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity))
-        {
-            if (hit.point.y > PlayerCamScript.transform.position.y + camInitialHeight)
-            {
-                crouchBool = false;
-            }
-        }
     }
 
     void CameraMove(Vector2 axis)
@@ -481,9 +460,7 @@ public class Player : MonoBehaviour
             camYRotation += axis.y;
         }
 
-
         camYRotation = Mathf.Clamp(camYRotation, -85, 85);
-
 
         PlayerCamScript.transform.eulerAngles = new Vector3(camYRotation, PlayerCamScript.transform.eulerAngles.y, PlayerCamScript.transform.eulerAngles.z);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, camXRotation, transform.eulerAngles.z);
@@ -491,25 +468,26 @@ public class Player : MonoBehaviour
 
     public void MovePlayer(Vector2 axis, bool sprint)
     {
-        float newy = PlayerCamScript.transform.position.y - this.transform.position.y;
+        float newy = PlayerCamScript.transform.position.y - transform.position.y;
         CharCont.height = (((newy * (1 / camInitialHeight)) / 2f) + .5f) * 1.3f;
         CharCont.center = new Vector3(0f, Remap(newy, feet.transform.localPosition.y, camInitialHeight, feet.transform.localPosition.y, 0), 0);
-
+        Vector3 newMoveDir = Vector3.zero;
+        
         //Void Bounce
-        if (this.transform.position.y < -20)
+        if (transform.position.y < -20)
         {
-            this.transform.position = new Vector3(this.transform.position.x, 100f, this.transform.position.z);
-            moveDirection = this.transform.position;
+            transform.position = new Vector3(transform.position.x, 100f, transform.position.z);
+            newMoveDir = transform.position;
         }
         float nowSpeed = baseSpeed;
         if (((Input.GetKey(KeyCode.LeftShift) && controlType == ControllerType.keyboard) || (runGamepad && controlType == ControllerType.gamepad)) || sprint && !crouchBool)
         {
             nowSpeed = sprintSpeed;
-            _animator.SetBool("Sprint", true);
+            _animator.SetBool(Sprint, true);
         }
         else
         {
-            _animator.SetBool("Sprint", false);
+            _animator.SetBool(Sprint, false);
         }
         if (crouchBool)
         {
@@ -537,26 +515,21 @@ public class Player : MonoBehaviour
         if (CharCont.isGrounded)
         {
 
-            moveDirection = ((transForward * axis.y * nowSpeed) + (transRight * (axis.x * nowSpeed)));
+            newMoveDir = (transForward * (axis.y * nowSpeed)) + (transRight * (axis.x * nowSpeed));
 
             //Jumping
             if (JumpBool == 1)
-            {
                 JumpFrames++;
-            }
             else
-            {
                 JumpFrames = 0;
-            }
             if (JumpFrames == 1)
-            {
-                moveDirection.y = jumpSpeed;
-            }
+                newMoveDir.y = jumpSpeed;
         }
         else
         {
-            moveDirection = (((transForward * axis.y * nowSpeed) + (transRight * (axis.x * nowSpeed * airTurnSpeed))) * airControl) + new Vector3(0, moveDirection.y, 0);
+            newMoveDir = ((transForward * (axis.y * nowSpeed)) + (transRight * (axis.x * nowSpeed * airTurnSpeed))) * airControl + new Vector3(0, newMoveDir.y, 0);
         }
+        moveDirection = Vector3.Lerp(moveDirection, newMoveDir, 10f * Time.deltaTime);
         moveDirection.y -= gravity * Time.deltaTime;
         CharCont.Move(moveDirection * Time.deltaTime);
     }
@@ -597,28 +570,22 @@ public class Player : MonoBehaviour
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             case ControllerType.gamepad:
                 if (clickGamepad)
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            default:
-                break;
+
+                return false;
         }
         return false;
     }
 
     void FlashlightCheck()
     {
-        if ((Input.GetKeyDown(KeyCode.E) && controlType == ControllerType.keyboard) || (flashGamepad && controlType == ControllerType.gamepad) || flashState == 1)
+        if ((Input.GetKeyDown(KeyCode.F) && controlType == ControllerType.keyboard) || (flashGamepad && controlType == ControllerType.gamepad) || flashState == 1)
         {
             flashGamepad = false;
             flashlight.SetActive(!flashlight.activeSelf);
@@ -626,14 +593,14 @@ public class Player : MonoBehaviour
             {
                 AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>(); Resources.Load("ting");
                 sc.clip = (AudioClip)Resources.Load("Flashlight On");
-                sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+                sc.pitch = Random.Range(0.95f, 1.05f);
                 sc.Play();
             }
             else
             {
                 AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>(); Resources.Load("ting");
                 sc.clip = (AudioClip)Resources.Load("Flashlight Off");
-                sc.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+                sc.pitch = Random.Range(0.95f, 1.05f);
                 sc.Play();
             }
         }
@@ -662,23 +629,25 @@ public class Player : MonoBehaviour
 
     void CrouchCheck()
     {
-        if (CharCont.isGrounded)
+        if (CharCont.isGrounded && !(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.Print)))
         {
-            if ((Input.GetKey(KeyCode.LeftControl) != crouchBool && controlType == ControllerType.keyboard) || (crouchGamepad != crouchBool && controlType == ControllerType.gamepad))
-            {
-                crouchBool = !crouchBool;
-                if (!crouchBool)
-                {
-                    crouchBool = true;
-                    UncrouchCheck();
-                }
-                timedelta = 0;
+            bool isKeyboard = controlType == ControllerType.keyboard;
+            bool isGamepad = controlType == ControllerType.gamepad;
 
+            // TODO: CHECKME: Crouching might be broken on Gamepad
+            if ((isKeyboard && Input.GetKeyDown(KeyCode.LeftControl)) || (isGamepad && crouchGamepad != crouchBool)) {
+                crouchBool = true;
+                timedelta = 0;
+            }
+            if ((isKeyboard && (Input.GetKeyUp(KeyCode.LeftControl) || !Input.GetKey(KeyCode.LeftControl))) || (isGamepad && crouchGamepad != crouchBool)) {
+                UncrouchCheck();
+                timedelta = 0;
             }
         }
         else
         {
             timedelta += Time.deltaTime;
+            crouchBool = false;
         }
         _animator.SetBool("Crouch", crouchBool);
         //Crouch height
@@ -690,7 +659,18 @@ public class Player : MonoBehaviour
         {
             camHeight = camCrouchHeight;
         }
-
+    }
+    
+    void UncrouchCheck()
+    {
+        crouchBool = false;
+        if (Physics.Raycast(unCrouch.transform.position, transform.TransformDirection(Vector3.up), out var hit, Mathf.Infinity))
+        {
+            if (hit.point.y < PlayerCamScript.transform.position.y + camInitialHeight)
+            {
+                crouchBool = true;
+            }
+        }
     }
 
     void JoyStickCheck()
@@ -722,8 +702,6 @@ public class Player : MonoBehaviour
             case ControllerType.gamepad:
                 JoyStick = GPJoy;
                 CStick = GPCam * 2;
-                break;
-            default:
                 break;
         }
         //Anims
@@ -883,7 +861,7 @@ public class Player : MonoBehaviour
 
     public void FromUiToNormal(int tospeed)
     {
-        playerState = Player.PlayerState.normal;
+        playerState = PlayerState.normal;
         SetFade(0, (byte)tospeed);
         AudioSource sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
         sc.clip = (AudioClip)Resources.Load("SystemClose");
@@ -898,7 +876,7 @@ public class Player : MonoBehaviour
 }
 
 
-[System.Serializable]
+[Serializable]
 public class FootstepType
 {
     public string meshName;
@@ -907,7 +885,7 @@ public class FootstepType
     public float volume;
 }
 
-[System.Serializable]
+[Serializable]
 public class CharacterItems
 {
     public string itemName;

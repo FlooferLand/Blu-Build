@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7193151445953715977}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 44.143078, y: -1.2827542, z: 29.155697}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 5202224367328012764}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2898202574639025626
 MonoBehaviour:
@@ -45,12 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a2878e58fda714689bb45ac7f4a546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMin: 0.1
+  maxMin: 0.15
 --- !u!1001 &5744545845127859767
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 2219689764094225931}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ebcb31848f0839444bdb8c3b89702eed, type: 3}
@@ -102,6 +103,9 @@ PrefabInstance:
       value: SwingSign1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebcb31848f0839444bdb8c3b89702eed, type: 3}
 --- !u!4 &5202224367328012764 stripped
 Transform:

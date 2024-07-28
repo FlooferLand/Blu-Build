@@ -6,3 +6,10 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 90832
+  packageName: Open WAV Parser
+  packageVersion: 1.6
+  assetPath: Assets/eToile/ExampleShared/PopUp/Anim/PopUp.controller
+  uploadId: 560184
