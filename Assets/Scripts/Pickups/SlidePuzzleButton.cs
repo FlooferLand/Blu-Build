@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// TODO: Come back to SlidePuzzleButton
+
 [RequireComponent(typeof(BoxCollider))]
 public class SlidePuzzleButton : MonoBehaviour {
     public enum uisound {
@@ -13,7 +15,9 @@ public class SlidePuzzleButton : MonoBehaviour {
     public int puzzleNum;
     public uisound uiSound = uisound.tap;
     private bool click;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
     private bool highlighted;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
     private AudioSource sc;
 
     private void Start() {

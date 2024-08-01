@@ -12,7 +12,7 @@ public class CharIconSelectButton : MonoBehaviour {
     public ButtonType bt;
 
     public void SelectButton() {
-        var components = FindObjectsOfType<UI_ModelMaker>();
+        var components = FindObjectsByType<UI_ModelMaker>(FindObjectsSortMode.None);
         switch (bt) {
             case ButtonType.charIcon:
                 components[0].NewSelection(num);

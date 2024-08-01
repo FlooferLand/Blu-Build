@@ -12,7 +12,7 @@ public class RandomTitleScreen : MonoBehaviour, IPointerClickHandler, IPointerEn
         sillySound = GetComponent<AudioSource>();
         image = GetComponent<RawImage>();
         SetRandomTexture();
-        if (InternalGameVersion.gameName != "Faz-Anim") Destroy(gameObject);
+        if (InternalGameData.buildType != GameBuildType.Faz) Destroy(gameObject);
     }
 
     public void OnPointerClick(PointerEventData eventData) {
@@ -23,12 +23,12 @@ public class RandomTitleScreen : MonoBehaviour, IPointerClickHandler, IPointerEn
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        image.color = Color.Lerp(Color.white, Color.cyan, 0.1f);
+        image.color = Color.white;
         hovered = true;
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        image.color = Color.white;
+        image.color = Color.Lerp(Color.white, Color.black, 0.08f);
         hovered = false;
     }
 

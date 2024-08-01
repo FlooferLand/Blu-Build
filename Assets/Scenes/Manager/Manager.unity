@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 972015030}
   m_Layer: 0
   m_Name: Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,7 +145,7 @@ Transform:
   m_GameObject: {fileID: 972015027}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.96788, y: 2.8984857, z: 24.265099}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -163,23 +163,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c24c99fb6cf1c44cadea3e5d823f7be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fazAnimVersion: 1.60-ALPHA-1
-  rockafireReplayVersion: 1.60-ALPHA-1
+  fazProductName: BluBuild
+  fazVersion: 1.60-ALPHA-1
   fazTexture: {fileID: 2800000, guid: d65885e5b33c4b748a468d372fa57c98, type: 3}
-  rockTexture: {fileID: 2800000, guid: 59efaaf1efb87d340ae38ae2dd1c947a, type: 3}
-  fazAnimScenes:
-  - Assets/Scenes/Intro Screen/Intro Screen.unity
-  - Assets/Scenes/Title Screen/Title Screen.unity
-  - Assets/Scenes/Front Entrance/Front Entrance.unity
-  - Assets/Scenes/Bit Crusher/Bit Crusher.unity
-  - Assets/Scenes/Arcade Mr Hugs/Arcade Mr Hugs.unity
-  - Assets/Scenes/Front Entrance/Front Entrance.unity
-  - Assets/Scenes/Tutorial/Tutorial.unity
-  - Assets/Scenes/FNaF1/FNaF1.unity
-  - Assets/Scenes/FNaF2/FNaF2.unity
-  - Assets/Scenes/Sandbox/Sandbox.unity
-  - Assets/Scenes/Toy Foxy/Toy Foxy.unity
-  simulatorScenes:
+  fazScenes:
+  - sceneAsset: {fileID: 102900000, guid: 32e12fb78186c524a95803cccb5ea44a, type: 3}
+    scenePath: Assets/Scenes/Intro Screen/Intro Screen.unity
+  - sceneAsset: {fileID: 102900000, guid: 729cae8fa11721d4dabea215667f53ac, type: 3}
+    scenePath: Assets/Scenes/Title Screen/Title Screen.unity
+  - sceneAsset: {fileID: 102900000, guid: 97d3f17e1fcd7fd4c8fc88c3b69f67c7, type: 3}
+    scenePath: Assets/Scenes/Front Entrance/Front Entrance.unity
+  - sceneAsset: {fileID: 102900000, guid: ebc9cfca19d01164283d8f6d6fac00d7, type: 3}
+    scenePath: Assets/Scenes/Bit Crusher/Bit Crusher.unity
+  - sceneAsset: {fileID: 102900000, guid: b9f3d2f36c92086409656ee998d53571, type: 3}
+    scenePath: Assets/Scenes/Sandbox/Sandbox.unity
+  - sceneAsset: {fileID: 102900000, guid: b3c1fc5c80fc4074cb0cb47febd83f4b, type: 3}
+    scenePath: Assets/Scenes/StageFNaF1/FNaF1.unity
+  - sceneAsset: {fileID: 102900000, guid: 149656fc080b6c543b189b4c10095e06, type: 3}
+    scenePath: Assets/Scenes/StageFNaF2/FNaF2.unity
+  - sceneAsset: {fileID: 102900000, guid: 7e7e471cf135a61439a5f14f11a4f3ad, type: 3}
+    scenePath: Assets/Scenes/StageToyFoxy/Toy Foxy.unity
+  cdProductName: BluBuild (CD Edition)
+  cdVersion: 1.25
+  cdTexture: {fileID: 2800000, guid: 59efaaf1efb87d340ae38ae2dd1c947a, type: 3}
+  cdScenes:
   - Assets/Scenes/Intro Screen/Intro Screen.unity
   - Assets/Scenes/Title Screen/Title Screen.unity
   - Assets/Simulator/Scenes/Studio C/Studio C.unity

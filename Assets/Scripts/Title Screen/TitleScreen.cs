@@ -77,7 +77,7 @@ public class TitleScreen : MonoBehaviour {
     private void Start() {
         TextureXR.maxViews = 2;
         if (!stopUpdate) {
-            if (PlayerPrefs.GetInt("Tutorial Save 0") != 0 || InternalGameVersion.gameName != "Faz-Anim") {
+            if (PlayerPrefs.GetInt("Tutorial Save 0") != 0 || InternalGameData.gameName != "Faz-Anim") {
                 charcustomBtn.interactable = true;
                 editorBtn.interactable = true;
                 sandboxBtn.interactable = true;
@@ -87,7 +87,7 @@ public class TitleScreen : MonoBehaviour {
             faqG = faqW.GetComponent<CanvasGroup>();
             creditsG = creditsW.GetComponent<CanvasGroup>();
             characterG = characterW.GetComponent<CanvasGroup>();
-            versionText.text = "Ver. " + InternalGameVersion.gameVersion;
+            versionText.text = "Ver. " + InternalGameData.gameVersion;
             downButtonAnimator = downButton.GetComponent<Animator>();
 
             barGrid.color = barGrid.color.WithAlpha(0f);
@@ -100,7 +100,7 @@ public class TitleScreen : MonoBehaviour {
 
         QualitySave.FirstTimeSave();
         UpdateSettings();
-        if (InternalGameVersion.isVR == "true") {
+        if (InternalGameData.isVR) {
             Debug.Log("IsVR is True.");
             StartShow(false);
         }
@@ -117,8 +117,8 @@ public class TitleScreen : MonoBehaviour {
         // Playing the cog animation and the music in sync
         // + Spoopy easter-egg where the cog stops spinning during Halloween
         if (!isHalloween) {
-            logoAnim.Play("Cog animation");
-            music.Play();
+            if (logoAnim) logoAnim.Play("Cog animation");
+            if (music) music.Play();
         }
     }
 
@@ -146,7 +146,7 @@ public class TitleScreen : MonoBehaviour {
         }
 
         if (!stopUpdate) {
-            Destroy(InternalGameVersion.gameName == "Faz-Anim" ? logoTwo : logo);
+            Destroy(InternalGameData.buildType == GameBuildType.Faz ? logoTwo : logo);
             if (barUp) {
                 settingG.alpha += .1f;
                 faqG.alpha += .1f;
@@ -254,10 +254,11 @@ public class TitleScreen : MonoBehaviour {
         globalAudio.clip = (AudioClip)Resources.Load("big tap");
         globalAudio.pitch = Random.Range(0.95f, 1.05f);
         globalAudio.Play();
-        barUp = true;
-        downButton.SetActive(true);
-        downButtonAnimator.SetTrigger("Normal");
-        downButtonAnimator.Play("Normal");
+        if (!barUp) {
+            barUp = true;
+            downButton.SetActive(true);
+            downButtonAnimator.Play("Show");
+        }
         foreach (var bar in bars) bar.transition = true;
     }
 
@@ -269,23 +270,6 @@ public class TitleScreen : MonoBehaviour {
         barUp = false;
         foreach (var bar in bars) bar.transition = false;
         showtimeButton.SetActive(true);
-    }
-
-    public void TitleScreenMenu() {
-        if (sceneLoadCache == "") {
-            globalAudio.clip = (AudioClip)Resources.Load("tap");
-            globalAudio.pitch = Random.Range(0.95f, 1.05f);
-            globalAudio.Play();
-            if (PlayerPrefs.GetInt("Intro: TutorialA") == 0) {
-                ////////////////////////////////////////////////SceneManager.LoadScene("Tutorial", LoadSceneMode.Single);
-                sceneLoadCache = "Title Screen";
-                fadeWhichWay = true;
-            }
-            else {
-                sceneLoadCache = "Title Screen";
-                fadeWhichWay = true;
-            }
-        }
     }
 
     public void Exit() {

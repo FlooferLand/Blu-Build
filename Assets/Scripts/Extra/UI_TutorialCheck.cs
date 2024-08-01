@@ -19,7 +19,7 @@ public class UI_TutorialCheck : MonoBehaviour {
     }
 
     private void LoadGameScene(bool skipTutorial) {
-        const string sceneName = InternalGameVersion.gameName != "Faz-Anim" ? "Rival Restaurant" : "Front Entrance";
+        string sceneName = InternalGameData.buildType == GameBuildType.Faz ? "Front Entrance" : "Rival Restaurant";
 
         stateInfoText.enabled = true;
         stateInfoText.text = $"Loading \"{sceneName}\"..";

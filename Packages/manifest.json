@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "ca.andydbc.unity-texture-packer": "https://github.com/andydbc/unity-texture-packer.git",
+    "com.tymski.scene-reference": "https://github.com/Tymski/SceneReference.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.21.21",
     "com.unity.ai.navigation": "2.0.3",

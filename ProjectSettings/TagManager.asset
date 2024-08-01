@@ -8,6 +8,7 @@ TagManager:
   - FxTemporaire
   - Seat Enter
   - Seat Exit
+  - Manager
   layers:
   - Default
   - TransparentFX

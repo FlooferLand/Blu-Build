@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Globalization;
 using SFB;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -86,7 +87,7 @@ public class UI_SidePanel : MonoBehaviour {
         FlowUpdate();
         yield return new WaitForSeconds(.2f);
         showPanelUI.thePlayer = GameObject.Find("Player");
-        if (InternalGameVersion.isVR != "true")
+        if (InternalGameData.isVR != true)
             if (showPanelUI.thePlayer != null)
                 VHSToggle(0);
         var gg = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
@@ -153,10 +154,10 @@ public class UI_SidePanel : MonoBehaviour {
     }
 
     public void StageVolume(int input) {
-        var yea = FindObjectsOfType(typeof(InstrumentSound)) as InstrumentSound[];
-        for (int i = 0; i < yea.Length; i++) {
-            yea[i].volume = Mathf.Min(Mathf.Max(yea[i].volume + input * .05f, 0), 1);
-            stagevolumeText.text = Mathf.Ceil(yea[i].volume * 100).ToString();
+        var yea = FindObjectsByType<InstrumentSound>(FindObjectsSortMode.None);
+        foreach (var instrumentSound in yea) {
+            instrumentSound.volume = Mathf.Min(Mathf.Max(instrumentSound.volume + input * .05f, 0), 1);
+            stagevolumeText.text = Mathf.Ceil(instrumentSound.volume * 100).ToString(CultureInfo.InvariantCulture);
         }
     }
 
@@ -401,7 +402,7 @@ public class UI_SidePanel : MonoBehaviour {
                                 cv.flowControlOut[e] = thefile.characters[i].flowsOut[e] / 1000f;
                                 cv.gravityScale[e] = thefile.characters[i].weightIn[e] / 1000f;
                                 cv.gravityScaleOut[e] = thefile.characters[i].weightOut[e] / 1000f;
-                                Debug.Log(cv.smashControlIn.Length);
+                                // Debug.Log(cv.smashControlIn.Length);
                                 cv.smashControlIn[e] = thefile.characters[i].flowsIn[e + extra] / 1000f;
                                 cv.smashControlOut[e] = thefile.characters[i].flowsOut[e + extra] / 1000f;
                                 cv.smashSpeedIn[e] = thefile.characters[i].weightIn[e + extra] / 1000f;

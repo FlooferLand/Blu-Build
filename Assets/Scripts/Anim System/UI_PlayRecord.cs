@@ -49,8 +49,6 @@ public class UI_PlayRecord : MonoBehaviour {
     [Header("Show Data")]
     private Mack_Valves mack;
 
-    private bool ticketCheck = false;
-    private bool ticketCheck2 = false;
     private UI_WindowMaker windowMaker;
 
     private void Awake() {
@@ -200,12 +198,12 @@ public class UI_PlayRecord : MonoBehaviour {
             case 6:
                 //Player Menu (Single)
                 manager.Load();
-                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
+                if (manager.RshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 7:
                 //Player Menu (Folder)
                 manager.LoadFolder();
-                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
+                if (manager.RshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 8:
                 //Customize Screen
@@ -226,7 +224,7 @@ public class UI_PlayRecord : MonoBehaviour {
                 StageCustomMenu();
                 break;
             case 17:
-                if (manager.rshwData != null) windowMaker.MakePlayWindow(false);
+                if (manager.RshwData != null) windowMaker.MakePlayWindow(false);
                 break;
             case 21:
                 //Recording Groups Screen (Standalone)
@@ -512,7 +510,7 @@ public class UI_PlayRecord : MonoBehaviour {
     /// </summary>
     /// <param name="input"></param>
     public void UnloadScene(int input) {
-        GameObject.Find("Global Controller").GetComponent<GlobalController>().LoadShowScene("");
+        GameObject.Find("Global Controller").GetComponent<GlobalController>().LoadShowSceneAlt(null);
     }
 
     /// <summary>
@@ -575,7 +573,7 @@ public class UI_PlayRecord : MonoBehaviour {
     public void SpecialSaveAs(int input) {
         if (manager.SaveRecordingAs()) {
             SwitchWindow(input);
-            var tut = FindObjectOfType<TutorialManager>();
+            var tut = FindFirstObjectByType<TutorialManager>();
             if (tut != null) {
                 Debug.Log("tut advance");
                 tut.AttemptAdvanceTutorial("Create WAV");

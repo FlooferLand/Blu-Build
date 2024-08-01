@@ -30,7 +30,7 @@ public class Player : MonoBehaviour {
 
     public TMP_Text playerText;
     public TMP_Text agitText;
-    public FAde fadeObj;
+    public Fade fadeObj;
     public Image keyboardLayout;
 
     //Position, Movement, Buttons
@@ -135,9 +135,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private Controller gamepad;
 
     private float groundedTimeAnim = 0;
-    private bool holdGamepad = false;
-    private Vector2 JoyStick;
-    private int JumpFrames;
+    private Vector2 joyStick;
+    private int jumpFrames;
     private bool jumpGamepad = false;
     private Vector3 moveDirection = Vector3.zero;
     private bool newvr = false;
@@ -169,8 +168,6 @@ public class Player : MonoBehaviour {
         gamepad.Gamepad.Run.performed += ctx => runGamepad = true;
         gamepad.Gamepad.Crouch.canceled += ctx => crouchGamepad = false;
         gamepad.Gamepad.Crouch.performed += ctx => crouchGamepad = true;
-        gamepad.Gamepad.Hold.canceled += ctx => holdGamepad = false;
-        gamepad.Gamepad.Hold.performed += ctx => holdGamepad = true;
         gamepad.Gamepad.Horizontal.performed += ctx => GPJoy.x = ctx.ReadValue<float>();
         gamepad.Gamepad.Vertical.performed += ctx => GPJoy.y = ctx.ReadValue<float>();
         gamepad.Gamepad.Horizontal.canceled += ctx => GPJoy.x = 0;
@@ -287,7 +284,7 @@ public class Player : MonoBehaviour {
             //Footstep
             if (Vector3.Distance(transform.position, oldPosition) > 1.3f && CharCont.isGrounded) FootstepSoundCheck();
             //Move
-            MovePlayer(JoyStick, false);
+            MovePlayer(joyStick, false);
         }
         else {
             //UnPause
@@ -450,10 +447,10 @@ public class Player : MonoBehaviour {
 
             //Jumping
             if (JumpBool == 1)
-                JumpFrames++;
+                jumpFrames++;
             else
-                JumpFrames = 0;
-            if (JumpFrames == 1)
+                jumpFrames = 0;
+            if (jumpFrames == 1)
                 newMoveDir.y = jumpSpeed;
         }
         else {
@@ -587,26 +584,26 @@ public class Player : MonoBehaviour {
 
     private void JoyStickCheck() {
         CStick = Vector2.zero;
-        JoyStick = Vector2.zero;
+        joyStick = Vector2.zero;
         switch (controlType) {
             case ControllerType.keyboard:
-                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) JoyStick.y += 1.0f;
-                if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) JoyStick.x -= 1.0f;
-                if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) JoyStick.y -= 1.0f;
-                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) JoyStick.x += 1.0f;
+                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) joyStick.y += 1.0f;
+                if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) joyStick.x -= 1.0f;
+                if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) joyStick.y -= 1.0f;
+                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) joyStick.x += 1.0f;
                 CStick.x = Input.GetAxis("Mouse X") * 1.5f;
                 CStick.y = Input.GetAxis("Mouse Y") * -1.5f;
                 break;
             case ControllerType.gamepad:
-                JoyStick = GPJoy;
+                joyStick = GPJoy;
                 CStick = GPCam * 2;
                 break;
         }
 
         //Anims
-        _animator.SetFloat("Velocity Z", Mathf.Min(JoyStick.y * 10, 1), 0.1f, Time.deltaTime);
-        _animator.SetFloat("Velocity X", Mathf.Min(JoyStick.x * 10, 1), 0.1f, Time.deltaTime);
-        JoyStick = JoyStick.normalized;
+        _animator.SetFloat("Velocity Z", Mathf.Min(joyStick.y * 10, 1), 0.1f, Time.deltaTime);
+        _animator.SetFloat("Velocity X", Mathf.Min(joyStick.x * 10, 1), 0.1f, Time.deltaTime);
+        joyStick = joyStick.normalized;
     }
 
     private void AnimCheck() {

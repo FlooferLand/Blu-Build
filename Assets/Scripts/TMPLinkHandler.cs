@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TMPLinkHandler : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+public class TMPLinkHandler : MonoBehaviour, IPointerMoveHandler, IPointerExitHandler {
     public delegate void ClickOnLinkEvent(string keyword);
 
     private TMP_Text textComp;
@@ -22,12 +22,18 @@ public class TMPLinkHandler : MonoBehaviour, IPointerClickHandler, IPointerEnter
         OnClickedOnLinkEvent?.Invoke(text);
     }
 
-    public void OnPointerEnter(PointerEventData eventData) {
-        if (!findLink(eventData, out var info)) return;
+
+    public void OnPointerMove(PointerEventData eventData) {
+        if (!findLink(eventData, out var info)) {
+            CursorUtils.Set(CursorKind.Default);
+            return;
+        }
+        
+        CursorUtils.Set(CursorKind.Point);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        if (!findLink(eventData, out var info)) return;
+        CursorUtils.Set(CursorKind.Default);
     }
 
     public static event ClickOnLinkEvent OnClickedOnLinkEvent = null;

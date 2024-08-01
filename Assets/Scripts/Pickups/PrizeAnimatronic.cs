@@ -10,9 +10,8 @@ public class PrizeAnimatronic : MonoBehaviour {
 
     public float mass = 3.0f;
     public PrizeType prizeType;
-    private float uVSize = 0.5f;
 
-    public void ATTStartup() {
+    public void AttStartup() {
         switch (prizeType) {
             case PrizeType.basic:
                 GetComponent<Rigidbody>().mass = mass;

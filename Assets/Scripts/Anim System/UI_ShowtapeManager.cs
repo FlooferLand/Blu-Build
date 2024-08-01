@@ -53,7 +53,9 @@ public class UI_ShowtapeManager : MonoBehaviour {
     public bool recordMovements = false;
     public bool playMovements = false;
     public bool isRandomPlaybackOn;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
     private bool disableCharactersOnStart = true;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
     private bool previousAnyButtonHeld = false;
     private int previousFramePosition = 0;
 
@@ -61,8 +63,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
 
     //File Show MetaData
     [Header("File Show Metadata")]
-    [HideInInspector]
-    public BitArray[] rshwData;
+    [HideInInspector] public BitArray[] RshwData;
 
     //Sync TV for Large Shows (Unity's Fault)
     private float syncTimer;
@@ -70,7 +71,9 @@ public class UI_ShowtapeManager : MonoBehaviour {
     //Extra Variables
     private bool ticketCheck;
     private bool ticketCheck2;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
     private float timeInputSpeedStart = 0;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
     private float timePauseStart = 0;
     private float timeSongOffset = 0;
 
@@ -85,7 +88,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
             syncTvsAndSpeakers.Invoke();
         }
 
-        if (inputHandler != null) {
+        if (inputHandler) {
             var inputDataObj = inputHandler.InputCheck();
 
             //Clear Drawers
@@ -94,19 +97,19 @@ public class UI_ShowtapeManager : MonoBehaviour {
 
             //Check for inputs and send to mack valves
             if (inputHandler != null && mack != null && referenceSpeaker.clip != null)
-                if (rshwData != null) {
+                if (RshwData != null) {
                     //Show Code
                     //Being paused means the same frame of data will loop
                     //Being unpaused means deciding where to start next sim frame
                     int arrayDestination = (int)(referenceSpeaker.time * dataStreamedFPS);
 
                     //Check if new frames need to be created
-                    if (arrayDestination >= rshwData.Length && rshwData.Length != 0) {
+                    if (arrayDestination >= RshwData.Length && RshwData.Length != 0) {
                         if (recordMovements)
-                            while (arrayDestination + 1 > rshwData.Length)
-                                rshwData = rshwData.Append(new BitArray(300)).ToArray();
+                            while (arrayDestination + 1 > RshwData.Length)
+                                RshwData = RshwData.Append(new BitArray(300)).ToArray();
                         else
-                            arrayDestination = rshwData.Length;
+                            arrayDestination = RshwData.Length;
                     }
 
                     //Record
@@ -114,8 +117,8 @@ public class UI_ShowtapeManager : MonoBehaviour {
                         //Record
                         if (inputDataObj.anyButtonHeld) {
                             for (int i = 0; i < 150; i++) {
-                                if (inputDataObj.topDrawer[i]) rshwData[arrayDestination].Set(i, true);
-                                if (inputDataObj.bottomDrawer[i]) rshwData[arrayDestination].Set(i + 150, true);
+                                if (inputDataObj.topDrawer[i]) RshwData[arrayDestination].Set(i, true);
+                                if (inputDataObj.bottomDrawer[i]) RshwData[arrayDestination].Set(i + 150, true);
                             }
 
                             if (previousAnyButtonHeld) {
@@ -124,17 +127,17 @@ public class UI_ShowtapeManager : MonoBehaviour {
                                     //Forward
                                     for (int i = 0; i < arrayDestination - previousFramePosition; i++)
                                     for (int e = 0; e < 150; e++) {
-                                        if (inputDataObj.topDrawer[e]) rshwData[previousFramePosition + i].Set(e, true);
+                                        if (inputDataObj.topDrawer[e]) RshwData[previousFramePosition + i].Set(e, true);
                                         if (inputDataObj.bottomDrawer[e])
-                                            rshwData[previousFramePosition + i].Set(e + 150, true);
+                                            RshwData[previousFramePosition + i].Set(e + 150, true);
                                     }
                                 else
                                     //Backward
                                     for (int i = 0; i < previousFramePosition - arrayDestination; i++)
                                     for (int e = 0; e < 150; e++) {
-                                        if (inputDataObj.topDrawer[e]) rshwData[previousFramePosition - i].Set(e, true);
+                                        if (inputDataObj.topDrawer[e]) RshwData[previousFramePosition - i].Set(e, true);
                                         if (inputDataObj.bottomDrawer[e])
-                                            rshwData[previousFramePosition - i].Set(e + 150, true);
+                                            RshwData[previousFramePosition - i].Set(e + 150, true);
                                     }
                             }
 
@@ -160,10 +163,10 @@ public class UI_ShowtapeManager : MonoBehaviour {
 
 
                     //Apply the current frame of simulation data to the Mack Valves
-                    if (arrayDestination < rshwData.Length)
+                    if (arrayDestination < RshwData.Length)
                         for (int i = 0; i < 150; i++) {
-                            if (rshwData[arrayDestination].Get(i)) mack.topDrawer[i] = true;
-                            if (rshwData[arrayDestination].Get(i + 150)) mack.bottomDrawer[i] = true;
+                            if (RshwData[arrayDestination].Get(i)) mack.topDrawer[i] = true;
+                            if (RshwData[arrayDestination].Get(i + 150)) mack.bottomDrawer[i] = true;
                         }
 
                     //Check if show is over
@@ -225,7 +228,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
         string[] paths;
         if (fileExtention == "") {
             ExtensionFilter[] extensions;
-            if (InternalGameVersion.gameName == "Faz-Anim")
+            if (InternalGameData.buildType == GameBuildType.Faz)
                 extensions = new ExtensionFilter[] { new("Show Files", "fshw", "tshw", "mshw") };
             else
                 extensions = new ExtensionFilter[] { new("Show Files", "cshw", "sshw", "rshw", "nshw") };
@@ -318,7 +321,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
         referenceSpeaker.time = 0;
         currentShowtapeSegment = -1;
         showtapeSegmentPaths = new string[1];
-        rshwData = new BitArray[0];
+        RshwData = new BitArray[0];
         audioVideoPause.Invoke();
         curtainClose.Invoke();
     }
@@ -358,10 +361,10 @@ public class UI_ShowtapeManager : MonoBehaviour {
                         newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                     }
 
-                rshwData = newSignals.ToArray();
+                RshwData = newSignals.ToArray();
 
                 //Actual Deletion Code
-                for (int i = 0; i < rshwData.Length; i++) rshwData[i].Set(combinedNewInput - 1, false);
+                for (int i = 0; i < RshwData.Length; i++) RshwData[i].Set(combinedNewInput - 1, false);
                 SaveRecording();
             }
         }
@@ -371,22 +374,22 @@ public class UI_ShowtapeManager : MonoBehaviour {
         Debug.Log("Deleting Move (No Save): " + bitDelete);
 
         //Actual Deletion Code
-        for (int i = 0; i < rshwData.Length; i++) rshwData[i].Set(bitDelete - 1, fill);
+        for (int i = 0; i < RshwData.Length; i++) RshwData[i].Set(bitDelete - 1, fill);
     }
 
     public void PadMove(int bitPad, int padding) {
         bitPad -= 1;
         if (padding > 0) {
-            int oldLength = rshwData.Length;
+            int oldLength = RshwData.Length;
             //Create new space
-            for (int i = 0; i < padding; i++) rshwData = rshwData.Append(new BitArray(300)).ToArray();
+            for (int i = 0; i < padding; i++) RshwData = RshwData.Append(new BitArray(300)).ToArray();
             for (int e = 0; e < oldLength; e++)
-                rshwData[rshwData.Length - 1 - e].Set(bitPad, rshwData[oldLength - 1 - e].Get(bitPad));
+                RshwData[RshwData.Length - 1 - e].Set(bitPad, RshwData[oldLength - 1 - e].Get(bitPad));
         }
         else {
             padding = Mathf.Abs(padding);
-            for (int i = 0; i < rshwData.Length - padding; i++)
-                rshwData[i].Set(bitPad, rshwData[i + padding].Get(bitPad));
+            for (int i = 0; i < RshwData.Length - padding; i++)
+                RshwData[i].Set(bitPad, RshwData[i + padding].Get(bitPad));
         }
     }
 
@@ -413,8 +416,8 @@ public class UI_ShowtapeManager : MonoBehaviour {
             return addWavResult.none;
         }
 
-        return addWavResult.noSource;
         Cursor.lockState = lockState;
+        return addWavResult.noSource;
     }
 
     public void AddWavSpecial() {
@@ -443,22 +446,22 @@ public class UI_ShowtapeManager : MonoBehaviour {
     }
 
     private void CreateBitArray() {
-        rshwData = new BitArray[100];
-        for (int i = 0; i < rshwData.Length; i++) rshwData[i] = new BitArray(300);
+        RshwData = new BitArray[100];
+        for (int i = 0; i < RshwData.Length; i++) RshwData[i] = new BitArray(300);
     }
 
     public void SaveRecording() {
         //Stop Show
-        if (rshwData != null) {
+        if (RshwData != null) {
             audioVideoPause.Invoke();
             recordMovements = false;
             playMovements = false;
             var shw = new rshwFormat { audioData = OpenWavParser.AudioClipToByteArray(speakerClip) };
             var converted = new List<int>();
-            for (int i = 0; i < rshwData.Length; i++) {
+            for (int i = 0; i < RshwData.Length; i++) {
                 converted.Add(0);
                 for (int e = 0; e < 300; e++)
-                    if (rshwData[i].Get(e))
+                    if (RshwData[i].Get(e))
                         converted.Add(e + 1);
             }
 
@@ -472,7 +475,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
     }
 
     public bool SaveRecordingAs() {
-        if (rshwData != null && speakerClip != null) {
+        if (RshwData != null && speakerClip != null) {
             var lockState = Cursor.lockState;
             Cursor.lockState = CursorLockMode.None;
             //Stop Show
@@ -488,10 +491,10 @@ public class UI_ShowtapeManager : MonoBehaviour {
                     showtapeSegmentPaths[0] = path;
                     var shw = new rshwFormat { audioData = OpenWavParser.AudioClipToByteArray(speakerClip) };
                     var converted = new List<int>();
-                    for (int i = 0; i < rshwData.Length; i++) {
+                    for (int i = 0; i < RshwData.Length; i++) {
                         converted.Add(0);
                         for (int e = 0; e < 300; e++)
-                            if (rshwData[i].Get(e))
+                            if (RshwData[i].Get(e))
                                 converted.Add(e + 1);
                     }
 
@@ -565,7 +568,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
                     newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                 }
 
-            rshwData = newSignals.ToArray();
+            RshwData = newSignals.ToArray();
             yield return null;
             if (File.Exists(url.Remove(url.Length - Mathf.Max(fileExtention.Length, 4)) + "mp4")) {
                 Debug.Log("Video Found for Showtape.");
@@ -649,7 +652,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
         string[] fileNames = { };
         if (fileExtention == "") {
             string[] exts = { };
-            if (InternalGameVersion.gameName == "Faz-Anim")
+            if (InternalGameData.buildType == GameBuildType.Faz)
                 exts = new[] { "*.fshw", "*.tshw", "*.mshw" };
             else
                 exts = new[] { "*.cshw", "*.sshw", "*.rshw", "*.nshw" };
@@ -711,7 +714,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
                         newSignals[countlength - 1].Set(thefile.signalData[i] - 1, true);
                     }
 
-                rshwData = newSignals.ToArray();
+                RshwData = newSignals.ToArray();
 
                 paths = StandaloneFileBrowser.OpenFilePanel("Browse Showtape Audio", "", "wav", false);
                 if (paths.Length > 0)
@@ -734,7 +737,7 @@ public class UI_ShowtapeManager : MonoBehaviour {
         timeInputSpeedStart = 0;
         curtainOpen.Invoke();
         speakerClip = null;
-        rshwData = null;
+        RshwData = null;
         videoPath = "";
         referenceSpeaker.clip = null;
     }

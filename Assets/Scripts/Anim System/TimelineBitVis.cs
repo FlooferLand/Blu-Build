@@ -85,7 +85,7 @@ public class TimelineBitVis : MonoBehaviour {
             //Function finished
             if (secondIndex >= bitsRepresented) break;
 
-            var data = uiShowtapeManager.rshwData ?? new BitArray[80];
+            var data = uiShowtapeManager.RshwData ?? new BitArray[80];
             if (bitStart + secondIndex < data.Length) {
                 for (int i = 0; i < bitBoxes.Length; i++)
                     if (bitBoxes[i] && i + timelineEditor.holderOffset < timelineEditor.tlRecordGroup.Length) {

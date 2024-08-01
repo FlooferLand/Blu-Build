@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hologram
-  m_Shader: {fileID: -6465566751694194690, guid: 00d43b65b842de546b7f0ba024e05c85, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: c7bb7d5e2e5e63e48bc3c34b430fee85, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -202,7 +202,7 @@ Material:
     - _EnergyConservingSpecularColor: 1
     - _ExcludeFromTUAndAA: 0
     - _ForceForwardEmissive: 0
-    - _GlitchStrength: 0
+    - _GlitchStrength: 0.05
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
@@ -247,7 +247,7 @@ Material:
     - _RequireSplitLighting: 0
     - _SSRefractionProjectionModel: 0
     - _ScanlineOffset: 0
-    - _ScrollSpeed: 0.02
+    - _ScrollSpeed: 0.03
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 0.6175481
     - _SmoothnessRemapMin: 0.14213574
@@ -301,12 +301,12 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0, g: 3.0241697, b: 5.278032, a: 0.27058825}
+    - _FresnelColor: {r: 0, g: 8.453886, b: 14.754423, a: 0.27058825}
     - _HologramTiling: {r: 221.1, g: 24.8, b: 0, a: 0}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _MainColor: {r: 0, g: 4.351688, b: 44.727043, a: 1}
-    - _MainColor_1: {r: 0, g: 0.21243066, b: 0.5471698, a: 0.31764707}
+    - _MainColor: {r: 0, g: 2.8054655, b: 7.3962264, a: 1}
+    - _MainColor_1: {r: 0, g: 2.0922625, b: 5.3891606, a: 0.31764707}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}

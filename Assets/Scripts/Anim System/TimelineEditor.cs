@@ -84,7 +84,7 @@ public class TimelineEditor : MonoBehaviour {
                 int arrayDestination =
                     (int)(uiShowtapeManager.referenceSpeaker.time * uiShowtapeManager.dataStreamedFPS);
 
-                Debug.Log(uiShowtapeManager.rshwData[arrayDestination].Get(0));
+                Debug.Log(uiShowtapeManager.RshwData[arrayDestination].Get(0));
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S)) uiShowtapeManager.SaveRecording();
@@ -240,13 +240,13 @@ public class TimelineEditor : MonoBehaviour {
         int eraseLeft = (int)(remap(Input.mousePosition.x / Screen.width, 0, 1, viewZoomMin, viewZoomMax) *
                               uiShowtapeManager.dataStreamedFPS);
         int eraseRight = eraseLeft + 1;
-        while (eraseLeft > 0 && uiShowtapeManager.rshwData[eraseLeft].Get(e)) {
-            uiShowtapeManager.rshwData[eraseLeft].Set(e, false);
+        while (eraseLeft > 0 && uiShowtapeManager.RshwData[eraseLeft].Get(e)) {
+            uiShowtapeManager.RshwData[eraseLeft].Set(e, false);
             eraseLeft--;
         }
 
-        while (eraseRight < uiShowtapeManager.rshwData.Length && uiShowtapeManager.rshwData[eraseRight].Get(e)) {
-            uiShowtapeManager.rshwData[eraseRight].Set(e, false);
+        while (eraseRight < uiShowtapeManager.RshwData.Length && uiShowtapeManager.RshwData[eraseRight].Get(e)) {
+            uiShowtapeManager.RshwData[eraseRight].Set(e, false);
             eraseRight++;
         }
 
@@ -431,20 +431,19 @@ public class TimelineEditor : MonoBehaviour {
     private IEnumerator CreateAndLinkScene(string url) {
         Debug.Log("Loading scene of " + url);
 
-        var scenes = SceneManager.GetAllScenes();
-
-        for (int i = 0; i < scenes.Length; i++) {
-            if (scenes[i].name == "FNaF1") SceneManager.UnloadSceneAsync("FNaF1");
-            if (scenes[i].name == "FNaF2") SceneManager.UnloadSceneAsync("FNaF2");
-            if (scenes[i].name == "Studio C") SceneManager.UnloadSceneAsync("Studio C");
-            if (scenes[i].name == "CYBERS") SceneManager.UnloadSceneAsync("CYBERS");
-            if (scenes[i].name == "CRAE") SceneManager.UnloadSceneAsync("CRAE");
-            if (scenes[i].name == "NRAE") SceneManager.UnloadSceneAsync("NRAE");
+        for (int i = 0; i < SceneManager.sceneCount; i++) {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name == "FNaF1") SceneManager.UnloadSceneAsync("FNaF1");
+            if (scene.name == "FNaF2") SceneManager.UnloadSceneAsync("FNaF2");
+            if (scene.name == "Studio C") SceneManager.UnloadSceneAsync("Studio C");
+            if (scene.name == "CYBERS") SceneManager.UnloadSceneAsync("CYBERS");
+            if (scene.name == "CRAE") SceneManager.UnloadSceneAsync("CRAE");
+            if (scene.name == "NRAE") SceneManager.UnloadSceneAsync("NRAE");
         }
 
         currentCamFeed = 0;
 
-        if (InternalGameVersion.gameName == "Faz-Anim")
+        if (InternalGameData.buildType == GameBuildType.Faz)
             switch (url) {
                 case "fshw": {
                     SceneManager.LoadScene("FNaF1", LoadSceneMode.Additive);

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class TutorialManager : MonoBehaviour {
     public static bool skippedTutorial = false;
@@ -625,7 +626,7 @@ public class TutorialManager : MonoBehaviour {
         GetComponent<Animation>().Play();
         Destroy(GetComponent<AudioSource>());
         playerCPT.keyboardLayout.color = new Color(1, 1, 1, 0);
-        door.useLightProbes = true;
+        door.lightProbeUsage = LightProbeUsage.BlendProbes;
         Destroy(button);
     }
 
@@ -775,6 +776,6 @@ public class TutorialManager : MonoBehaviour {
     public static bool ShouldDoTutorial() {
         return !Application.isEditor && !skippedTutorial && (PlayerPrefs.GetInt("Tutorial Save 0") == 0 ||
                                                              (!PlayerPrefs.HasKey("Tutorial Save 0") &&
-                                                              InternalGameVersion.isVR != "true"));
+                                                              InternalGameData.isVR != true));
     }
 }

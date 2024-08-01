@@ -4,11 +4,16 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
+/**
+ * VERY MESSY CLASS THAT DOES EVERYTHING IN THE GAME.
+ * // TODO: REFACTOR THIS AT ONCE !!!
+ */
 public class GlobalController : MonoBehaviour {
     public GameObject player;
     public VolumeProfile regularVolume;
-    public bool TwoJoined = false;
+    public bool twoJoined = false;
     public bool debugJoinPlayerTwo = false;
     public bool debugResetProgress;
     public ShowObject[] showSceneNames;
@@ -29,14 +34,20 @@ public class GlobalController : MonoBehaviour {
         gamepad.Gamepad.Run.performed += ctx => JoinPlayerTwo();
         gamepad.Gamepad.Crouch.performed += ctx => JoinPlayerTwo();
 
+        // Main player
         JoinPlayerOne();
-
-        //Set Height
         player.transform.localScale = new Vector3(1.245614f, 1.245614f, 1.245614f);
 
-        if (SceneManager.GetActiveScene().name == "Sandbox") unlockAllPrizes = true;
+        // Saves a tiny bit of performance
+        #if UNITY_EDITOR
+            Debug.unityLogger.logEnabled = true;
+        #else
+            Debug.unityLogger.logEnabled = false;
+        #endif
+        
+        // Dev-only cheats >:)
+        if (SceneManager.GetActiveScene().name == "Sandbox" || Application.isEditor) unlockAllPrizes = true;
     }
-
 
     private void FixedUpdate() {
         if (debugJoinPlayerTwo) {
@@ -61,61 +72,63 @@ public class GlobalController : MonoBehaviour {
 
     private void JoinPlayerOne() {
         if (GameObject.Find("Player") == null) {
-            var playernew = Instantiate(player);
-            playernew.name = "Player";
-            DontDestroyOnLoad(playernew);
-            Camera.main.GetComponent<Volume>().profile = regularVolume;
-            if (InternalGameVersion.isVR == "true") {
+            var newPlayer = Instantiate(player);
+            newPlayer.name = "Player";
+            newPlayer.tag = "Player";
+            DontDestroyOnLoad(newPlayer);
+            if (Camera.main != null) Camera.main.GetComponent<Volume>().profile = regularVolume;
+            if (InternalGameData.isVR) {
                 QualitySettings.vSyncCount = 0;
                 Screen.fullScreenMode = FullScreenMode.Windowed;
-                playernew.GetComponent<Player>().isVR = true;
-                Destroy(playernew.transform.Find("Main Camera").gameObject);
-                playernew.transform.Find("VR").gameObject.SetActive(true);
-                playernew.transform.Find("PlayerModel").gameObject.SetActive(false);
+                newPlayer.GetComponent<Player>().isVR = true;
+                Destroy(newPlayer.transform.Find("Main Camera").gameObject);
+                newPlayer.transform.Find("VR").gameObject.SetActive(true);
+                newPlayer.transform.Find("PlayerModel").gameObject.SetActive(false);
             }
 
-            Destroy(playernew.transform.Find("VR").gameObject);
+            Destroy(newPlayer.transform.Find("VR").gameObject);
 
             // Setting the position
-            if (InternalGameVersion.gameName == "Faz-Anim") {
+            if (InternalGameData.buildType == GameBuildType.Faz) {
                 //Faz-Anim
                 if (TutorialManager.ShouldDoTutorial()) {
                     // Crate
-                    playernew.transform.position = fazAnimTutSpawn?.position ?? fazAnimSpawn.position;
-                    playernew.transform.rotation = fazAnimTutSpawn?.rotation ?? fazAnimSpawn.rotation;
+                    newPlayer.transform.position = fazAnimTutSpawn?.position ?? fazAnimSpawn.position;
+                    newPlayer.transform.rotation = fazAnimTutSpawn?.rotation ?? fazAnimSpawn.rotation;
                 }
                 else {
                     // Normal
-                    playernew.transform.position = fazAnimSpawn.position;
-                    playernew.transform.rotation = fazAnimSpawn.rotation;
+                    newPlayer.transform.position = fazAnimSpawn.position;
+                    newPlayer.transform.rotation = fazAnimSpawn.rotation;
                 }
             }
             else {
                 //PTP
-                playernew.transform.position = new Vector3(44.86588f, -1.078f, -4.248048f);
-                playernew.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 283.725f, 0.0f));
+                newPlayer.transform.position = new Vector3(44.86588f, -1.078f, -4.248048f);
+                newPlayer.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 283.725f, 0.0f));
             }
 
-            GameObject.Find("Player").transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>()
+            newPlayer.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>()
                 .playerNum = 1;
-            GameObject.Find("Player").transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>()
+            newPlayer.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>()
                 .LoadCharacterData();
 
             //Both
-            ApplyCamSettings(GameObject.Find("Player"));
+            Debug.Log($"PLAYER IS {newPlayer}");
+            ApplyCamSettings(newPlayer);
         }
     }
 
     public void JoinPlayerTwo() {
-        if (!TwoJoined) {
-            TwoJoined = true;
+        if (!twoJoined) {
+            twoJoined = true;
 
             //Player 2
             var playernew = Instantiate(player);
             playernew.name = "Player 2";
             playernew.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>().playerNum = 2;
             playernew.transform.Find("PlayerModel").Find("MainBody").GetComponent<CharPrefaber>().LoadCharacterData();
-            if (InternalGameVersion.gameName == "Faz-Anim")
+            if (InternalGameData.buildType == GameBuildType.Faz)
                 playernew.transform.position = new Vector3(0f, -0.7132773f, 0f);
             else
                 playernew.transform.position = new Vector3(44.86588f, -1.078f, -4.248048f);
@@ -156,12 +169,16 @@ public class GlobalController : MonoBehaviour {
         }
     }
 
+    /** Loads in the real show scene */
     public void LoadShowScene(int scene) {
         LoadShowScene(showSceneNames[scene].sceneName);
     }
 
+    /** Laads in the real show scene */
     public void LoadShowScene(string scene) {
-        // TODO: Add a ref to Toy Foxy somehow to play the activation animation.
+        LoadShowSceneAlt(scene);
+        
+        /*// TODO: Add a ref to Toy Foxy somehow to play the activation animation.
         if (scene == "Toy Foxy") { }
 
         foreach (var obj in showSceneNames)
@@ -173,24 +190,26 @@ public class GlobalController : MonoBehaviour {
 
         Resources.UnloadUnusedAssets();
 
-        if (scene != "")
-            for (int i = 0; i < showSceneNames.Length; i++)
+        if (scene != "") {
+            for (int i = 0; i < showSceneNames.Length; i++) {
                 if (showSceneNames[i].sceneName == scene) {
                     showSceneNames[i].objectShow.GetComponentInChildren<Button3D>().gameObject.SetActive(false);
-                    StartCoroutine(WaitingLoad(i));
+                    StartCoroutine(InternalAsyncLoadShowSync(i));
                 }
+            }
+        }*/
     }
 
-    private IEnumerator WaitingLoad(int i) {
+    private IEnumerator InternalAsyncLoadShowSync(int i) {
         yield return SceneManager.LoadSceneAsync(showSceneNames[i].sceneName, LoadSceneMode.Additive);
         showSceneNames[i].objectShow.SetActive(false);
     }
 
     public void LoadShowSceneALT(int scene) {
-        LoadShowSceneALT(showSceneNames[scene].sceneName);
+        LoadShowSceneAlt(showSceneNames[scene].sceneName);
     }
 
-    public void LoadShowSceneALT(string scene) {
+    public void LoadShowSceneAlt(string scene) {
         for (int i = 0; i < showSceneNames.Length; i++)
             if (SceneManager.GetSceneByName(showSceneNames[i].sceneName).IsValid()) {
                 SceneManager.UnloadSceneAsync(showSceneNames[i].sceneName);
@@ -200,40 +219,76 @@ public class GlobalController : MonoBehaviour {
 
         Resources.UnloadUnusedAssets();
 
-        if (scene != "")
-            for (int i = 0; i < showSceneNames.Length; i++)
+        if (scene != null)
+            for (int i = 0; i < showSceneNames.Length; i++) {
+                if (showSceneNames[i] == null) {
+                    Debug.LogError($"Real show data missing in {nameof(GlobalController)} at index {i}. You must add info about the show here!");
+                    continue;
+                }
+                if (showSceneNames[i].objectShow == null) {
+                    Debug.LogError($"Show missing in {nameof(GlobalController)} at index {i}. You must add info about the show here!");
+                    continue;
+                }
+                
                 if (showSceneNames[i].sceneName == scene) {
                     showSceneNames[i].objectShow.GetComponentInChildren<Button3D>().gameObject.SetActive(false);
                     StartCoroutine(WaitingLoadALT(i));
                 }
+            }
     }
 
-    private IEnumerator WaitingLoadALT(int i) {
-        var asyncLoad = SceneManager.LoadSceneAsync(showSceneNames[i].sceneName, LoadSceneMode.Additive);
-
+    // Awful code, I know - Floof
+    // TODO: Finish implementing the new show loading system
+    private IEnumerator WaitingLoadALT(int sceneIndex) {
+        // Loading the scene and getting it
+        string loadedSceneName = showSceneNames[sceneIndex].sceneName;
+        var asyncLoad = SceneManager.LoadSceneAsync(loadedSceneName, LoadSceneMode.Additive);
         while (!asyncLoad.isDone) yield return null;
+        var scene = SceneManager.GetSceneByName(loadedSceneName);
+        
+        var sceneRoots = scene.GetRootGameObjects();
+        var fakeShow = showSceneNames[sceneIndex].objectShow;
+        foreach (var sceneRoot in sceneRoots) {
+            var realLoadedShow = sceneRoot.GetComponent<LoadedShow>();
+            if (realLoadedShow) {
+                sceneRoot.transform.position = new Vector3(0, -100, 0);
+                var fakeShowComp = fakeShow.transform.GetComponent<FakeCharacter>();
 
-        var scene = SceneManager.GetSceneByName(showSceneNames[i].sceneName);
+                realLoadedShow.transform.position = fakeShow.transform.position;
+                realLoadedShow.transform.rotation = fakeShow.transform.rotation;
+                
+                realLoadedShow.liveEditor.transform.position = fakeShowComp.liveEditor.transform.position;
+                realLoadedShow.liveEditor.transform.rotation = fakeShowComp.liveEditor.transform.rotation;
 
-        var gg = scene.GetRootGameObjects();
+                realLoadedShow.showSelector.transform.position = fakeShowComp.showSelector.transform.position;
+                realLoadedShow.showSelector.transform.rotation = fakeShowComp.showSelector.transform.rotation;
 
-        int gggg = 0;
-        for (int e = 0; e < gg.Length; e++)
-            if (gg[e].transform.Find("Live Editor") != null) {
-                gggg = e;
-                gg[gggg].transform.position = new Vector3(0, -100, 0);
-                gg[gggg].transform.Find("Live Editor").transform.position = showSceneNames[i].objectShow.transform
-                    .Find("Live Editor").transform.position;
-                gg[gggg].transform.Find("Live Editor").transform.rotation = showSceneNames[i].objectShow.transform
-                    .Find("Live Editor").transform.rotation;
-                gg[gggg].transform.Find("Show Selector").transform.position = showSceneNames[i].objectShow.transform
-                    .Find("Show Selector").transform.position;
-                gg[gggg].transform.Find("Show Selector").transform.rotation = showSceneNames[i].objectShow.transform
-                    .Find("Show Selector").transform.rotation;
+                realLoadedShow.stage.transform.position = fakeShowComp.stageHolder.transform.position;
+                realLoadedShow.stage.transform.rotation = fakeShowComp.stageHolder.transform.rotation;
+
+                realLoadedShow.characters.transform.position = fakeShowComp.characterHolder.transform.position;
+                realLoadedShow.characters.transform.rotation = fakeShowComp.characterHolder.transform.rotation;
+                
+                for (int a = 0; a < realLoadedShow.characters.transform.childCount; a++) {
+                    var realChar = realLoadedShow.characters.transform.GetChild(a);
+                    if (realChar) {
+                        for (int b = 0; b < fakeShowComp.characterHolder.transform.childCount; b++) {
+                            var fakeChar = fakeShowComp.characterHolder.transform.GetChild(b);
+                            if (fakeChar.name == realChar.name) {
+                                realChar.transform.position = fakeChar.transform.position;
+                                realChar.transform.rotation = fakeChar.transform.rotation;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
                 break;
             }
+        }
 
-        showSceneNames[i].objectShow.SetActive(false);
+        showSceneNames[sceneIndex].objectShow.SetActive(false);
     }
 
 
@@ -248,19 +303,19 @@ public class GlobalController : MonoBehaviour {
             volume.profile = player.GetComponent<Player>().lowEffectsVolume;
 
         if (PlayerPrefs.GetInt("Settings: Motion Blur") == 0) {
-            MotionBlur testDoF;
-            volume.profile.TryGet(out testDoF);
-            testDoF.intensity.value = 0;
+            MotionBlur motionBlur;
+            volume.profile.TryGet(out motionBlur);
+            if (motionBlur) motionBlur.intensity.value = 0;
         }
 
         if (PlayerPrefs.GetInt("Settings: Auto Exposure") == 0) {
-            Exposure testDoF;
-            volume.profile.TryGet(out testDoF);
-            testDoF.mode.value = ExposureMode.Fixed;
-            if (!(testDoF.limitMin.value == 1)) testDoF.fixedExposure.value = 0.71f;
+            Exposure autoExposure;
+            volume.profile.TryGet(out autoExposure);
+            autoExposure.mode.value = ExposureMode.Fixed;
+            if (autoExposure && !Mathf.Approximately(autoExposure.limitMin.value, 1)) autoExposure.fixedExposure.value = 0.71f;
         }
 
-        if (volume.profile.TryGet<ScreenSpaceReflection>(out var ssr) && ssr != null)
+        if (volume.profile.TryGet<ScreenSpaceReflection>(out var ssr) && ssr)
             switch (PlayerPrefs.GetInt("Settings: SSR")) {
                 case 0:
                     camData.renderingPathCustomFrameSettings.SetEnabled(FrameSettingsField.SSR, false);

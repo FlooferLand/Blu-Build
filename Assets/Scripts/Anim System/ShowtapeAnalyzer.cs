@@ -34,7 +34,7 @@ public class ShowtapeAnalyzer : MonoBehaviour {
             case "CompareTotalOn": {
                 float[] results = new float[300];
                 int[] bits = new int[300];
-                var coroutine = CompareTotalOn(manager.rshwData, results, bits);
+                var coroutine = CompareTotalOn(manager.RshwData, results, bits);
                 StartCoroutine(coroutine);
                 while (loading.current < loading.maximum) {
                     if (cancelLoad) break;
@@ -63,7 +63,7 @@ public class ShowtapeAnalyzer : MonoBehaviour {
             case "CompareLongestOn": {
                 float[] results = new float[300];
                 int[] bits = new int[300];
-                var coroutine = CompareLongestOn(manager.rshwData, results, bits);
+                var coroutine = CompareLongestOn(manager.RshwData, results, bits);
                 StartCoroutine(coroutine);
                 while (loading.current < loading.maximum) {
                     if (cancelLoad) break;
@@ -92,7 +92,7 @@ public class ShowtapeAnalyzer : MonoBehaviour {
             case "CompareTimesOn": {
                 float[] results = new float[300];
                 int[] bits = new int[300];
-                var coroutine = CompareTimesOn(manager.rshwData, results, bits);
+                var coroutine = CompareTimesOn(manager.RshwData, results, bits);
                 StartCoroutine(coroutine);
                 while (loading.current < loading.maximum) {
                     if (cancelLoad) break;
@@ -122,11 +122,11 @@ public class ShowtapeAnalyzer : MonoBehaviour {
                 string body = "";
                 loading.loadingMessage = "(0%)";
                 int e = 0;
-                loading.maximum = manager.rshwData.Length;
-                for (int i = 0; i < manager.rshwData.Length; i++) {
-                    body += manager.rshwData[i].Get(exportAllSignals) ? 1 : 0;
+                loading.maximum = manager.RshwData.Length;
+                for (int i = 0; i < manager.RshwData.Length; i++) {
+                    body += manager.RshwData[i].Get(exportAllSignals) ? 1 : 0;
                     loading.current = i;
-                    if (i % (manager.rshwData.Length / 100) == 1) {
+                    if (i % (manager.RshwData.Length / 100) == 1) {
                         e++;
                         loading.loadingMessage = "(" + e + "%)";
                         yield return null;
@@ -169,7 +169,7 @@ public class ShowtapeAnalyzer : MonoBehaviour {
                             break;
                         case 3:
                             body += "Average Button Presses Per Second: " +
-                                    AverageBitsPerSecond(manager.rshwData, editor.audioLengthMax) + "\n";
+                                    AverageBitsPerSecond(manager.RshwData, editor.audioLengthMax) + "\n";
                             break;
                     }
 

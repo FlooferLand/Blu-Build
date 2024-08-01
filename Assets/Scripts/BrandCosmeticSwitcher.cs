@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public static class BrandingStyle {
@@ -18,9 +19,11 @@ public class BrandCosmeticSwitcher : MonoBehaviour {
     public GameObject rockAfire;
 
     private void OnEnable() {
-        switch ((BrandingStyle.Enum)PlayerPrefs.GetInt("Settings: Branding Style")) {
+        int playerSetting = PlayerPrefs.GetInt("Settings: Branding Style");
+        var wantedStyle = Enum.IsDefined(typeof(BrandingStyle.Enum), playerSetting) ? (BrandingStyle.Enum) playerSetting : BrandingStyle.Enum.RockAfire;
+        switch (wantedStyle) {
             default: // Sets the style if it is incorrect
-                PlayerPrefs.SetInt("Settings: Branding Style", (int)BrandingStyle.Enum.Classic);
+                PlayerPrefs.SetInt("Settings: Branding Style", (int)BrandingStyle.Enum.RockAfire);
                 classic.SetActive(true);
                 rockAfire.SetActive(false);
                 break;

@@ -10,7 +10,7 @@ public class SuitScript : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         //Make sure its the player
-        if (other.gameObject.layer == 3 && !globalController.TwoJoined) {
+        if (other.gameObject.layer == 3 && !globalController.twoJoined) {
             int rrrr = Random.Range(0, oneOutofWhat);
 
             //See if the chance will happen
