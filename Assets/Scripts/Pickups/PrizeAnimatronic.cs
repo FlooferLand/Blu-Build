@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering.Universal;
 
 public class PrizeAnimatronic : MonoBehaviour {
     public enum PrizeType {
@@ -86,20 +87,22 @@ public class PrizeAnimatronic : MonoBehaviour {
     }
 
     public void ATTLightIntensity(float intensity) {
-        var light = GetComponentsInChildren<HDAdditionalLightData>();
-        for (int i = 0; i < light.Length; i++) light[i].SetIntensity(intensity);
+        var lights = GetComponentsInChildren<Light>();
+        foreach (var light in lights)
+            light.intensity = intensity;
     }
 
     public void ATTLightColor(Color color) {
-        var light = GetComponentsInChildren<HDAdditionalLightData>();
-        for (int i = 0; i < light.Length; i++) light[i].SetColor(color);
+        var lights = GetComponentsInChildren<Light>();
+        foreach (var light in lights)
+            light.color = color;
     }
 
     public void ATTLightSpotSize(Vector2 both) {
-        var light = GetComponentsInChildren<HDAdditionalLightData>();
+        var light = GetComponentsInChildren<UniversalAdditionalLightData>();
         for (int i = 0; i < light.Length; i++)
             if (light[i].gameObject.name != "IGNORE")
-                light[i].SetSpotAngle(both.x, both.y);
+                light[i].lightCookieSize = both;  // TODO: CHECKME: Use the Light component instead? and both.x both.y for the inner and outer size
     }
 
     public void ATTMaterialColor(Color color) {

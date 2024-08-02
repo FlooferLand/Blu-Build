@@ -6,11 +6,11 @@ public class FlickerLight : MonoBehaviour {
     public float maxBright = 50;
     public float minBright = 0;
     public float time = 1;
-    private HDAdditionalLightData lightData;
+    private Light lightData;
     private float randomTimer = 1;
 
     private void Awake() {
-        lightData = GetComponent<HDAdditionalLightData>();
+        lightData = GetComponent<Light>();
     }
 
     private void Update() {

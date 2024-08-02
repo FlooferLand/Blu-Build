@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
@@ -293,7 +294,8 @@ public class GlobalController : MonoBehaviour {
 
 
     public void ApplyCamSettings(GameObject player) {
-        var camData = player.GetComponentInChildren<HDAdditionalCameraData>();
+        // TODO: Convert this to URP
+        /*var camData = player.GetComponentInChildren<UniversalAdditionalCameraData>();
         var frameSettings = camData.renderingPathCustomFrameSettings;
         var frameSettingsOverrideMask = camData.renderingPathCustomFrameSettingsOverrideMask;
         camData.customRenderingSettings = true;
@@ -448,7 +450,7 @@ public class GlobalController : MonoBehaviour {
         }
 
         //Applying the frame setting mask back to the camera
-        camData.renderingPathCustomFrameSettingsOverrideMask = frameSettingsOverrideMask;
+        camData.renderingPathCustomFrameSettingsOverrideMask = frameSettingsOverrideMask;*/
     }
 
     public void AttemptAdvanceTutorial(string attemptString) {

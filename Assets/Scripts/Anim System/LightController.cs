@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 
 public class LightController : MonoBehaviour {
     public int lightBit;
@@ -19,14 +18,15 @@ public class LightController : MonoBehaviour {
     public float nextTime = 0;
     public bool invertBit;
     private Mack_Valves bitChart;
-    private HDAdditionalLightData currentLight;
+    private Light currentLight;
     private Material emissiveTexture;
     private bool flashCheck;
+    private static readonly int EmissiveColor = Shader.PropertyToID("_EmissiveColor");
 
     private void Start() {
         bitChart = transform.root.Find("Mack Valves").GetComponent<Mack_Valves>();
         if (!materialLight)
-            currentLight = GetComponent<HDAdditionalLightData>();
+            currentLight = GetComponent<Light>();
         else
             foreach (var matt in emissiveObject.GetComponent<MeshRenderer>().materials)
                 if (matt.name == emmissiveMatName) {
@@ -78,7 +78,7 @@ public class LightController : MonoBehaviour {
         if (!materialLight)
             currentLight.intensity = intensity * nextTime * intensityMultiplier;
         else
-            emissiveTexture.SetColor("_EmissiveColor",
+            emissiveTexture.SetColor(EmissiveColor,
                 emissiveMatColor * nextTime * emissiveMultiplier * intensityMultiplier);
     }
 }
