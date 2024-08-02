@@ -35,7 +35,7 @@ public class FakeCharacter : MonoBehaviour {
 
         if (show != ShowId.None) {
             button.funcWindow = (int) show;
-            button.ui = controller.gameObject;
+            button.controller = controller.gameObject;
         }
         else {
             Debug.LogError($"Show creator has no clue what show to make in '{gameObject.name}/{nameof(FakeCharacter)}'!");

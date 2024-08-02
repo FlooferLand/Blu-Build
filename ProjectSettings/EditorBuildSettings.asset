@@ -34,7 +34,7 @@ EditorBuildSettings:
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: 396d6d3e9c771e24ea59ebd25ab84624, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: d47871ba490dbaa44832d6a0265a92b3, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 59f84ae2b02cb8e40ba51b8c7333df6e, type: 2}
-    com.unity.addressableassets: {fileID: 11400000, guid: 84029813468e1d84ab88905c9cdf97c5, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: fdcd06313ca769f4da6fe546ba411943, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e985232ef48a1b748be3ccf81d9bfb2a, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2a11291a9fff6fc49bdde0367e131c15, type: 2}
     xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: caa6ada34242ebb4987671a284358363, type: 2}

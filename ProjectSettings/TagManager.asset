@@ -9,6 +9,7 @@ TagManager:
   - Seat Enter
   - Seat Exit
   - Manager
+  - Global Controller
   layers:
   - Default
   - TransparentFX

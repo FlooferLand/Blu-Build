@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 0}
+  controller: {fileID: 0}
   funcName: LoadShowScene
   funcWindow: 0
   sendPlayerNum: 0
@@ -415,6 +415,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b440d14ec3e5841908063ce72309a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  show: -1
+  controller: {fileID: 0}
+  showStartButton: {fileID: 5408036320306702286}
 --- !u!1 &2521579353545136442
 GameObject:
   m_ObjectHideFlags: 0

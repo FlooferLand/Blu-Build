@@ -1,4 +1,6 @@
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(BoxCollider))]
 public class Button3D : MonoBehaviour {
@@ -17,7 +19,7 @@ public class Button3D : MonoBehaviour {
         sitDown
     }
 
-    public GameObject ui;
+    [FormerlySerializedAs("ui")] [CanBeNull] public GameObject controller;
     public string funcName;
     public int funcWindow;
     public bool sendPlayerNum = false;
@@ -36,6 +38,9 @@ public class Button3D : MonoBehaviour {
     private TutorialManager tut;
 
     private void Awake() {
+        sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
+        // this.DontAllowNullYouDumbass(controller);
+        
         if (sendToTutorial) {
             var tt = GameObject.Find("Tutorial");
             if (tt != null) tut = tt.GetComponent<TutorialManager>();
@@ -46,8 +51,6 @@ public class Button3D : MonoBehaviour {
                 GetComponent<RectTransform>().sizeDelta.y, 0f);
             localrect = GetComponent<RectTransform>();
         }
-
-        sc = GameObject.Find("GlobalAudio").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -142,11 +145,15 @@ public class Button3D : MonoBehaviour {
 
                 if (sendPlayerNum) finalsend = name == "Player" ? 0 : 1;
 
-                if (sendToTutorial && tut != null) {
-                    if (tut.AttemptAdvanceTutorial(tutorialSend)) ui.SendMessage(funcName, finalsend);
-                }
-                else {
-                    ui.SendMessage(funcName, finalsend);
+                if (controller) {
+                    if (sendToTutorial && tut) {
+                        if (tut.AttemptAdvanceTutorial(tutorialSend)) controller.SendMessage(funcName, finalsend);
+                    }
+                    else {
+                        controller.SendMessage(funcName, finalsend);
+                    }
+                } else {
+                    Debug.LogWarning($"Field {nameof(controller)} inside {name}/{nameof(Button3D)} is null");
                 }
             }
     }

@@ -5626,7 +5626,7 @@ GameObject:
   - component: {fileID: 1025233774}
   m_Layer: 0
   m_Name: Global Controller
-  m_TagString: Untagged
+  m_TagString: Global Controller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5645,7 +5645,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 3852793578409061698, guid: c372dfd7f7262fb4388fda05084883f4, type: 3}
   regularVolume: {fileID: 11400000, guid: 183cbd347d25080429f42b520742bbd8, type: 2}
-  TwoJoined: 0
+  twoJoined: 0
   debugJoinPlayerTwo: 0
   debugResetProgress: 0
   showSceneNames:
@@ -13108,7 +13108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 1025233772}
+  controller: {fileID: 1025233772}
   funcName: LoadShowSceneALT
   funcWindow: 1
   sendPlayerNum: 0
@@ -14254,7 +14254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 1025233772}
+  controller: {fileID: 1025233772}
   funcName: LoadShowSceneALT
   funcWindow: 0
   sendPlayerNum: 0
