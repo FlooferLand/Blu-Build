@@ -80,8 +80,8 @@ public class HdrpToUrpConverter : EditorWindow {
 
     [MenuItem("Tools/Convert HDRP Lit Materials to URP Lit")]
     public static void ConvertMaterials() {
-        if (!HdrpShader || !UrpShader) {
-            Debug.LogError("Shaders not found. Ensure HDRP and URP packages are installed.");
+        if (!UrpShader) {
+            Debug.LogError("Shaders not found. Ensure the URP and HDRP packages are installed.\nThe HDRP package is required, as all HDRP materials use the \"InternalErrorShader\" without it!");
             return;
         }
 
@@ -93,12 +93,12 @@ public class HdrpToUrpConverter : EditorWindow {
             Material baseMat = AssetDatabase.LoadAssetAtPath<Material>(pathStr);
 
             // DEBUG
-            if (baseMat.name.ToLower().Trim() != "testmat") {
-                continue;
-            }
+            // if (baseMat.name.ToLower().Trim() != "testmat") {
+            //     continue;
+            // }
             
             if (baseMat.shader == HdrpShader) {
-                if (ConvertMaterial(baseMat, baseMatPath:path, HdrpShader, UrpShader) is { } mat) {
+                if (ConvertMaterial(baseMat, baseMatPath:path) is { } mat) {
                     if (MakeNewMaterial) {
                         string filename = $"{Path.GetFileNameWithoutExtension(pathStr)} (New){Path.GetExtension(pathStr)}";
                         string newPath = Path.Combine(pathStr, "..", filename);
@@ -123,21 +123,16 @@ public class HdrpToUrpConverter : EditorWindow {
         }
     }
 
-    private static Material? ConvertMaterial(Material baseMat, FileInfo baseMatPath, Shader? hdrpShader, Shader? urpShader) {
+    private static Material? ConvertMaterial(Material baseMat, FileInfo baseMatPath) {
         var materialType = (HdrpMaterialType) baseMat.GetInt(ShaderProperties.HDRP_MaterialType);
-        if (materialType != HdrpMaterialType.Standard) {
-            Debug.LogWarning($"Material \"{baseMat.name}\" needs to be converted manually.\nMaterial type \"{materialType}\" has no automatic conversion.");
-            return null;
-        }
-        
         var mat = new Material(baseMat) {
-            shader = urpShader
+            shader = UrpShader
         };
         
         // Transfer over misc properties with the same name
-        for (int i = 0; i < ShaderUtil.GetPropertyCount(hdrpShader); i++) {
-            string propertyName = ShaderUtil.GetPropertyName(hdrpShader, i);
-            var propertyType = ShaderUtil.GetPropertyType(hdrpShader, i);
+        for (int i = 0; i < ShaderUtil.GetPropertyCount(baseMat.shader); i++) {
+            string propertyName = ShaderUtil.GetPropertyName(baseMat.shader, i);
+            var propertyType = ShaderUtil.GetPropertyType(baseMat.shader, i);
             if (mat.HasProperty(propertyName)) {
                 switch (propertyType) {
                     case ShaderUtil.ShaderPropertyType.Color:
@@ -281,8 +276,19 @@ public class HdrpToUrpConverter : EditorWindow {
         texture.Apply();
 
         // Getting / making the paths
-        string parentPath = Directory.GetParent(maskTexturePath).FullName;
-        parentPath = parentPath.Substring(parentPath.IndexOf("Assets"));
+        string parentPath;
+        if (Directory.GetParent(maskTexturePath)?.FullName is { } parent) {
+            if (parent.IndexOf("Assets", StringComparison.InvariantCultureIgnoreCase) is var i and > 0) {
+                parentPath = parent[i..];
+            } else {
+                Debug.LogWarning($"Failed to get path for texture \"{maskTexturePath}\"\nRecovery will be attempted, but you should check if it actually worked or if it just placed the new texture in the wrong place.");
+                parentPath = parent;
+                return null;
+            }
+        } else {
+            Debug.LogWarning($"Failed to get path for texture \"{maskTexturePath}\"");
+            return null;
+        }
         string textureName = Path.GetFileName(maskTexturePath)
             .Replace("_Mask", "")
             .Replace("Mask", "")
