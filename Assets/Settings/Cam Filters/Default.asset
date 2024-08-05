@@ -937,6 +937,7 @@ MonoBehaviour:
   m_Name: PhysicallyBasedSky
   m_EditorClassIdentifier: 
   active: 1
+  <displayName>k__BackingField: Physically Based Sky
   rotation:
     m_OverrideState: 1
     m_Value: 0
@@ -999,7 +1000,11 @@ MonoBehaviour:
     m_Value: 0.23264056
   airTint:
     m_OverrideState: 1
-    m_Value: {r: 0.9, g: 0.9, b: 1, a: 1}
+    m_Value:
+      r: 0.9
+      g: 0.9
+      b: 1
+      a: 1
   airMaximumAltitude:
     m_OverrideState: 1
     m_Value: 55261.973
@@ -1008,7 +1013,11 @@ MonoBehaviour:
     m_Value: 0.01192826
   aerosolTint:
     m_OverrideState: 1
-    m_Value: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    m_Value:
+      r: 0.9
+      g: 0.9
+      b: 0.9
+      a: 1
   aerosolMaximumAltitude:
     m_OverrideState: 1
     m_Value: 8289.296
@@ -1017,7 +1026,11 @@ MonoBehaviour:
     m_Value: 0
   groundTint:
     m_OverrideState: 1
-    m_Value: {r: 0.4, g: 0.25, b: 0.15, a: 1}
+    m_Value:
+      r: 0.4
+      g: 0.25
+      b: 0.15
+      a: 1
   groundColorTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -1050,10 +1063,18 @@ MonoBehaviour:
     m_Value: 1
   horizonTint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
   zenithTint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
   horizonZenithShift:
     m_OverrideState: 1
     m_Value: 0
@@ -1139,47 +1160,6 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 6640133647794636954}
-  - {fileID: -4823257037170406264}
-  - {fileID: 8383070348286412463}
-  - {fileID: 1411768982944179153}
-  - {fileID: 2259867109979239966}
-  - {fileID: -52563778992441268}
-  - {fileID: 3383698127627520140}
-  - {fileID: -7356265536349371674}
-  - {fileID: -6958609632577779145}
-  - {fileID: -6970348708849430246}
-  - {fileID: 5411617178835934236}
-  - {fileID: -1466475577067717297}
-  - {fileID: 2726913622071616755}
-  - {fileID: 2875869141971074993}
-  - {fileID: 8076592064925427962}
-  - {fileID: 6930956226196612993}
-  - {fileID: -3496523116089268734}
-  - {fileID: -7944362666897070702}
-  - {fileID: -5793472297979207336}
-  - {fileID: 3713909953858802579}
-  - {fileID: -433183866240364021}
-  - {fileID: 6710939989747640622}
-  - {fileID: 7725396596534954241}
-  - {fileID: 4306799544362885930}
-  - {fileID: 4995158132455881683}
-  - {fileID: -6415186915525046739}
-  - {fileID: -3856094432189857199}
-  - {fileID: 7528588356000520869}
-  - {fileID: -4554106675935729684}
-  - {fileID: 8076921467342513782}
-  - {fileID: 8088013005327767320}
-  - {fileID: -6422968583989344768}
-  - {fileID: -3711693219004443332}
-  - {fileID: 8700764052952210577}
-  - {fileID: 7829206483369453561}
-  - {fileID: -786343836292582850}
-  - {fileID: -8610244700725969523}
-  - {fileID: 2462212701282993566}
-  - {fileID: 5613475733630681478}
-  - {fileID: 1000124216557317623}
-  - {fileID: -8873909633602557271}
   - {fileID: 2216709596030643798}
 --- !u!114 &1000124216557317623
 MonoBehaviour:
