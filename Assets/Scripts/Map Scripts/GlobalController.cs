@@ -2,10 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 /**
  * VERY MESSY CLASS THAT DOES EVERYTHING IN THE GAME.

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 public class MovieStage : MonoBehaviour {

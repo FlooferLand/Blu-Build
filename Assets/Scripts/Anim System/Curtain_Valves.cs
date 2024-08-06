@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Curtain_Valves : MonoBehaviour {
     public GameObject mackValves;

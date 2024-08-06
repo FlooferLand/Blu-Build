@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /**
  * For visible fake animatronics that are going to be replaced with the actual animated counterparts

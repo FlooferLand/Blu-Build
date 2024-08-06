@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering.Universal;
 
 public class PrizeAnimatronic : MonoBehaviour {
