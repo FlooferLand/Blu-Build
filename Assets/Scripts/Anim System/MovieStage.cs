@@ -1,13 +1,14 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 public class MovieStage : MonoBehaviour {
     public UI_PlayRecord playUI;
     public Text textScreen;
     public Text textScreen2;
-    public Light[] areaLights;
+    public HDAdditionalLightData[] areaLights;
     public GameObject neonLights;
 
     public float lightIntensity = 33;

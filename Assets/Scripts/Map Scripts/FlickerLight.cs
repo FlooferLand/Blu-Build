@@ -1,15 +1,16 @@
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 [ExecuteInEditMode]
 public class FlickerLight : MonoBehaviour {
     public float maxBright = 50;
     public float minBright = 0;
     public float time = 1;
-    private Light lightData;
+    private HDAdditionalLightData lightData;
     private float randomTimer = 1;
 
     private void Awake() {
-        lightData = GetComponent<Light>();
+        lightData = GetComponent<HDAdditionalLightData>();
     }
 
     private void Update() {

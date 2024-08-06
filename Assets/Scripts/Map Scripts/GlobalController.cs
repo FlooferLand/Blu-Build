@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 /**
  * VERY MESSY CLASS THAT DOES EVERYTHING IN THE GAME.
@@ -291,8 +293,7 @@ public class GlobalController : MonoBehaviour {
 
 
     public void ApplyCamSettings(GameObject player) {
-        // TODO: Convert this to URP
-        /*var camData = player.GetComponentInChildren<UniversalAdditionalCameraData>();
+        var camData = player.GetComponentInChildren<HDAdditionalCameraData>();
         var frameSettings = camData.renderingPathCustomFrameSettings;
         var frameSettingsOverrideMask = camData.renderingPathCustomFrameSettingsOverrideMask;
         camData.customRenderingSettings = true;
@@ -447,7 +448,7 @@ public class GlobalController : MonoBehaviour {
         }
 
         //Applying the frame setting mask back to the camera
-        camData.renderingPathCustomFrameSettingsOverrideMask = frameSettingsOverrideMask;*/
+        camData.renderingPathCustomFrameSettingsOverrideMask = frameSettingsOverrideMask;
     }
 
     public void AttemptAdvanceTutorial(string attemptString) {

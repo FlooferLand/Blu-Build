@@ -1,21 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8979043942673170364
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7ff42a8c5be6646ad3975f3a54c1eb, type: 3}
-  m_Name: DiffusionProfileList
-  m_EditorClassIdentifier: 
-  active: 1
-  diffusionProfiles:
-    m_OverrideState: 1
-    m_Value: []
 --- !u!114 &-8848913721672547258
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -949,8 +933,48 @@ MonoBehaviour:
   m_Name: HDRPSettings
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 7686318427622180703}
+  - {fileID: -1016694868962581565}
+  - {fileID: 7502528774814404555}
+  - {fileID: 7542669330009093999}
+  - {fileID: 1501199423866068322}
+  - {fileID: 5315503232242033309}
+  - {fileID: 1932259527246508038}
+  - {fileID: 448115243408767295}
+  - {fileID: 533830216700105719}
+  - {fileID: -8848913721672547258}
+  - {fileID: 3414539462100134313}
+  - {fileID: 7567396178271019685}
+  - {fileID: 1664259842333698464}
+  - {fileID: 5962773064843179226}
+  - {fileID: -3248293303403182995}
+  - {fileID: 2003415415316440331}
+  - {fileID: -3427043896194968547}
+  - {fileID: 1671158709960151335}
+  - {fileID: 3527109802096666201}
+  - {fileID: -3794629470700370885}
+  - {fileID: 2805463837473168328}
+  - {fileID: 8217255157536201259}
+  - {fileID: 5000103553001912272}
+  - {fileID: 6939381014582865327}
+  - {fileID: -4683659232945148665}
+  - {fileID: 6355783944369891480}
+  - {fileID: -3888077633835897754}
+  - {fileID: -2936251209390655852}
+  - {fileID: 4944369683865460261}
+  - {fileID: 4996873576571011633}
+  - {fileID: 728045528075535831}
+  - {fileID: 8195040175332822122}
+  - {fileID: 4507534033121674709}
+  - {fileID: 1668312772054722367}
+  - {fileID: 6930071523796633658}
+  - {fileID: 6363226995749533043}
+  - {fileID: -4477418132395137523}
+  - {fileID: -17125348060469079}
+  - {fileID: 7541418989883952980}
+  - {fileID: -8309919999216441616}
+  - {fileID: -1228396910213198398}
   - {fileID: -1514587790252879386}
-  - {fileID: -8979043942673170364}
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3
