@@ -75,9 +75,13 @@ public class UI_SidePanel : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.BackQuote)) showPanelUI.pauseSong();
-        if (Input.GetKeyDown(KeyCode.F2)) showPanelUI.pauseSong();
-        // showPanelUI.seek();
+        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.BackQuote)) {
+            showPanelUI.pauseSong();
+        }
+        if (Input.GetKeyDown(KeyCode.F2)) {
+            showPanelUI.manager.SkipSong(-1);
+            showPanelUI.pauseSong();
+        }
     }
 
     private IEnumerator AwakeCoroutine() {

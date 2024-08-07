@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SkipSong
   funcWindow: 1
   sendPlayerNum: 0
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: UnloadScene
   funcWindow: 0
   sendPlayerNum: 0
@@ -848,7 +848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 11
   sendPlayerNum: 0
@@ -1406,7 +1406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 3
   sendPlayerNum: 0
@@ -1527,7 +1527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 11
   sendPlayerNum: 0
@@ -1799,7 +1799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -2148,7 +2148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -2896,7 +2896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 9
   sendPlayerNum: 0
@@ -3017,7 +3017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 4
   sendPlayerNum: 0
@@ -3219,7 +3219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwapLoop
   funcWindow: 0
   sendPlayerNum: 0
@@ -4048,7 +4048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 14
   sendPlayerNum: 0
@@ -4188,14 +4188,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.89317584, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 22efb50dd3a666548a545d2259c1197f, type: 3}
+  m_Texture: {fileID: 2800000, guid: 0efc55e1266062740a6348d0a9bc05b3, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -4313,7 +4313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 13
   sendPlayerNum: 0
@@ -4669,7 +4669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 6
   sendPlayerNum: 0
@@ -5106,7 +5106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: FFSong
   funcWindow: 0
   sendPlayerNum: 0
@@ -5537,7 +5537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -5739,7 +5739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 11
   sendPlayerNum: 0
@@ -6092,7 +6092,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 11
   sendPlayerNum: 0
@@ -6301,8 +6301,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
-  m_Color: {r: 0.30588236, g: 0.30588236, b: 0.30588236, a: 1}
-  m_Intensity: 24.307299
+  m_Color: {r: 0.6377357, g: 0.39321962, b: 0.19613376, a: 1}
+  m_Intensity: 29.551456
   m_Range: 0.38
   m_SpotAngle: 100
   m_InnerSpotAngle: 21.80208
@@ -6367,7 +6367,7 @@ MonoBehaviour:
   m_PointlightHDType: 1
   m_SpotLightShape: 0
   m_AreaLightShape: 0
-  m_Intensity: 12.6
+  m_Intensity: 15.318377
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 68.6
@@ -6680,7 +6680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 24
   sendPlayerNum: 0
@@ -7161,7 +7161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 15
   sendPlayerNum: 0
@@ -7584,7 +7584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -7856,7 +7856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 17
   sendPlayerNum: 0
@@ -8133,7 +8133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -8254,7 +8254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SpecialSaveAs
   funcWindow: 4
   sendPlayerNum: 0
@@ -8756,7 +8756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 6
   sendPlayerNum: 0
@@ -9646,7 +9646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 1
   sendPlayerNum: 0
@@ -9843,7 +9843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -10223,7 +10223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -10419,7 +10419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: Stop
   funcWindow: 1
   sendPlayerNum: 0
@@ -10540,7 +10540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 20
   sendPlayerNum: 0
@@ -10815,7 +10815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 24
   sendPlayerNum: 0
@@ -11250,7 +11250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -12255,7 +12255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -12844,7 +12844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 13
   sendPlayerNum: 0
@@ -13201,7 +13201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 1
   sendPlayerNum: 0
@@ -13710,7 +13710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -13912,7 +13912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 1
   sendPlayerNum: 0
@@ -14426,7 +14426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 23
   sendPlayerNum: 0
@@ -14861,7 +14861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 8
   sendPlayerNum: 0
@@ -15605,7 +15605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 10
   sendPlayerNum: 0
@@ -15726,7 +15726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 7
   sendPlayerNum: 0
@@ -15924,7 +15924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 28
   sendPlayerNum: 0
@@ -16196,7 +16196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 3
   sendPlayerNum: 0
@@ -16398,7 +16398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 2
   sendPlayerNum: 0
@@ -16836,7 +16836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 12
   sendPlayerNum: 0
@@ -16957,7 +16957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: -1
   sendPlayerNum: 0
@@ -17078,7 +17078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 13
   sendPlayerNum: 0
@@ -18159,7 +18159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: FFSong
   funcWindow: -1
   sendPlayerNum: 0
@@ -18280,7 +18280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: AddWavSpecial
   funcWindow: 0
   sendPlayerNum: 0
@@ -18481,7 +18481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: StartNewShow
   funcWindow: 17
   sendPlayerNum: 0
@@ -18697,7 +18697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 11
   sendPlayerNum: 0
@@ -18976,7 +18976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 17
   sendPlayerNum: 0
@@ -19247,7 +19247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 9
   sendPlayerNum: 0
@@ -19680,7 +19680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 6
   sendPlayerNum: 0
@@ -20038,7 +20038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 7
   sendPlayerNum: 0
@@ -20395,7 +20395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SkipSong
   funcWindow: -1
   sendPlayerNum: 0
@@ -20932,7 +20932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 28
   sendPlayerNum: 0
@@ -21053,7 +21053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeSegment
   funcWindow: 0
   sendPlayerNum: 0
@@ -21325,7 +21325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SetMasterFolder
   funcWindow: 0
   sendPlayerNum: 0
@@ -21446,7 +21446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -21724,7 +21724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -21996,7 +21996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 11
   sendPlayerNum: 0
@@ -22506,7 +22506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 6
   sendPlayerNum: 0
@@ -22862,7 +22862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: FFSong
   funcWindow: 1
   sendPlayerNum: 0
@@ -23175,7 +23175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 16
   sendPlayerNum: 0
@@ -23974,7 +23974,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.4415095, g: 0.4415095, b: 0.4415095, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -24675,7 +24675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -24874,7 +24874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 3
   sendPlayerNum: 0
@@ -25074,7 +25074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 9
   sendPlayerNum: 0
@@ -25512,7 +25512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: StageDown
   funcWindow: 1
   sendPlayerNum: 0
@@ -25712,7 +25712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 9
   sendPlayerNum: 0
@@ -25999,7 +25999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 8
   sendPlayerNum: 0
@@ -26120,7 +26120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 21
   sendPlayerNum: 0
@@ -26241,7 +26241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 21
   sendPlayerNum: 0
@@ -26362,7 +26362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: CostumeUp
   funcWindow: -1
   sendPlayerNum: 0
@@ -26825,7 +26825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -26946,7 +26946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: CostumeDown
   funcWindow: 1
   sendPlayerNum: 0
@@ -28151,7 +28151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -28584,7 +28584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -29015,7 +29015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 1
   sendPlayerNum: 0
@@ -29532,7 +29532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 33
   sendPlayerNum: 0
@@ -29922,7 +29922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 12
   sendPlayerNum: 0
@@ -30043,7 +30043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 4
   sendPlayerNum: 0
@@ -30239,7 +30239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 5
   sendPlayerNum: 0
@@ -30729,7 +30729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -30849,7 +30849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 1
   sendPlayerNum: 0
@@ -31512,7 +31512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 7
   sendPlayerNum: 0
@@ -31633,7 +31633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 2
   sendPlayerNum: 0
@@ -31754,7 +31754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 3
   sendPlayerNum: 0
@@ -33254,7 +33254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -33540,7 +33540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 15
   sendPlayerNum: 0
@@ -33896,7 +33896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 10
   sendPlayerNum: 0
@@ -34017,7 +34017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 14
   sendPlayerNum: 0
@@ -34983,7 +34983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 8
   sendPlayerNum: 0
@@ -35607,7 +35607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 22
   sendPlayerNum: 0
@@ -35728,7 +35728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 0
   sendPlayerNum: 0
@@ -36394,7 +36394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayTapeShowtape
   funcWindow: 8
   sendPlayerNum: 0
@@ -36984,7 +36984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: -2
   sendPlayerNum: 0
@@ -37177,7 +37177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 4
   sendPlayerNum: 0
@@ -37690,7 +37690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 28
   sendPlayerNum: 0
@@ -38070,7 +38070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 5
   sendPlayerNum: 0
@@ -38266,7 +38266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -38538,7 +38538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 1
   sendPlayerNum: 0
@@ -38812,7 +38812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 7
   sendPlayerNum: 0
@@ -39012,7 +39012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SpecialSaveAs
   funcWindow: 11
   sendPlayerNum: 0
@@ -39449,7 +39449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 4
   sendPlayerNum: 0
@@ -39645,7 +39645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 23
   sendPlayerNum: 0
@@ -40468,7 +40468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -40813,7 +40813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -41171,7 +41171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 32
   sendPlayerNum: 0
@@ -41526,7 +41526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 2
   sendPlayerNum: 0
@@ -41802,7 +41802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: pauseSong
   funcWindow: 0
   sendPlayerNum: 0
@@ -41923,7 +41923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -42120,7 +42120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: PlayRandom
   funcWindow: 0
   sendPlayerNum: 0
@@ -42398,7 +42398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 2
   sendPlayerNum: 0
@@ -42835,7 +42835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 31
   sendPlayerNum: 0
@@ -43032,7 +43032,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 22
   sendPlayerNum: 0
@@ -43153,7 +43153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 19
   sendPlayerNum: 0
@@ -43351,7 +43351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 3
   sendPlayerNum: 0
@@ -44021,7 +44021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: StageUp
   funcWindow: -1
   sendPlayerNum: 0
@@ -44409,7 +44409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 10
   sendPlayerNum: 0
@@ -44530,7 +44530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: DeleteMove
   funcWindow: 18
   sendPlayerNum: 0
@@ -44810,7 +44810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: SwitchWindow
   funcWindow: 12
   sendPlayerNum: 0
@@ -45449,7 +45449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 0
   sendPlayerNum: 0
@@ -45730,7 +45730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23beebd05e3d065419997a3853f4de60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 5215550095897422184}
+  controller: {fileID: 5215550095897422184}
   funcName: MakeSegmentWindow
   funcWindow: 5
   sendPlayerNum: 0

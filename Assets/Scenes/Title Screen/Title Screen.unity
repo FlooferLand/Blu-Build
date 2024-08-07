@@ -7682,7 +7682,7 @@ GameObject:
   - component: {fileID: 508005578}
   - component: {fileID: 508005579}
   m_Layer: 5
-  m_Name: lefthand
+  m_Name: key names
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8171,7 +8171,7 @@ GameObject:
   - component: {fileID: 544500441}
   - component: {fileID: 544500442}
   m_Layer: 5
-  m_Name: righthand
+  m_Name: keys
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8226,7 +8226,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'WASD / LStick
 
-    F / Button North
+    E / Button North
 
     Shift / Button West
 

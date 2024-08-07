@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class UI_PlayRecord : MonoBehaviour {
     public enum SignalChange {
@@ -610,6 +611,30 @@ public class UI_PlayRecord : MonoBehaviour {
         manager.referenceSpeaker.Play();
         for (int i = 0; i < speakerL.Length; i++) speakerL[i].Play();
         for (int i = 0; i < speakerR.Length; i++) speakerR[i].Play();
+        syncAudio();
+    }
+
+    /// <summary>
+    ///     Goes to a point in audio
+    /// </summary>
+    /// <param name="location"></param>
+    public void Seek(float location) {
+        manager.referenceSpeaker.time = location;
+        foreach (var source in speakerL) {
+            source.time = manager.referenceSpeaker.time;
+        }
+        foreach (var source in speakerR) {
+            source.time = manager.referenceSpeaker.time;
+        }
+
+        if (manager.videoPath != "") {
+            foreach (var tvs in stages[currentStage].tvs) {
+                foreach (var videoPlayer in tvs.tvs) {
+                    videoPlayer.time = manager.referenceSpeaker.time;
+                }
+            }
+        }
+
         syncAudio();
     }
 

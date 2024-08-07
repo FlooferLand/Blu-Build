@@ -4,6 +4,6 @@ public static class InternalGameData
  {
 	public static readonly string gameName = "BluBuild";
 	public static readonly GameBuildType buildType = GameBuildType.Faz;
-	public static readonly string gameVersion = "1.60-ALPHA-1";
+	public static readonly string gameVersion = "1.60-ALPHA-2";
 	public static readonly bool isVR = false;
 }

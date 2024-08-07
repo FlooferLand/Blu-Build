@@ -503,7 +503,7 @@ public class Player : MonoBehaviour {
     }
 
     private void FlashlightCheck() {
-        if ((Input.GetKeyDown(KeyCode.F) && controlType == ControllerType.keyboard) ||
+        if ((Input.GetKeyDown(KeyCode.E) && controlType == ControllerType.keyboard) ||
             (flashGamepad && controlType == ControllerType.gamepad) || flashState == 1) {
             flashGamepad = false;
             flashlight.SetActive(!flashlight.activeSelf);

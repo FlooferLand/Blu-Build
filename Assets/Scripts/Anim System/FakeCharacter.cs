@@ -87,10 +87,11 @@ public class FakeCharacterEditor : Editor {
         if (!show) return;
 
         show.characters.Clear();
-        var parent = show.characterHolder.transform;
-        for (int i = 0; i < parent.childCount; i++) {
-            var transform = parent.GetChild(i);
+        var characterHolder = show.characterHolder.transform;
+        for (int i = 0; i < characterHolder.childCount; i++) {
+            var transform = characterHolder.GetChild(i);
             var comp = transform.gameObject.GetComponent<CharacterStagePosition>();
+            if (!comp) comp = transform.gameObject.AddComponent<CharacterStagePosition>();
             if (comp && comp.isActiveAndEnabled) {
                 show.characters.Insert(i, comp);
 
